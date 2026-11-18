@@ -364,6 +364,74 @@ section{position:relative}
 @media(max-width:600px){.hero .night-current{width:100vw;height:70%;left:-32%;top:15%;opacity:.2}}
 @media(prefers-reduced-motion:reduce){.night-current:before,.night-current:after{animation:none!important}.section-head h2:after{transition:none;width:100%}}
 
+
+/* Van Gogh-inspired editorial identity and compact navigation */
+.nav-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.menu-toggle{width:44px;height:44px;display:grid;align-content:center;justify-items:center;gap:5px;border:1px solid #f3d58b55;border-radius:13px;background:#f3c96912;cursor:pointer;transition:.25s}
+.menu-toggle span{width:19px;height:2px;background:#f5d47f;border-radius:3px;transition:transform .3s,opacity .2s}
+.menu-toggle:hover{background:#f3c96925;transform:translateY(-2px)}
+.menu-toggle[aria-expanded="true"] span:first-child{transform:translateY(7px) rotate(45deg)}
+.menu-toggle[aria-expanded="true"] span:nth-child(2){opacity:0}
+.menu-toggle[aria-expanded="true"] span:last-child{transform:translateY(-7px) rotate(-45deg)}
+.menu-backdrop{position:fixed;inset:0;z-index:80;background:#020817a8;opacity:0;visibility:hidden;transition:opacity .32s,visibility .32s;backdrop-filter:blur(3px)}
+.side-menu{position:fixed;z-index:81;top:0;right:0;width:min(390px,88vw);height:100dvh;padding:28px 25px;background:radial-gradient(ellipse at 85% 8%,#315b7c 0%,transparent 42%),linear-gradient(155deg,#102846 0%,#09172e 78%);border-left:1px solid #f3d58b40;box-shadow:-25px 0 80px #0007;transform:translateX(105%);visibility:hidden;transition:transform .42s cubic-bezier(.2,.8,.2,1),visibility .42s;overflow:hidden}
+.side-menu:before{content:"";position:absolute;width:360px;height:360px;left:-190px;bottom:3%;border:1px solid #f3d58b35;border-radius:44% 56% 61% 39%;box-shadow:0 0 65px #6ca6d31a,inset 0 0 60px #f3c9690d;animation:sideArtDrift 24s ease-in-out infinite alternate;pointer-events:none}
+.side-menu:after{content:"";position:absolute;inset:0;opacity:.14;pointer-events:none;background:repeating-radial-gradient(ellipse at 85% 75%,transparent 0 18px,#9bc9e5 19px 20px,transparent 21px 37px);mask-image:linear-gradient(135deg,transparent 40%,#000 100%)}
+body.menu-open{overflow:hidden}
+body.menu-open .menu-backdrop{opacity:1;visibility:visible}
+body.menu-open .side-menu{transform:translateX(0);visibility:visible}
+.side-menu-head{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}
+.menu-close{width:40px;height:40px;border-radius:50%;border:1px solid #ffffff30;background:#ffffff0b;color:white;font-size:27px;cursor:pointer}
+.side-menu-kicker{position:relative;z-index:1;margin:55px 0 20px;color:#e9c978;font-size:12px;letter-spacing:1px}
+.side-menu-links{position:relative;z-index:1;display:grid}
+.side-menu-links a{display:flex;align-items:center;gap:14px;padding:17px 0;border-bottom:1px solid #ffffff1a;font-size:19px;font-weight:800;transition:padding .25s,color .25s}
+.side-menu-links a span{font:11px Arial;color:#8fbfe5;letter-spacing:1px}
+.side-menu-links a b{margin-right:auto;color:#e9c978;font-size:17px;opacity:0;transform:translateX(8px);transition:.25s}
+.side-menu-links a:hover{color:#f5d47f;padding-right:8px}
+.side-menu-links a:hover b{opacity:1;transform:translateX(0)}
+.side-menu-note{position:absolute;z-index:1;right:25px;bottom:38px;display:flex;align-items:center;gap:12px;color:#c7d8e8}
+.side-menu-note span{font-size:27px;color:#f5d47f}
+.side-menu-note p{font-size:13px;line-height:1.9}
+@keyframes sideArtDrift{to{transform:rotate(22deg) scale(1.08);border-radius:58% 42% 39% 61%}}
+/* Artistic, layered about section instead of repeated rectangular cards */
+.about-art-grid{display:grid;grid-template-columns:1.18fr .82fr;grid-template-rows:repeat(2,minmax(210px,auto));gap:16px}
+.about-art{position:relative;isolation:isolate;overflow:hidden;min-height:215px;padding:26px 28px;border:1px solid #b6d9ef24;border-radius:22px;background:linear-gradient(145deg,#183858,#0d2039);box-shadow:0 18px 45px #0002;transition:transform .4s,border-color .4s,box-shadow .4s}
+.about-art:hover{transform:translateY(-6px);border-color:#f3d58b77;box-shadow:0 24px 55px #0004}
+.about-main{grid-row:span 2;min-height:450px;background:radial-gradient(ellipse at 18% 78%,#d5a94b22,transparent 44%),linear-gradient(145deg,#1d4564,#0b1a33 78%)}
+.about-partner{background:radial-gradient(ellipse at 95% 10%,#79b9e52c,transparent 55%),linear-gradient(140deg,#183b58,#101f39)}
+.about-trust{background:radial-gradient(ellipse at 90% 90%,#d7b65a1e,transparent 48%),linear-gradient(140deg,#253b59,#101b32)}
+.about-index{font:10px Arial,sans-serif;letter-spacing:2px;color:#a9c9df}
+.about-symbol{display:grid;place-items:center;width:56px;height:56px;margin:30px 0 14px;border:1px solid #f3d58b66;border-radius:18px;color:#f5d47f;font-size:31px;background:#f3c96910;box-shadow:0 0 30px #f3c96910}
+.about-art h3{font-size:clamp(23px,3vw,34px);line-height:1.45;margin-bottom:10px}
+.about-art p{max-width:390px;color:#c0d0df;font-size:13px;line-height:2}
+.about-art a{display:inline-flex;gap:12px;align-items:center;margin-top:18px;color:#f5d47f;font-size:13px;font-weight:800}
+.about-art a b{font-size:19px;transition:transform .25s}
+.about-art a:hover b{transform:translateX(-5px)}
+.art-orbit{position:absolute;z-index:-1;border:1px solid #b4d7ed24;border-radius:50%;pointer-events:none}
+.orbit-a{width:390px;height:390px;left:-145px;bottom:-110px;box-shadow:0 0 80px #79b9e512,inset 0 0 65px #f3c96908}
+.orbit-b{width:260px;height:260px;left:-80px;bottom:-45px;border-color:#f3d58b25}
+.art-star{position:absolute;left:28px;bottom:12px;font-size:95px;color:#f3d58b1e;transform:rotate(-12deg)}
+.trust-ring{position:absolute;left:-45px;bottom:-90px;width:230px;height:230px;border-radius:50%;border:22px solid #83b8e80c;box-shadow:0 0 0 14px #f3c96908,0 0 0 32px #83b8e806}
+.about-signature{display:flex;align-items:center;gap:18px;margin-top:24px;padding:15px 4px;border-top:1px solid #ffffff18}
+.about-signature span{font-size:25px;font-weight:900;color:#f5d47f}
+.about-signature p{color:#aebfd0;font-size:13px}
+.art-footer{position:relative;overflow:hidden;margin-top:30px;padding:50px 0 25px;border-top:1px solid #ffffff18;background:radial-gradient(ellipse at 12% 10%,#31577a66,transparent 38%),linear-gradient(140deg,#0e2440,#071329)}
+.art-footer:before{content:"";position:absolute;width:450px;height:450px;left:-180px;top:-270px;border:1px solid #f3d58b26;border-radius:50%;box-shadow:0 0 90px #83b8e815, inset 0 0 70px #f3c96909;pointer-events:none}
+.footer-art-top{position:relative;display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:38px;border-bottom:1px solid #ffffff20}
+.footer-kicker{font:10px Arial;letter-spacing:3px;color:#8eb9d8}
+.footer-art-top h2{font-size:clamp(34px,6vw,62px);line-height:1.25;margin-top:12px}
+.footer-art-top h2 span{color:#f5d47f}
+.footer-backtop{display:grid;place-items:center;width:48px;height:48px;border:1px solid #f3d58b66;border-radius:50%;color:#f5d47f;font-size:24px;transition:.3s}
+.footer-backtop:hover{transform:translateY(-5px);background:#f3c96918}
+.footer-art-bottom{display:flex;align-items:center;gap:22px;flex-wrap:wrap;padding-top:22px}
+.footer-art-bottom p,.footer-art-bottom small{color:#9eb2c7;font-size:12px}
+.footer-art-bottom nav{display:flex;gap:18px;margin-right:auto;flex-wrap:wrap}
+.footer-art-bottom nav a{color:#c3d2e0;font-size:12px;transition:color .2s}
+.footer-art-bottom nav a:hover{color:#f5d47f}
+@media(min-width:581px){.menu-toggle{display:none}}
+@media(max-width:580px){.desktop-links{display:none!important}.nav{height:68px}.nav-actions{gap:7px}.about-art-grid{grid-template-columns:1fr;grid-template-rows:auto}.about-main{grid-row:auto;min-height:330px}.about-art{min-height:220px;padding:22px}.about-signature{align-items:flex-start}.footer-art-top{align-items:flex-start}.footer-art-bottom{gap:12px}.footer-art-bottom nav{width:100%;margin:5px 0}.footer-art-bottom small{width:100%}}
+@media(prefers-reduced-motion:reduce){.side-menu:before{animation:none}.side-menu,.menu-backdrop,.menu-toggle span,.about-art,.footer-backtop{transition:none}}
+
 </style>
 </head>
 
@@ -373,19 +441,33 @@ section{position:relative}
 <header>
  <div class="container nav">
   <a href="#" class="logo">سَكَن<span>.</span></a>
-  <nav class="links">
+  <nav class="links desktop-links">
    <a href="#home">الرئيسية</a>
    <a href="#houses">اكتشف السكن</a>
    <a href="#students">شركاء السكن</a>
-   <a href="#about">عن المنصة</a>
+   <a href="#about">عن سَكَن</a>
   </nav>
-  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+  <div class="nav-actions">
+   <button class="menu-toggle" id="menuToggle" type="button" aria-label="فتح القائمة" aria-expanded="false" aria-controls="sideMenu"><span></span><span></span><span></span></button>
    <button class="btn btn-outline btn-small" id="authNavBtn" onclick="window.sakanAuthNav()">تسجيل الدخول</button>
    
    <a class="btn btn-outline btn-small" id="adminNavBtn" href="admin-preview.html" style="display:none">لوحة الإدارة</a>
   </div>
  </div>
 </header>
+
+<div class="menu-backdrop" id="menuBackdrop"></div>
+<aside class="side-menu" id="sideMenu" aria-hidden="true" dir="rtl">
+ <div class="side-menu-head"><a href="#home" class="logo">سَكَن<span>.</span></a><button type="button" class="menu-close" id="menuClose" aria-label="إغلاق القائمة">×</button></div>
+ <p class="side-menu-kicker">مساحتك الجامعية تبدأ من هنا</p>
+ <nav class="side-menu-links" aria-label="القائمة الرئيسية">
+  <a href="#home"><span>01</span> الرئيسية <b>↗</b></a>
+  <a href="#houses"><span>02</span> اكتشف السكن <b>↗</b></a>
+  <a href="#students"><span>03</span> شركاء السكن <b>↗</b></a>
+  <a href="#about"><span>04</span> عن سَكَن <b>↗</b></a>
+ </nav>
+ <div class="side-menu-note"><span>✦</span><p>مش مجرد مكان تقيم فيه…<br>دي بداية حكاية جديدة.</p></div>
+</aside>
 
 <main id="mainSite">
 
@@ -473,11 +555,12 @@ section{position:relative}
   <div class="section-head">
    <div><h2>ليه <span class="gold">سَكَن؟</span></h2><p>كل اللي تحتاجه علشان تلاقي مكانك.</p></div>
   </div>
-  <div class="features-grid">
-   <div class="feature"><div class="symbol">🔎</div><h3>بحث ذكي</h3><p>فلتر السكن حسب السعر والمنطقة والنوع واحتياجاتك.</p></div>
-   <div class="feature"><div class="symbol">🤝</div><h3>شريك مناسب</h3><p>اكتشف طلابًا يبحثون عن شركاء سكن مثلك.</p></div>
-   <div class="feature"><div class="symbol">🏠</div><h3>إعلانات موثوقة</h3><p>فريق سَكَن يراجع بيانات السكن قبل نشرها.</p></div>
+  <div class="about-art-grid">
+   <article class="about-art about-main"><span class="about-index">01 / FIND YOUR PLACE</span><div class="about-symbol">⌕</div><h3>كل اختياراتك<br>في مكان واحد</h3><p>اكتشف السكن وقارن الأسعار والمناطق والتفاصيل، من غير دوشة البحث في مجموعات كتير.</p><a href="#houses">ابدأ الاستكشاف <b>←</b></a><i class="art-orbit orbit-a"></i><i class="art-orbit orbit-b"></i></article>
+   <article class="about-art about-partner"><span class="about-index">02 / FIND YOUR PEOPLE</span><div class="about-symbol">✳</div><h3>مشوارك أحلى<br>مع شريك مناسب</h3><p>اتعرف على طلاب قريبين منك في الجامعة والميزانية وطريقة الحياة.</p><a href="#students">قابل شريكك <b>←</b></a><i class="art-star">✦</i></article>
+   <article class="about-art about-trust"><span class="about-index">03 / FEEL AT HOME</span><div class="about-symbol">⌂</div><h3>تفاصيل أوضح<br>وقرار أريح</h3><p>بيانات ومواصفات تساعدك تكوّن صورة أفضل قبل ما تتواصل وتقرر.</p><a href="#houses">اعرف أكتر <b>←</b></a><i class="trust-ring"></i></article>
   </div>
+  <div class="about-signature"><span>سَكَن</span><p>مساحة تجمعك بالمكان والناس اللي شبهك.</p></div>
  </div>
 </section>
 
@@ -527,10 +610,10 @@ section{position:relative}
  </div>
 </section>
 
-<footer>
- <div class="container footer-content">
-  <div><span class="logo">سَكَن.</span><p>مكانك الجديد، يبدأ بخطوة.</p></div>
-  <p>© 2026 Sakan. جميع الحقوق محفوظة.</p>
+<footer class="art-footer">
+ <div class="container">
+  <div class="footer-art-top"><div><span class="footer-kicker">A PLACE TO BELONG</span><h2>كل بداية حلوة<br><span>ليها مكان.</span></h2></div><a class="footer-backtop" href="#home" aria-label="العودة للأعلى">↑</a></div>
+  <div class="footer-art-bottom"><a href="#home" class="logo">سَكَن<span>.</span></a><p>مكانك الجديد، يبدأ بخطوة.</p><nav><a href="#houses">اكتشف السكن</a><a href="#students">شركاء السكن</a><a href="#about">عن سَكَن</a></nav><small>© 2026 Sakan. جميع الحقوق محفوظة.</small></div>
  </div>
 </footer>
 
@@ -1092,6 +1175,27 @@ function openAdminDemo(){
     });
   }, {threshold: 0.12, rootMargin: "0px 0px -35px 0px"});
   targets.forEach(el => observer.observe(el));
+})();
+</script>
+
+
+<script>
+(() => {
+ const toggle=document.getElementById("menuToggle");
+ const close=document.getElementById("menuClose");
+ const backdrop=document.getElementById("menuBackdrop");
+ const panel=document.getElementById("sideMenu");
+ if(!toggle||!close||!backdrop||!panel)return;
+ const setOpen=(open)=>{
+  document.body.classList.toggle("menu-open",open);
+  toggle.setAttribute("aria-expanded",String(open));
+  panel.setAttribute("aria-hidden",String(!open));
+ };
+ toggle.addEventListener("click",()=>setOpen(toggle.getAttribute("aria-expanded")!=="true"));
+ close.addEventListener("click",()=>setOpen(false));
+ backdrop.addEventListener("click",()=>setOpen(false));
+ panel.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>setOpen(false)));
+ document.addEventListener("keydown",e=>{if(e.key==="Escape")setOpen(false)});
 })();
 </script>
 
