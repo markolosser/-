@@ -36,7 +36,13 @@ jobs:
                       index += 1
           PY
           node --check sakan-config.js
-          for file in /tmp/sakan-inline-*.js; do node --check "$file"; done
+          shopt -s nullglob
+          files=(/tmp/sakan-inline-*.js)
+          if [[ ${#files[@]} -eq 0 ]]; then
+            echo "No inline JavaScript was found to validate."
+            exit 1
+          fi
+          for file in "${files[@]}"; do node --check "$file"; done
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload site artifact
