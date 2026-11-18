@@ -584,10 +584,14 @@ animation:moonSail 10s ease-in-out infinite alternate}
 .hero-stars:after{background:
  radial-gradient(4px 4px at 12% 26%,rgba(245,212,127,.2),transparent 75%),
  radial-gradient(4px 4px at 58% 24%,rgba(245,212,127,.18),transparent 75%)!important;opacity:.45}
-.hero-star{color:#f2c85f!important;text-shadow:0 0 5px rgba(242,200,95,.25)!important}
-.hero-moon{left:18%;top:15%;width:clamp(100px,10vw,132px);filter:drop-shadow(0 0 8px rgba(242,195,94,.48)) drop-shadow(0 0 19px rgba(242,195,94,.18));}
-.hero-moon svg{overflow:visible}
-@media(max-width:700px){.hero-moon{left:7%;top:7%;width:76px;opacity:.95}}
+.hero-star{color:#f2c85f!important;text-shadow:0 0 5px rgba(242,200,95,.28),0 0 12px rgba(242,200,95,.18)!important;opacity:.28;animation:hero-star-alternate 3.8s ease-in-out var(--delay,0s) infinite!important}
+.hero-star:nth-child(even){animation-delay:calc(var(--delay,0s) + 1.9s)!important}
+@keyframes hero-star-alternate{0%,100%{opacity:.22;transform:translate(-50%,-50%) scale(.82);filter:brightness(.85)}45%,58%{opacity:1;transform:translate(-50%,-50%) scale(1.12);filter:brightness(1.2)}}
+.hero-moon{left:18%;top:13%;width:clamp(118px,12vw,150px);filter:drop-shadow(0 0 7px rgba(255,235,184,.72)) drop-shadow(0 0 18px rgba(245,185,82,.4)) drop-shadow(0 0 34px rgba(245,185,82,.18));}
+.hero-moon:before{content:"";position:absolute;inset:-29%;border-radius:50%;background:radial-gradient(ellipse,rgba(245,201,105,.2) 0%,rgba(245,201,105,.09) 38%,transparent 72%);filter:blur(8px);z-index:-1;pointer-events:none}
+.hero-moon:after{content:"";position:absolute;inset:-13%;border:1px solid rgba(255,226,164,.13);border-radius:50%;transform:rotate(-18deg) scaleX(.82);pointer-events:none}
+.hero-moon svg{overflow:visible;position:relative}
+@media(max-width:700px){.hero-moon{left:7%;top:7%;width:88px;opacity:.96}}
 
 </style>
 </head>
@@ -634,8 +638,14 @@ animation:moonSail 10s ease-in-out infinite alternate}
  <div class="hero-aurora" aria-hidden="true"></div>
  <div class="hero-moon" aria-hidden="true">
   <svg viewBox="0 0 150 160" role="presentation" focusable="false">
-   <defs><linearGradient id="crescentGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0b5"/><stop offset=".48" stop-color="#f2ca70"/><stop offset="1" stop-color="#c78b3e"/></linearGradient></defs>
-   <path d="M101 10 C56 16 24 49 24 88 C24 127 54 155 91 155 C111 155 130 146 144 130 C126 140 107 141 89 134 C57 122 42 93 48 63 C53 37 74 17 101 10Z" fill="url(#crescentGold)" stroke="#ffe8a5" stroke-opacity=".72" stroke-width="1.5" stroke-linejoin="round"/>
+   <defs>
+    <linearGradient id="crescentGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff3c9"/><stop offset=".46" stop-color="#f4cf78"/><stop offset="1" stop-color="#c78b3e"/></linearGradient>
+    <linearGradient id="crescentEdge" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff6d7" stop-opacity=".9"/><stop offset="1" stop-color="#e7ad51" stop-opacity=".25"/></linearGradient>
+   </defs>
+   <path d="M101 10 C56 16 24 49 24 88 C24 127 54 155 91 155 C111 155 130 146 144 130 C126 140 107 141 89 134 C57 122 42 93 48 63 C53 37 74 17 101 10Z" fill="url(#crescentGold)" stroke="url(#crescentEdge)" stroke-width="2" stroke-linejoin="round"/>
+   <path d="M96 20 C63 29 43 57 43 88 C43 113 57 133 78 144" fill="none" stroke="#fff0bd" stroke-opacity=".38" stroke-width="1.2" stroke-linecap="round"/>
+   <circle cx="35" cy="73" r="2.1" fill="#fff0bd" opacity=".9"/>
+   <circle cx="39" cy="60" r="1.2" fill="#fff0bd" opacity=".72"/>
   </svg>
  </div>
  
@@ -1406,7 +1416,9 @@ function openAdminDemo(){
  const points=[
  [7,16],[17,34],[28,12],[39,23],[52,10],[65,20],[78,13],[91,27],
  [5,55],[15,76],[27,91],[39,72],[53,87],[67,73],[80,91],[94,68],
- [23,48],[43,45],[61,53],[75,42],[88,49],[96,15]
+ [23,48],[43,45],[61,53],[75,42],[88,49],[96,15],
+ [12,39],[32,58],[47,34],[57,69],[70,37],[84,55],[9,84],[34,8],
+ [72,88],[95,82]
  ];
  points.forEach((p,i)=>{
   const star=document.createElement('span');
