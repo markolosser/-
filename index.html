@@ -559,6 +559,20 @@ animation:moonSail 10s ease-in-out infinite alternate}
 .hero-content h1 span{text-shadow:none}
 .hero-actions .btn,.hero-actions .btn-outline{box-shadow:0 8px 22px -17px rgba(245,190,91,.4)}
 
+
+/* Final polish: four-point stars, a regal crescent, and layered midnight color */
+.hero{background:
+ radial-gradient(ellipse at 14% 24%,rgba(214,158,77,.34),transparent 31%),
+ radial-gradient(ellipse at 82% 68%,rgba(54,133,177,.38),transparent 37%),
+ radial-gradient(ellipse at 56% 9%,rgba(112,105,174,.30),transparent 40%),
+ radial-gradient(ellipse at 38% 94%,rgba(139,79,132,.25),transparent 36%),
+ radial-gradient(ellipse at 92% 15%,rgba(49,91,150,.28),transparent 33%),
+ linear-gradient(128deg,#071326 0%,#102849 32%,#1b3156 55%,#102542 78%,#10172f 100%)}
+.hero-moon{left:18%;top:15%;width:clamp(112px,12vw,158px);filter:drop-shadow(0 0 7px rgba(255,235,184,.85)) drop-shadow(0 0 20px rgba(245,185,82,.52)) drop-shadow(0 0 42px rgba(245,185,82,.2));}
+.hero-moon svg{overflow:visible}
+.hero-star{color:#ffe4a0;text-shadow:0 0 8px rgba(255,218,139,.42);}
+@media(max-width:700px){.hero-moon{left:7%;top:7%;width:82px;opacity:.94}}
+
 </style>
 </head>
 
@@ -603,12 +617,18 @@ animation:moonSail 10s ease-in-out infinite alternate}
  <div class="hero-stars" aria-hidden="true"></div>
  <div class="hero-aurora" aria-hidden="true"></div>
  <div class="hero-moon" aria-hidden="true">
-  <svg viewBox="0 0 120 140" role="presentation" focusable="false">
-   <defs><linearGradient id="crescentGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff4c8"/><stop offset=".48" stop-color="#f6d27e"/><stop offset="1" stop-color="#d99b4b"/></linearGradient></defs>
-   <path d="M83 8 C30 18 9 65 25 105 C38 137 76 145 105 121 C67 128 41 102 39 70 C37 40 55 17 83 8Z" fill="url(#crescentGold)" stroke="#ffe7a8" stroke-opacity=".72" stroke-width="1.5"/>
-   <path d="M31 91 Q42 113 63 119" fill="none" stroke="#fff0be" stroke-opacity=".52" stroke-width="2" stroke-linecap="round"/>
-   <circle cx="34" cy="75" r="3.1" fill="#c58e4b" opacity=".35"/><circle cx="47" cy="105" r="2.2" fill="#c58e4b" opacity=".28"/>
-   <circle cx="42" cy="48" r="1.7" fill="#fff5d6" opacity=".8"/>
+  <svg viewBox="0 0 160 160" role="presentation" focusable="false">
+   <defs>
+    <linearGradient id="crescentGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff9df"/><stop offset=".25" stop-color="#ffe7a0"/><stop offset=".62" stop-color="#efbd5d"/><stop offset="1" stop-color="#b97832"/></linearGradient>
+    <linearGradient id="crescentRim" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff8d8" stop-opacity=".95"/><stop offset="1" stop-color="#d69a45" stop-opacity=".25"/></linearGradient>
+    <filter id="moonDepth" x="-35%" y="-35%" width="170%" height="170%"><feGaussianBlur stdDeviation="2.2"/></filter>
+   </defs>
+   <path d="M103 9 C57 15 24 54 27 98 C30 137 61 158 98 151 C124 146 145 127 153 102 C139 119 119 129 97 127 C61 124 39 95 42 61 C44 36 67 15 103 9Z" fill="#f4c66d" opacity=".2" filter="url(#moonDepth)"/>
+   <path d="M103 9 C57 15 24 54 27 98 C30 137 61 158 98 151 C124 146 145 127 153 102 C139 119 119 129 97 127 C61 124 39 95 42 61 C44 36 67 15 103 9Z" fill="url(#crescentGold)" stroke="url(#crescentRim)" stroke-width="2.2" stroke-linejoin="round"/>
+   <path d="M91 17 C57 25 37 54 38 86" fill="none" stroke="#fff9df" stroke-opacity=".72" stroke-width="2.4" stroke-linecap="round"/>
+   <path d="M34 105 C43 137 69 151 96 145" fill="none" stroke="#fff0bd" stroke-opacity=".55" stroke-width="1.8" stroke-linecap="round"/>
+   <circle cx="48" cy="83" r="2.4" fill="#bd813d" opacity=".25"/><circle cx="59" cy="111" r="1.8" fill="#bd813d" opacity=".22"/>
+   <path d="M54 51 Q59 46 64 49" fill="none" stroke="#fff8dd" stroke-opacity=".4" stroke-width="1.5" stroke-linecap="round"/>
   </svg>
  </div>
  
@@ -1386,7 +1406,7 @@ function openAdminDemo(){
  points.forEach((p,i)=>{
   const star=document.createElement('span');
   star.className='hero-star';
-  star.textContent=i%4===0?'✦':'★';
+  star.textContent='✦';
   star.style.left=p[0]+'%';star.style.top=p[1]+'%';
   star.style.fontSize=(i%9===0?'17px':i%3===0?'13px':'10px');
   star.style.setProperty('--delay',((i*.29)%4)+'s');
