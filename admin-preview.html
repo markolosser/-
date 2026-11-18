@@ -53,7 +53,7 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
 <p class="muted">الإعلان يُضاف مباشرة باسم حساب الإدارة ويظهر بعد الحفظ. المستخدمون العاديون لا يملكون صلاحية إنشاء إعلانات.</p>
 <form id="adminListingForm">
 <div class="grid" style="grid-template-columns:repeat(2,1fr);margin:10px 0">
-<div><label>اسم السكن</label><input name="title" required maxlength="140"></div>
+<div><label>اسم السكن</label><input name="title" required minlength="5" maxlength="120"></div>
 <div><label>المنطقة</label><input name="location" required maxlength="220" placeholder="مثال: قريب من جامعة المنيا"></div>
 <div><label>تفاصيل العنوان</label><input name="address_details" maxlength="300" placeholder="الشارع / علامة مميزة"></div>
 <div><label>السعر الشهري بالجنيه</label><input name="price" type="number" min="1" required></div>
@@ -147,6 +147,11 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
   button.disabled=true;msg.textContent="جارٍ حفظ الإعلان...";
   try{
    if(!activeUser)throw new Error("سجّل الدخول بحساب الإدارة أولاً.");
+   const title=form.elements.title.value.trim();
+   if(title.length<5||title.length>120)throw new Error("اسم السكن لازم يكون من 5 إلى 120 حرفًا.");
+   if(form.elements.location.value.trim().length<2||form.elements.location.value.trim().length>160)throw new Error("اكتب منطقة من حرفين إلى 160 حرفًا.");
+   if(form.elements.description.value.trim().length>5000)throw new Error("وصف السكن يجب ألا يتجاوز 5000 حرف.");
+   if(Number(form.elements.rooms.value)<1||Number(form.elements.rooms.value)>30)throw new Error("عدد الغرف لازم يكون من 1 إلى 30.");
    const files=Array.from(form.elements.media.files||[]);
    if(files.length>30)throw new Error("يمكن إضافة 30 ملفًا كحد أقصى للإعلان الواحد.");
    const allowedImages=["image/jpeg","image/png","image/webp","image/avif"];
