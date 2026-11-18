@@ -753,7 +753,7 @@ function openAdminDemo(){
 
     const { data, error } = await client
       .from("listings")
-      .select("id,owner_id,title,location,monthly_price,listing_type,rooms,description,listing_images(object_path,sort_order)")
+      .select("id,owner_id,title,location,address_details,monthly_price,listing_type,rooms,bathrooms,floor,furnished,utilities_included,available_from,amenities,description,listing_images(object_path,sort_order,media_type,caption)")
       .eq("status", "published")
       .order("created_at", { ascending: false })
       .limit(100);
@@ -773,9 +773,16 @@ function openAdminDemo(){
       owner_id: row.owner_id,
       title: row.title,
       location: row.location,
+      address_details: row.address_details || "",
       price: Number(row.monthly_price),
       type: typeArabic(row.listing_type),
       rooms: row.rooms,
+      bathrooms: row.bathrooms ?? 0,
+      floor: row.floor || "",
+      furnished: !!row.furnished,
+      utilities_included: !!row.utilities_included,
+      available_from: row.available_from || "",
+      amenities: row.amenities || [],
       description: row.description,
       images: (row.listing_images || []).sort((a,b) => a.sort_order - b.sort_order)
     })).filter(h =>
@@ -799,7 +806,9 @@ function openAdminDemo(){
         const { data: signed, error: signedError } = await client.storage
           .from("listing-photos").createSignedUrl(firstImage.object_path, 900);
         if (!signedError && signed?.signedUrl) {
-          imageHtml = '<img src="' + safe(signed.signedUrl) + '" alt="صورة ' + safe(h.title) + '">';
+          imageHtml = firstImage.media_type === "video"
+            ? '<video src="' + safe(signed.signedUrl) + '" muted playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover"></video>'
+            : '<img src="' + safe(signed.signedUrl) + '" alt="صورة ' + safe(h.title) + '">';
         }
       }
       return '<article class="card"><div class="house-img">' + imageHtml +
@@ -824,15 +833,26 @@ function openAdminDemo(){
     const h = loadedHouses.find(item => item.id === id);
     if (!h) return;
     let gallery = "";
-    for (const photo of h.images) {
-      const { data, error } = await client.storage.from("listing-photos").createSignedUrl(photo.object_path, 900);
-      if (!error && data?.signedUrl) gallery += '<img src="' + safe(data.signedUrl) + '" alt="صورة السكن" style="width:100%;max-height:230px;object-fit:cover;border-radius:12px;margin-bottom:10px">';
+    for (const media of h.images) {
+      const { data, error } = await client.storage.from("listing-photos").createSignedUrl(media.object_path, 3600);
+      if (!error && data?.signedUrl) {
+        gallery += media.media_type === "video"
+          ? '<video controls playsinline preload="metadata" src="' + safe(data.signedUrl) + '" style="width:100%;max-height:300px;object-fit:contain;background:#050d1b;border-radius:12px;margin-bottom:10px"></video>'
+          : '<img loading="lazy" src="' + safe(data.signedUrl) + '" alt="' + safe(media.caption || h.title) + '" style="width:100%;max-height:300px;object-fit:contain;background:#050d1b;border-radius:12px;margin-bottom:10px">';
+      }
     }
-    $("detailsContent").innerHTML = gallery + '<h2>' + safe(h.title) + '</h2>' +
-      '<p class="location">📍 ' + safe(h.location) + '</p>' +
+    const amenityText = h.amenities.length ? h.amenities.map(safe).join("، ") : "غير محدد";
+    $("detailsContent").innerHTML = '<div class="media-gallery">' + (gallery || '<p class="notice">لا توجد صور أو فيديوهات مضافة لهذا السكن.</p>') + '</div>' +
+      '<h2>' + safe(h.title) + '</h2>' +
+      '<p class="location">📍 ' + safe(h.location) + (h.address_details ? ' — ' + safe(h.address_details) : '') + '</p>' +
       '<p style="color:var(--gold);margin:12px 0;font-weight:bold">' + h.price.toLocaleString("ar-EG") + ' جنيه شهريًا</p>' +
-      '<p>' + safe(h.description || "لا يوجد وصف.") + '</p>' +
-      '<p class="notice">عدد الغرف: ' + h.rooms + ' | النوع: ' + safe(h.type) + '</p>' +
+      '<div class="features" style="margin:10px 0;display:flex;gap:12px;flex-wrap:wrap">' +
+      '<span>🏠 ' + safe(h.type) + '</span><span>🚪 ' + h.rooms + ' غرف</span><span>🚿 ' + h.bathrooms + ' حمام</span>' +
+      '<span>' + (h.furnished ? '🛋️ مفروش' : 'بدون فرش') + '</span><span>🏢 الدور: ' + safe(h.floor || "غير محدد") + '</span>' +
+      '<span>' + (h.utilities_included ? '⚡ المرافق ضمن السعر' : 'المرافق غير مشمولة') + '</span></div>' +
+      '<p style="margin:12px 0"><strong>المميزات:</strong> ' + amenityText + '</p>' +
+      (h.available_from ? '<p class="notice">متاح من: ' + safe(h.available_from) + '</p>' : '') +
+      '<p style="margin-top:12px">' + safe(h.description || "لا يوجد وصف.") + '</p>' +
       '<button class="btn" id="sakanContactOwner" style="margin-top:18px">إرسال طلب تواصل للمالك</button>';
     $("sakanContactOwner").addEventListener("click", () => window.sakanContactOwner(h));
     window.openModal("detailsModal");
