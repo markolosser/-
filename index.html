@@ -208,6 +208,39 @@ footer{
   border:1px solid var(--border);
   border-radius:18px;padding:25px;
 }
+.details-modal-content{width:min(880px,100%);padding:0;overflow-x:hidden;background:linear-gradient(155deg,#132b4b,#0b1a32 75%);box-shadow:0 28px 90px #0009}
+.details-modal-content .modal-header{position:sticky;top:0;z-index:5;margin:0;padding:14px 22px;background:#102442ed;backdrop-filter:blur(14px);border-bottom:1px solid var(--border);align-items:center}
+.details-modal-content .modal-header h2{font-size:17px}
+.details-inner{padding:22px}
+.details-gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:22px}
+.details-gallery img,.details-gallery video{width:100%;height:250px;object-fit:cover;background:#071326;border:1px solid var(--border);border-radius:14px}
+.details-gallery img:first-child{grid-column:1/-1;height:360px}
+.details-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.details-heading h2{font-size:clamp(22px,4vw,30px);line-height:1.4}
+.details-price{background:linear-gradient(135deg,#f5d887,#eab94d);color:#14233a;border-radius:15px;padding:10px 16px;font-weight:900;white-space:nowrap;box-shadow:0 8px 24px #eab94d22}
+.details-location{color:var(--muted);margin:8px 0 18px}
+.details-specs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0}
+.details-spec{padding:13px;background:#ffffff08;border:1px solid var(--border);border-radius:13px}
+.details-spec strong{display:block;font-size:12px;color:var(--muted);font-weight:600}
+.details-spec span{display:block;font-weight:800;margin-top:3px}
+.details-section{padding:17px 0;border-top:1px solid var(--border)}
+.details-section h3{font-size:16px;margin-bottom:8px;color:var(--gold)}
+.details-section p{color:#dce6f2;white-space:pre-line}
+.details-tags{display:flex;gap:8px;flex-wrap:wrap}
+.details-tags span{padding:6px 11px;border-radius:30px;background:#83b8e81a;border:1px solid #83b8e833;color:#dcecff;font-size:12px}
+.contact-panel{margin:20px 0 0;padding:18px;border:1px solid #f3c96955;border-radius:16px;background:linear-gradient(120deg,#f3c96912,#83b8e80b)}
+.contact-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:13px}
+.contact-actions a{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:170px;text-align:center}
+.call-action{background:#f3c969;color:#17223a}
+.whatsapp-action{background:#1fa968;color:white}
+.starfield{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:.32}
+.starfield:before{content:"";position:absolute;inset:-20%;background-image:radial-gradient(1px 1px at 12% 18%,#fff 98%,transparent),radial-gradient(1.5px 1.5px at 67% 32%,#f3d58b 98%,transparent),radial-gradient(1px 1px at 83% 76%,#fff 98%,transparent),radial-gradient(1.5px 1.5px at 35% 68%,#a9d5ff 98%,transparent),radial-gradient(1px 1px at 52% 12%,#fff 98%,transparent),radial-gradient(1px 1px at 91% 44%,#fff 98%,transparent);background-size:290px 260px;animation:star-drift 75s linear infinite}
+.starfield:after{content:"";position:absolute;width:75vw;height:75vw;max-width:850px;max-height:850px;left:-28vw;top:12vh;border:1px solid #83b8e80c;border-radius:43% 57% 62% 38%;box-shadow:0 0 90px #3974a30c,inset 0 0 90px #e8c66b08;transform:rotate(-25deg);animation:night-orbit 95s ease-in-out infinite alternate}
+@keyframes star-drift{to{transform:translate3d(35px,-25px,0)}}
+@keyframes night-orbit{to{transform:rotate(18deg) scale(1.08);border-radius:58% 42% 39% 61%}}
+header,main,footer{position:relative;z-index:2}
+@media(max-width:600px){.details-inner{padding:15px}.details-gallery{grid-template-columns:1fr}.details-gallery img:first-child{grid-column:auto;height:230px}.details-gallery img,.details-gallery video{height:210px}.details-specs{grid-template-columns:repeat(2,minmax(0,1fr))}.contact-actions a{width:100%}.details-heading{align-items:center}}
+@media(prefers-reduced-motion:reduce){.starfield:before,.starfield:after{animation:none}}
 .modal-header{display:flex;justify-content:space-between;margin-bottom:20px}
 .close{background:none;border:0;color:white;font-size:25px}
 .form-group{margin-bottom:14px}
@@ -251,6 +284,7 @@ footer{
 </head>
 
 <body>
+<div class="starfield" aria-hidden="true"></div>
 
 <header>
  <div class="container nav">
@@ -425,7 +459,7 @@ footer{
 
 <!-- Listing Details -->
 <div class="modal" id="detailsModal" onclick="backdropClose(event,'detailsModal')">
- <div class="modal-content">
+ <div class="modal-content details-modal-content">
   <div class="modal-header"><h2>تفاصيل السكن</h2><button class="close" onclick="closeModal('detailsModal')">×</button></div>
   <div id="detailsContent"></div>
  </div>
@@ -829,6 +863,9 @@ function openAdminDemo(){
 
   window.renderHouses = loadHouses;
 
+  const SAKAN_CONTACT_PHONE = "201203029724";
+  const SAKAN_CONTACT_DISPLAY = "01203029724";
+
   window.sakanShowDetails = async (id) => {
     const h = loadedHouses.find(item => item.id === id);
     if (!h) return;
@@ -837,48 +874,45 @@ function openAdminDemo(){
       const { data, error } = await client.storage.from("listing-photos").createSignedUrl(media.object_path, 3600);
       if (!error && data?.signedUrl) {
         gallery += media.media_type === "video"
-          ? '<video controls playsinline preload="metadata" src="' + safe(data.signedUrl) + '" style="width:100%;max-height:300px;object-fit:contain;background:#050d1b;border-radius:12px;margin-bottom:10px"></video>'
-          : '<img loading="lazy" src="' + safe(data.signedUrl) + '" alt="' + safe(media.caption || h.title) + '" style="width:100%;max-height:300px;object-fit:contain;background:#050d1b;border-radius:12px;margin-bottom:10px">';
+          ? '<video controls playsinline preload="metadata" src="' + safe(data.signedUrl) + '"></video>'
+          : '<img loading="lazy" src="' + safe(data.signedUrl) + '" alt="' + safe(media.caption || h.title) + '">';
       }
     }
-    const amenityText = h.amenities.length ? h.amenities.map(safe).join("، ") : "غير محدد";
-    $("detailsContent").innerHTML = '<div class="media-gallery">' + (gallery || '<p class="notice">لا توجد صور أو فيديوهات مضافة لهذا السكن.</p>') + '</div>' +
-      '<h2>' + safe(h.title) + '</h2>' +
-      '<p class="location">📍 ' + safe(h.location) + (h.address_details ? ' — ' + safe(h.address_details) : '') + '</p>' +
-      '<p style="color:var(--gold);margin:12px 0;font-weight:bold">' + h.price.toLocaleString("ar-EG") + ' جنيه شهريًا</p>' +
-      '<div class="features" style="margin:10px 0;display:flex;gap:12px;flex-wrap:wrap">' +
-      '<span>🏠 ' + safe(h.type) + '</span><span>🚪 ' + h.rooms + ' غرف</span><span>🚿 ' + h.bathrooms + ' حمام</span>' +
-      '<span>' + (h.furnished ? '🛋️ مفروش' : 'بدون فرش') + '</span><span>🏢 الدور: ' + safe(h.floor || "غير محدد") + '</span>' +
-      '<span>' + (h.utilities_included ? '⚡ المرافق ضمن السعر' : 'المرافق غير مشمولة') + '</span></div>' +
-      '<p style="margin:12px 0"><strong>المميزات:</strong> ' + amenityText + '</p>' +
-      (h.available_from ? '<p class="notice">متاح من: ' + safe(h.available_from) + '</p>' : '') +
-      '<p style="margin-top:12px">' + safe(h.description || "لا يوجد وصف.") + '</p>' +
-      '<button class="btn" id="sakanContactOwner" style="margin-top:18px">إرسال طلب تواصل للمالك</button>';
-    $("sakanContactOwner").addEventListener("click", () => window.sakanContactOwner(h));
+    const amenities = h.amenities.length
+      ? '<div class="details-tags">' + h.amenities.map(item => '<span>' + safe(item) + '</span>').join("") + '</div>'
+      : '<p>لم تتم إضافة مميزات محددة.</p>';
+    const whatsappText = encodeURIComponent("مرحبًا، أنا مهتم بالسكن: " + h.title + " - " + h.location + ". ممكن تفاصيل أكتر؟");
+    const whatsappUrl = "https://wa.me/" + SAKAN_CONTACT_PHONE + "?text=" + whatsappText;
+    $("detailsContent").innerHTML =
+      '<div class="details-inner">' +
+        '<div class="details-gallery">' + (gallery || '<p class="notice">لا توجد صور أو فيديوهات مضافة لهذا السكن.</p>') + '</div>' +
+        '<div class="details-heading"><div><h2>' + safe(h.title) + '</h2><p class="details-location">📍 ' + safe(h.location) + (h.address_details ? ' — ' + safe(h.address_details) : '') + '</p></div>' +
+        '<div class="details-price">' + h.price.toLocaleString("ar-EG") + ' جنيه <small>/ شهريًا</small></div></div>' +
+        '<div class="details-specs">' +
+          '<div class="details-spec"><strong>نوع السكن</strong><span>🏠 ' + safe(h.type) + '</span></div>' +
+          '<div class="details-spec"><strong>الغرف</strong><span>🚪 ' + h.rooms + '</span></div>' +
+          '<div class="details-spec"><strong>الحمامات</strong><span>🚿 ' + h.bathrooms + '</span></div>' +
+          '<div class="details-spec"><strong>التأثيث</strong><span>' + (h.furnished ? '🛋️ مفروش' : 'بدون فرش') + '</span></div>' +
+          '<div class="details-spec"><strong>الدور</strong><span>🏢 ' + safe(h.floor || "غير محدد") + '</span></div>' +
+          '<div class="details-spec"><strong>المرافق</strong><span>' + (h.utilities_included ? '⚡ ضمن السعر' : 'غير مشمولة') + '</span></div>' +
+        '</div>' +
+        (h.available_from ? '<div class="details-section"><h3>موعد الإتاحة</h3><p>' + safe(h.available_from) + '</p></div>' : '') +
+        '<div class="details-section"><h3>مميزات السكن</h3>' + amenities + '</div>' +
+        '<div class="details-section"><h3>وصف السكن</h3><p>' + safe(h.description || "لا يوجد وصف إضافي.") + '</p></div>' +
+        '<div class="contact-panel"><strong>عجبك السكن؟ خلّينا نساعدك تتواصل وتعرف التفاصيل.</strong>' +
+          '<div class="contact-actions">' +
+            '<a class="btn call-action" href="tel:+201203029724">☎ اتصال مباشر</a>' +
+            '<a class="btn whatsapp-action" href="' + whatsappUrl + '" target="_blank" rel="noopener noreferrer">واتساب · تفاوض الآن</a>' +
+          '</div><p class="notice">للتواصل: ' + SAKAN_CONTACT_DISPLAY + '</p>' +
+        '</div>' +
+      '</div>';
     window.openModal("detailsModal");
   };
 
-  window.sakanContactOwner = async (listing) => {
-    if (!currentUser) {
-      window.closeModal("detailsModal");
-      setAuthMode("login");
-      window.openModal("authModal");
-      setAuthMessage("سجّل الدخول أولًا لإرسال طلب التواصل.");
-      return;
-    }
-    const message = window.prompt("اكتب رسالة مختصرة لصاحب السكن:");
-    if (!message || !message.trim()) return;
-    const { error } = await client.from("contact_requests").insert({
-      listing_id: listing.id,
-      requester_id: currentUser.id,
-      owner_id: listing.owner_id,
-      message: message.trim()
-    });
-    if (error) {
-      alert("تعذر إرسال الطلب: " + error.message);
-      return;
-    }
-    alert("تم إرسال طلب التواصل بنجاح.");
+  // Direct phone and WhatsApp contact: no sign-in or contact_requests insert is required.
+  window.sakanContactOwner = (listing) => {
+    const message = encodeURIComponent("مرحبًا، أنا مهتم بالسكن: " + listing.title + " - " + listing.location + ". ممكن تفاصيل أكتر؟");
+    window.open("https://wa.me/" + SAKAN_CONTACT_PHONE + "?text=" + message, "_blank", "noopener,noreferrer");
   };
 
   // Listing publication is restricted to administrators in the database and admin dashboard.
