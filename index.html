@@ -263,7 +263,7 @@ footer{
   </nav>
   <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
    <button class="btn btn-outline btn-small" id="authNavBtn" onclick="window.sakanAuthNav()">تسجيل الدخول</button>
-   <button class="btn btn-small" onclick="openModal('addModal')">اعرض سكنك +</button>
+   
    <a class="btn btn-outline btn-small" id="adminNavBtn" href="admin-preview.html" style="display:none">لوحة الإدارة</a>
   </div>
  </div>
@@ -321,7 +321,6 @@ footer{
     <h2>اكتشف <span class="gold">السكن</span></h2>
     <p>اختار المكان اللي يناسب ميزانيتك واحتياجاتك.</p>
    </div>
-   <button class="btn btn-outline btn-small" onclick="openModal('addModal')">أضف سكنك</button>
   </div>
   <div class="cards" id="houseList"></div>
  </div>
@@ -366,7 +365,7 @@ footer{
   <div class="features-grid">
    <div class="feature"><div class="symbol">🔎</div><h3>بحث ذكي</h3><p>فلتر السكن حسب السعر والمنطقة والنوع واحتياجاتك.</p></div>
    <div class="feature"><div class="symbol">🤝</div><h3>شريك مناسب</h3><p>اكتشف طلابًا يبحثون عن شركاء سكن مثلك.</p></div>
-   <div class="feature"><div class="symbol">🏠</div><h3>اعرض سكنك</h3><p>أصحاب العقارات يقدروا يعرضوا وحداتهم بسهولة.</p></div>
+   <div class="feature"><div class="symbol">🏠</div><h3>إعلانات موثوقة</h3><p>فريق سَكَن يراجع بيانات السكن قبل نشرها.</p></div>
   </div>
  </div>
 </section>
@@ -429,24 +428,6 @@ footer{
  <div class="modal-content">
   <div class="modal-header"><h2>تفاصيل السكن</h2><button class="close" onclick="closeModal('detailsModal')">×</button></div>
   <div id="detailsContent"></div>
- </div>
-</div>
-
-<!-- Add Listing -->
-<div class="modal" id="addModal" onclick="backdropClose(event,'addModal')">
- <div class="modal-content">
-  <div class="modal-header"><h2>اعرض سكنك</h2><button class="close" onclick="closeModal('addModal')">×</button></div>
-  <p class="notice">سجّل الدخول لإرسال إعلانك. لن يظهر للزوار إلا بعد مراجعة الإدارة والموافقة عليه.</p>
-  <form id="publicForm">
-   <div class="form-group"><label>اسم السكن</label><input name="title" required></div>
-   <div class="form-group"><label>المنطقة</label><input name="location" required></div>
-   <div class="form-group"><label>السعر الشهري بالجنيه</label><input name="price" type="number" min="1" required></div>
-   <div class="form-group"><label>نوع السكن</label><select name="type"><option>شقة</option><option>غرفة</option><option>سرير</option></select></div>
-   <div class="form-group"><label>عدد الغرف</label><input name="rooms" type="number" min="1" value="1"></div>
-   <div class="form-group"><label>الوصف</label><textarea name="description"></textarea></div>
-   <div class="form-group"><label>صور السكن (اختياري، حتى 5 ميجابايت)</label><input name="photo" type="file" accept="image/jpeg,image/png,image/webp,image/avif"></div>
-   <button class="btn" type="submit">إرسال الإعلان</button>
-  </form>
  </div>
 </div>
 
@@ -908,72 +889,7 @@ renderHouses();
     alert("تم إرسال طلب التواصل بنجاح.");
   };
 
-  // Replace the local-only form handler with a database-backed listing submission.
-  const originalPublicForm = $("publicForm");
-  if (originalPublicForm) {
-    const form = originalPublicForm.cloneNode(true);
-    originalPublicForm.replaceWith(form);
-    form.insertAdjacentHTML("beforeend", "");
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      if (!currentUser) {
-        window.closeModal("addModal");
-        setAuthMode("login");
-        window.openModal("authModal");
-        setAuthMessage("سجّل الدخول أولًا لإضافة إعلان.");
-        return;
-      }
-
-      const submit = form.querySelector('button[type="submit"]');
-      const photo = form.elements.photo?.files?.[0];
-      submit.disabled = true;
-      try {
-        if (photo && (!photo.type.startsWith("image/") || photo.size > 5 * 1024 * 1024)) {
-          throw new Error("الصورة لازم تكون بصيغة صورة مدعومة وحجمها لا يتجاوز 5 ميجابايت.");
-        }
-        const row = {
-          owner_id: currentUser.id,
-          title: form.elements.title.value.trim(),
-          location: form.elements.location.value.trim(),
-          monthly_price: Number(form.elements.price.value),
-          listing_type: typeEnglish(form.elements.type.value),
-          rooms: Number(form.elements.rooms.value) || 1,
-          description: form.elements.description.value.trim(),
-          status: "pending"
-        };
-        const { data: created, error } = await client.from("listings").insert(row).select("id").single();
-        if (error) throw error;
-
-        if (photo) {
-          const safeName = photo.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(-80) || "photo";
-          const path = currentUser.id + "/" + created.id + "/" + crypto.randomUUID() + "_" + safeName;
-          const { error: uploadError } = await client.storage.from("listing-photos").upload(path, photo, {
-            contentType: photo.type, upsert: false
-          });
-          if (uploadError) {
-            await client.from("listings").delete().eq("id", created.id);
-            throw uploadError;
-          }
-          const { error: imageError } = await client.from("listing_images").insert({
-            listing_id: created.id, owner_id: currentUser.id, object_path: path, alt_text: row.title
-          });
-          if (imageError) {
-            await client.storage.from("listing-photos").remove([path]);
-            await client.from("listings").delete().eq("id", created.id);
-            throw imageError;
-          }
-        }
-        form.reset();
-        window.closeModal("addModal");
-        alert("وصل إعلانك للإدارة للمراجعة. هيظهر للزوار بعد الموافقة عليه.");
-      } catch (error) {
-        alert("تعذر إرسال الإعلان: " + (error.message || "خطأ غير معروف"));
-      } finally {
-        submit.disabled = false;
-      }
-    });
-  }
-
+  // Listing publication is restricted to administrators in the database and admin dashboard.
   setAuthMode("login");
   refreshSession();
 })();
