@@ -1,63 +1,123 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sakan | معاينة لوحة الإدارة</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>إدارة سَكَن</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#08152c;--panel:#102442;--panel2:#152e50;--gold:#f3c969;--muted:#aabbd0;--line:#ffffff19;--white:#f5f6fa}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--white);font-family:Cairo,sans-serif;line-height:1.7}
-a{color:var(--gold);text-decoration:none}.wrap{width:min(1200px,94%);margin:auto}
-header{border-bottom:1px solid var(--line);background:#08152cf2;padding:16px 0}
-.top{display:flex;align-items:center;justify-content:space-between;gap:15px}.logo{font-size:25px;font-weight:900;color:var(--gold)}
-main{padding:28px 0 60px}.notice{background:#4a3918;border:1px solid #b38a36;border-radius:12px;padding:14px 18px;margin-bottom:22px;color:#ffe6a5}
-h1{margin:0;font-size:30px}h2{font-size:20px;margin:0 0 12px}.muted{color:var(--muted);font-size:13px}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0}
-.card,.panel{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:18px}
-.metric{font-size:28px;color:var(--gold);font-weight:900}.layout{display:grid;grid-template-columns:220px 1fr;gap:18px}
-nav{display:flex;flex-direction:column;gap:8px}nav a{padding:10px 12px;border-radius:9px;color:var(--muted)}nav a.active,nav a:hover{background:var(--panel2);color:var(--gold)}
-.panel{margin-bottom:16px}.panelhead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
-table{width:100%;border-collapse:collapse;min-width:620px}th,td{text-align:right;padding:12px;border-bottom:1px solid var(--line);font-size:13px}
-.tablewrap{overflow:auto}.pill{display:inline-block;padding:3px 10px;border-radius:30px;background:#55451d;color:#ffe6a5;font-size:12px}
-button{border:0;border-radius:9px;padding:9px 13px;background:var(--gold);color:#17223a;font:700 13px Cairo;cursor:pointer}
-button:disabled{opacity:.45;cursor:not-allowed}.secondary{background:transparent;color:var(--gold);border:1px solid var(--gold)}
-input{width:100%;padding:11px;border:1px solid var(--line);border-radius:9px;background:#091a32;color:white;font:14px Cairo}
-.emails{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.emailbox label{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}
-.actions{display:flex;gap:8px;flex-wrap:wrap}
-@media(max-width:800px){.grid{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}nav{display:grid;grid-template-columns:repeat(2,1fr)}}
-@media(max-width:520px){.grid,.emails{grid-template-columns:1fr}h1{font-size:24px}}
+:root{--bg:#08152c;--panel:#102442;--panel2:#152e50;--gold:#f3c969;--muted:#aabbd0;--line:#ffffff19;--white:#f5f6fa;--red:#b94c58;--green:#39866a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--white);font-family:Cairo,sans-serif;line-height:1.7}a{color:var(--gold);text-decoration:none}.wrap{width:min(1250px,94%);margin:auto}
+header{border-bottom:1px solid var(--line);background:#08152cf2;padding:14px 0;position:sticky;top:0;z-index:4}.top{display:flex;align-items:center;justify-content:space-between;gap:12px}.logo{font-size:25px;font-weight:900;color:var(--gold)}
+main{padding:25px 0 60px}h1{font-size:29px;margin:0}h2{font-size:19px;margin:0 0 13px}.muted{color:var(--muted);font-size:13px}
+.card,.panel{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:18px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0}.metric{font-size:28px;color:var(--gold);font-weight:900}
+.layout{display:grid;grid-template-columns:200px 1fr;gap:16px}nav{display:flex;flex-direction:column;gap:7px;position:sticky;top:90px;height:max-content}nav a{padding:9px 12px;border-radius:9px;color:var(--muted)}nav a:hover,nav a.active{background:var(--panel2);color:var(--gold)}
+.panel{margin-bottom:15px}.panelhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+table{width:100%;border-collapse:collapse;min-width:650px}th,td{text-align:right;padding:11px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:top}.tablewrap{overflow:auto}
+button{border:0;border-radius:9px;padding:8px 13px;background:var(--gold);color:#17223a;font:700 13px Cairo;cursor:pointer}button:disabled{opacity:.55;cursor:wait}.secondary{background:transparent;color:var(--gold);border:1px solid var(--gold)}.danger{background:#8e3542;color:#fff}.green{background:#28674f;color:#fff}
+input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:9px;background:#091a32;color:white;font:14px Cairo}label{display:block;font-size:12px;color:var(--muted);margin:8px 0 5px}
+.actions{display:flex;gap:7px;flex-wrap:wrap}.pill{display:inline-block;padding:3px 9px;border-radius:30px;background:#55451d;color:#ffe6a5;font-size:11px}.pill.good{background:#1d513f;color:#b6ffdb}.pill.bad{background:#5e2930;color:#ffbdc4}
+.notice{background:#4a3918;border:1px solid #b38a36;border-radius:12px;padding:13px 16px;margin:12px 0;color:#ffe6a5}
+.hidden{display:none!important}.authbox{width:min(470px,100%);margin:35px auto}.authbox .panel{padding:25px}.field{margin-bottom:12px}.tabmessage{min-height:24px;color:var(--muted);font-size:13px}.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}nav{position:static;display:grid;grid-template-columns:repeat(3,1fr)}}
+@media(max-width:550px){.grid{grid-template-columns:1fr 1fr}h1{font-size:23px}nav{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
-<header><div class="wrap top"><a class="logo" href="./">سَكَن.</a><a href="./">العودة للموقع ←</a></div></header>
+<header><div class="wrap top"><a class="logo" href="./">سَكَن.</a><div class="toolbar"><span class="muted" id="adminIdentity"></span><a href="./">العودة للموقع</a><button id="logoutBtn" class="secondary hidden">تسجيل الخروج</button></div></div></header>
 <main class="wrap">
-<div class="notice"><strong>معاينة تصميم فقط — غير مفعّلة إداريًا.</strong><br>هذه الصفحة لا تسجل دخولًا ولا تحفظ تغييرات ولا تتحكم في بيانات الموقع. تفعيل صلاحيات المديرين والإجراءات الفعلية يتطلب Supabase Auth وRLS قبل فتحها للإدارة.</div>
-<div class="panelhead"><div><h1>لوحة إدارة سَكَن</h1><div class="muted">مركز إدارة المنصة والإعلانات والمستخدمين والمحتوى</div></div><span class="pill">Admin dashboard · Preview</span></div>
-<div class="grid">
-<div class="card"><div class="muted">إجمالي الإعلانات</div><div class="metric">—</div><div class="muted">سيتم جلبها من قاعدة البيانات</div></div>
-<div class="card"><div class="muted">قيد المراجعة</div><div class="metric">—</div><div class="muted">بانتظار قرار الإدارة</div></div>
-<div class="card"><div class="muted">المستخدمون</div><div class="metric">—</div><div class="muted">طلاب وملاك سكن</div></div>
-<div class="card"><div class="muted">طلبات التواصل</div><div class="metric">—</div><div class="muted">ستظهر بعد ربط النظام</div></div>
-</div>
-<div class="layout">
-<nav>
-<a class="active" href="#overview">نظرة عامة</a><a href="#listings">إدارة الإعلانات</a><a href="#users">إدارة المستخدمين</a><a href="#media">الصور والملفات</a><a href="#content">محتوى الموقع</a><a href="#admins">صلاحيات المديرين</a>
-</nav>
-<div>
-<section class="panel" id="overview"><h2>نظرة عامة</h2><p class="muted">من هنا تتم متابعة نشاط المنصة ومراجعة العناصر التي تحتاج إلى تدخل إداري. ستُعرض الأرقام الحقيقية بعد ربط قاعدة البيانات.</p><div class="actions"><button disabled>تصدير تقرير</button><button class="secondary" disabled>تحديث البيانات</button></div></section>
-<section class="panel" id="listings"><div class="panelhead"><h2>إدارة إعلانات السكن</h2><button disabled>إضافة إعلان</button></div><div class="tablewrap"><table><thead><tr><th>الإعلان</th><th>المنطقة</th><th>السعر</th><th>الحالة</th><th>الإجراءات</th></tr></thead><tbody><tr><td>سيتم تحميل الإعلانات من قاعدة البيانات</td><td>—</td><td>—</td><td><span class="pill">قيد المراجعة / منشور / مرفوض</span></td><td><button disabled>مراجعة</button></td></tr></tbody></table></div><p class="muted">إضافة وتعديل وحذف الإعلانات، مراجعتها والموافقة عليها أو رفضها.</p></section>
-<section class="panel" id="users"><h2>إدارة المستخدمين</h2><p class="muted">قائمة الطلاب وأصحاب السكن، حالة الحساب، التحقق، وتعطيل الحسابات المخالفة.</p><button disabled>إدارة الحسابات</button></section>
-<section class="panel" id="media"><h2>الصور والملفات</h2><p class="muted">رفع صور العقارات، تنظيم الملفات، واستبدال أو حذف الصور غير المناسبة. التخزين الفعلي سيتم عبر Supabase Storage.</p><button disabled>رفع الصور</button></section>
-<section class="panel" id="content"><h2>محتوى الموقع والأسعار</h2><p class="muted">إدارة النصوص والأقسام والأسعار والمحتوى الظاهر للزوار.</p><button disabled>تعديل المحتوى</button></section>
-<section class="panel" id="admins"><h2>صلاحيات المديرين</h2><p class="muted">المطلوب إعداد أربعة حسابات بريد إلكتروني إدارية قابلة للتغيير. عناوين البريد نفسها لم تُحدد بعد، ولن نضع عناوين افتراضية أو نعتبر قائمة على المتصفح حماية.</p><div class="emails">
-<div class="emailbox"><label>المدير 1 — البريد الإلكتروني</label><input disabled placeholder="يُضاف عند إعداد Supabase Auth"></div>
-<div class="emailbox"><label>المدير 2 — البريد الإلكتروني</label><input disabled placeholder="يُضاف عند إعداد Supabase Auth"></div>
-<div class="emailbox"><label>المدير 3 — البريد الإلكتروني</label><input disabled placeholder="يُضاف عند إعداد Supabase Auth"></div>
-<div class="emailbox"><label>المدير 4 — البريد الإلكتروني</label><input disabled placeholder="يُضاف عند إعداد Supabase Auth"></div>
-</div><p class="muted">تغيير المديرين سيكون محميًا بسياسات قاعدة البيانات، وليس بتعديل JavaScript في المتصفح.</p></section>
-</div>
-</div>
+<section id="loginSection" class="authbox">
+ <div class="panel">
+  <h1>دخول الإدارة</h1><p class="muted">الدخول متاح للحسابات التي مُنحت دور admin في قاعدة البيانات فقط.</p>
+  <form id="loginForm">
+   <div class="field"><label>البريد الإلكتروني</label><input name="email" type="email" autocomplete="username" required></div>
+   <div class="field"><label>كلمة المرور</label><input name="password" type="password" autocomplete="current-password" required></div>
+   <button id="loginSubmit" style="width:100%">تسجيل الدخول</button>
+  </form>
+  <p id="loginMessage" class="tabmessage" aria-live="polite"></p>
+ </div>
+</section>
+<section id="deniedSection" class="authbox hidden"><div class="panel"><h1>لا توجد صلاحية إدارية</h1><p class="muted">الحساب مسجّل، لكنه غير مضاف إلى قائمة المديرين المعتمدين. لن تظهر أي بيانات إدارية لهذا الحساب.</p><button id="deniedLogout" class="secondary">تسجيل الخروج</button></div></section>
+<section id="dashboardSection" class="hidden">
+ <div class="panelhead"><div><h1>لوحة إدارة سَكَن</h1><div class="muted">إدارة الإعلانات والمستخدمين وطلبات التواصل والإعدادات</div></div><span class="pill good">Admin access</span></div>
+ <div class="notice">الإجراءات في هذه اللوحة تُنفّذ عبر Supabase وتخضع لسياسات RLS. إضافة أو إزالة مدير لا تتم من المتصفح؛ تُدار بصلاحية قاعدة بيانات آمنة.</div>
+ <div class="grid">
+  <div class="card"><div class="muted">كل الإعلانات</div><div class="metric" id="metricListings">—</div></div>
+  <div class="card"><div class="muted">بانتظار المراجعة</div><div class="metric" id="metricPending">—</div></div>
+  <div class="card"><div class="muted">المستخدمون</div><div class="metric" id="metricProfiles">—</div></div>
+  <div class="card"><div class="muted">طلبات التواصل</div><div class="metric" id="metricContacts">—</div></div>
+ </div>
+ <div class="layout">
+  <nav><a class="active" href="#listings">الإعلانات</a><a href="#users">المستخدمون</a><a href="#contacts">طلبات التواصل</a><a href="#admins">المديرون</a><a href="#settings">إعدادات الموقع</a></nav>
+  <div>
+   <section class="panel" id="listings"><div class="panelhead"><h2>مراجعة إعلانات السكن</h2><button class="secondary" id="refreshBtn">تحديث البيانات</button></div><div class="tablewrap"><table><thead><tr><th>العنوان</th><th>المنطقة</th><th>السعر</th><th>المالك</th><th>الحالة</th><th>الإجراءات</th></tr></thead><tbody id="listingRows"><tr><td colspan="6">جارٍ التحميل...</td></tr></tbody></table></div></section>
+   <section class="panel" id="users"><h2>المستخدمون</h2><div class="tablewrap"><table><thead><tr><th>الاسم</th><th>النوع</th><th>رقم التواصل</th><th>معرّف الحساب</th></tr></thead><tbody id="userRows"></tbody></table></div></section>
+   <section class="panel" id="contacts"><h2>طلبات التواصل</h2><div class="tablewrap"><table><thead><tr><th>الرسالة</th><th>صاحب السكن</th><th>مقدم الطلب</th><th>الحالة</th><th>الإجراء</th></tr></thead><tbody id="contactRows"></tbody></table></div></section>
+   <section class="panel" id="admins"><h2>المديرون المعتمدون</h2><p class="muted">تظهر هنا الحسابات التي لها دور admin. إضافة مدراء جدد تتم من قاعدة البيانات بعد التأكد من إنشاء حسابهم في الموقع.</p><div class="tablewrap"><table><thead><tr><th>معرّف الحساب</th><th>الدور</th><th>منذ</th></tr></thead><tbody id="adminRows"></tbody></table></div></section>
+   <section class="panel" id="settings"><h2>إعدادات الموقع</h2><p class="muted">الإعدادات محفوظة في جدول site_settings ومحجوبة عن المستخدمين العاديين.</p><div id="settingsList" class="muted">لا توجد إعدادات محفوظة حتى الآن.</div></section>
+  </div>
+ </div>
+</section>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./sakan-config.js"></script>
+<script>
+(() => {
+ const client=window.supabase.createClient(window.SAKAN_SUPABASE_URL,window.SAKAN_SUPABASE_PUBLISHABLE_KEY);
+ const $=id=>document.getElementById(id);
+ let activeUser=null;
+ const esc=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+ const date=value=>value?new Date(value).toLocaleDateString("ar-EG"):"—";
+ const statusLabel=s=>({pending:"قيد المراجعة",published:"منشور",rejected:"مرفوض",archived:"مؤرشف"}[s]||s);
+ function message(text,error=false){$("loginMessage").textContent=text;$("loginMessage").style.color=error?"#ff9b9b":"var(--muted)"}
+ function show(section){["loginSection","deniedSection","dashboardSection"].forEach(id=>$(id).classList.toggle("hidden",id!==section));$("logoutBtn").classList.toggle("hidden",section==="loginSection");}
+ async function signOut(){await client.auth.signOut();activeUser=null;show("loginSection");$("adminIdentity").textContent=""}
+ $("logoutBtn").addEventListener("click",signOut);$("deniedLogout").addEventListener("click",signOut);
+ $("loginForm").addEventListener("submit",async e=>{e.preventDefault();const f=e.currentTarget;$("loginSubmit").disabled=true;message("جارٍ تسجيل الدخول...");
+  const {error}=await client.auth.signInWithPassword({email:f.elements.email.value.trim(),password:f.elements.password.value});
+  if(error)message(error.message,true);else await checkSession();$("loginSubmit").disabled=false;
+ });
+ async function checkSession(){
+  const {data,error}=await client.auth.getSession();if(error||!data.session){show("loginSection");return}
+  activeUser=data.session.user;$("adminIdentity").textContent=activeUser.email||"حساب مدير";
+  const {data:roles,error:roleError}=await client.from("user_roles").select("role,created_at").eq("user_id",activeUser.id);
+  if(roleError||!(roles||[]).some(r=>r.role==="admin")){show("deniedSection");return}
+  show("dashboardSection");await loadDashboard();
+ }
+ async function loadDashboard(){
+  const [listings,profiles,contacts,roles,settings]=await Promise.all([
+   client.from("listings").select("id,owner_id,title,location,monthly_price,status,rejection_reason,created_at").order("created_at",{ascending:false}).limit(250),
+   client.from("profiles").select("id,display_name,phone,user_type,created_at").order("created_at",{ascending:false}).limit(250),
+   client.from("contact_requests").select("id,requester_id,owner_id,message,status,created_at").order("created_at",{ascending:false}).limit(250),
+   client.from("user_roles").select("user_id,role,created_at").eq("role","admin").order("created_at",{ascending:true}),
+   client.from("site_settings").select("key,value,updated_at").order("key")
+  ]);
+  const failed=[listings,profiles,contacts,roles,settings].find(x=>x.error);
+  if(failed){alert("تعذر تحميل لوحة الإدارة: "+failed.error.message);return}
+  const L=listings.data||[],P=profiles.data||[],C=contacts.data||[],R=roles.data||[],S=settings.data||[];
+  $("metricListings").textContent=L.length;$("metricPending").textContent=L.filter(x=>x.status==="pending").length;$("metricProfiles").textContent=P.length;$("metricContacts").textContent=C.length;
+  const profileById=new Map(P.map(p=>[p.id,p]));
+  $("listingRows").innerHTML=L.map(x=>'<tr><td>'+esc(x.title)+'</td><td>'+esc(x.location)+'</td><td>'+Number(x.monthly_price).toLocaleString("ar-EG")+' جنيه</td><td>'+esc(profileById.get(x.owner_id)?.display_name||x.owner_id.slice(0,8))+'</td><td><span class="pill '+(x.status==="published"?"good":x.status==="rejected"?"bad":"")+'">'+esc(statusLabel(x.status))+'</span></td><td><div class="actions">'+(x.status!=="published"?'<button class="green" data-action="publish" data-id="'+x.id+'">موافقة ونشر</button>':"")+(x.status!=="rejected"?'<button class="danger" data-action="reject" data-id="'+x.id+'">رفض</button>':"")+'<button class="secondary" data-action="archive" data-id="'+x.id+'">أرشفة</button></div></td></tr>').join("")||'<tr><td colspan="6">لا توجد إعلانات حتى الآن.</td></tr>';
+  $("userRows").innerHTML=P.map(p=>'<tr><td>'+esc(p.display_name||"—")+'</td><td>'+esc(p.user_type)+'</td><td>'+esc(p.phone||"—")+'</td><td><small>'+esc(p.id)+'</small></td></tr>').join("")||'<tr><td colspan="4">لا يوجد مستخدمون.</td></tr>';
+  $("contactRows").innerHTML=C.map(c=>'<tr><td>'+esc(c.message)+'</td><td>'+esc(profileById.get(c.owner_id)?.display_name||c.owner_id.slice(0,8))+'</td><td>'+esc(profileById.get(c.requester_id)?.display_name||c.requester_id.slice(0,8))+'</td><td>'+esc(c.status)+'</td><td><select data-contact="'+c.id+'"><option value="new" '+(c.status==="new"?"selected":"")+'>جديد</option><option value="read" '+(c.status==="read"?"selected":"")+'>تمت المراجعة</option><option value="closed" '+(c.status==="closed"?"selected":"")+'>مغلق</option></select></td></tr>').join("")||'<tr><td colspan="5">لا توجد طلبات تواصل.</td></tr>';
+  $("adminRows").innerHTML=R.map(r=>'<tr><td><small>'+esc(r.user_id)+'</small></td><td>'+esc(r.role)+'</td><td>'+date(r.created_at)+'</td></tr>').join("")||'<tr><td colspan="3">لم يتم تعيين مديرين بعد.</td></tr>';
+  $("settingsList").innerHTML=S.map(s=>'<div style="border-bottom:1px solid var(--line);padding:8px 0"><strong>'+esc(s.key)+'</strong><pre style="white-space:pre-wrap;color:var(--muted)">'+esc(JSON.stringify(s.value))+'</pre></div>').join("")||"لا توجد إعدادات محفوظة حتى الآن.";
+ }
+ $("listingRows").addEventListener("click",async e=>{
+  const b=e.target.closest("button[data-action]");if(!b)return;const id=b.dataset.id,action=b.dataset.action;let update={};
+  if(action==="publish")update={status:"published",rejection_reason:null};
+  if(action==="reject"){const reason=prompt("سبب الرفض (اختياري):")||"";update={status:"rejected",rejection_reason:reason};}
+  if(action==="archive")update={status:"archived"};
+  b.disabled=true;const {error}=await client.from("listings").update(update).eq("id",id);
+  if(error)alert("فشل تحديث الإعلان: "+error.message);else await loadDashboard();b.disabled=false;
+ });
+ $("contactRows").addEventListener("change",async e=>{
+  const el=e.target.closest("select[data-contact]");if(!el)return;
+  const {error}=await client.from("contact_requests").update({status:el.value}).eq("id",el.dataset.contact);
+  if(error)alert("فشل تحديث الطلب: "+error.message);else await loadDashboard();
+ });
+ $("refreshBtn").addEventListener("click",loadDashboard);
+ client.auth.onAuthStateChange(()=>setTimeout(checkSession,0));
+ checkSession();
+})();
+</script>
 </body></html>
