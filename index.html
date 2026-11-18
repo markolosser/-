@@ -1076,7 +1076,7 @@ function openAdminDemo(){
   const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (reduce || !("IntersectionObserver" in window)) return;
   document.body.classList.add("reveal-ready");
-  const targets = document.querySelectorAll("main section, .search-box, .card, .feature, .roommate-example-grid article, .cta");
+  const targets = document.querySelectorAll("main section, .search-box, .card, .feature, .roommate-example-grid article, .section-head, .cta");
   targets.forEach((el, i) => {
     el.classList.add("reveal");
     if (el.matches(".cards .card, .features-grid .feature, .roommate-example-grid article")) {
