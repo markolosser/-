@@ -20,6 +20,23 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Validate JavaScript syntax
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          index = 0
+          for html_file in ("index.html", "admin-preview.html"):
+              source = Path(html_file).read_text(encoding="utf-8")
+              for match in re.finditer(r"<script(?![^>]*\\bsrc=)[^>]*>([\\s\\S]*?)</script>", source, re.I):
+                  script = match.group(1)
+                  if script.strip():
+                      Path(f"/tmp/sakan-inline-{index}.js").write_text(script, encoding="utf-8")
+                      index += 1
+          PY
+          node --check sakan-config.js
+          for file in /tmp/sakan-inline-*.js; do node --check "$file"; done
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload site artifact
