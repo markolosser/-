@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sakan | معاينة لوحة الإدارة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#08152c;--panel:#102442;--panel2:#152e50;--gold:#f3c969;--muted:#aabbd0;--line:#ffffff19;--white:#f5f6fa}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--white);font-family:Cairo,sans-serif;line-height:1.7}
+a{color:var(--gold);text-decoration:none}.wrap{width:min(1200px,94%);margin:auto}
+header{border-bottom:1px solid var(--line);background:#08152cf2;padding:16px 0}
+.top{display:flex;align-items:center;justify-content:space-between;gap:15px}.logo{font-size:25px;font-weight:900;color:var(--gold)}
+main{padding:28px 0 60px}.notice{background:#4a3918;border:1px solid #b38a36;border-radius:12px;padding:14px 18px;margin-bottom:22px;color:#ffe6a5}
+h1{margin:0;font-size:30px}h2{font-size:20px;margin:0 0 12px}.muted{color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0}
+.card,.panel{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:18px}
+.metric{font-size:28px;color:var(--gold);font-weight:900}.layout{display:grid;grid-template-columns:220px 1fr;gap:18px}
+nav{display:flex;flex-direction:column;gap:8px}nav a{padding:10px 12px;border-radius:9px;color:var(--muted)}nav a.active,nav a:hover{background:var(--panel2);color:var(--gold)}
+.panel{margin-bottom:16px}.panelhead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+table{width:100%;border-collapse:collapse;min-width:620px}th,td{text-align:right;padding:12px;border-bottom:1px solid var(--line);font-size:13px}
+.tablewrap{overflow:auto}.pill{display:inline-block;padding:3px 10px;border-radius:30px;background:#55451d;color:#ffe6a5;font-size:12px}
+button{border:0;border-radius:9px;padding:9px 13px;background:var(--gold);color:#17223a;font:700 13px Cairo;cursor:pointer}
+button:disabled{opacity:.45;cursor:not-allowed}.secondary{background:transparent;color:var(--gold);border:1px solid var(--gold)}
+input{width:100%;padding:11px;border:1px solid var(--line);border-radius:9px;background:#091a32;color:white;font:14px Cairo}
+.emails{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.emailbox label{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+@media(max-width:800px){.grid{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}nav{display:grid;grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.grid,.emails{grid-template-columns:1fr}h1{font-size:24px}}
+</style>
+</head>
+<body>
+<header><div class="wrap top"><a class="logo" href="./">سَكَن.</a><a href="./">العودة للموقع ←</a></div></header>
+<main class="wrap">
+<div class="notice"><strong>معاينة تصميم فقط — غير مفعّلة إداريًا.</strong><br>هذه الصفحة لا تسجل دخولًا ولا تحفظ تغييرات ولا تتحكم في بيانات الموقع. تفعيل صلاحيات المديرين والإجراءات الفعلية يتطلب Supabase Auth وRLS قبل فتحها للإدارة.</div>
+<div class="panelhead"><div><h1>لوحة إدارة سَكَن</h1><div class="muted">مركز إدارة المنصة والإعلانات والمستخدمين والمحتوى</div></div><span class="pill">Admin dashboard · Preview</span></div>
+<div class="grid">
+<div class="card"><div class="muted">إجمالي الإعلانات</div><div class="metric">—</div><div class="muted">سيتم جلبها من قاعدة البيانات</div></div>
+<div class="card"><div class="muted">قيد المراجعة</div><div class="metric">—</div><div class="muted">بانتظار قرار الإدارة</div></div>
+<div class="card"><div class="muted">المستخدمون</div><div class="metric">—</div><div class="muted">طلاب وملاك سكن</div></div>
+<div class="card"><div class="muted">طلبات التواصل</div><div class="metric">—</div><div class="muted">ستظهر بعد ربط النظام</div></div>
+</div>
+<div class="layout">
+<nav>
+<a class="active" href="#overview">نظرة عامة</a><a href="#listings">إدارة الإعلانات</a><a href="#users">إدارة المستخدمين</a><a href="#media">الصور والملفات</a><a href="#content">محتوى الموقع</a><a href="#admins">صلاحيات المديرين</a>
+</nav>
+<div>
+<section class="panel" id="overview"><h2>نظرة عامة</h2><p class="muted">من هنا تتم متابعة نشاط المنصة ومراجعة العناصر التي تحتاج إلى تدخل إداري. ستُعرض الأرقام الحقيقية بعد ربط قاعدة البيانات.</p><div class="actions"><button disabled>تصدير تقرير</button><button class="secondary" disabled>تحديث البيانات</button></div></section>
+<section class="panel" id="listings"><div class="panelhead"><h2>إدارة إعلانات السكن</h2><button disabled>إضافة إعلان</button></div><div class="tablewrap"><table><thead><tr><th>الإعلان</th><th>المنطقة</th><th>السعر</th><th>الحالة</th><th>الإجراءات</th></tr></thead><tbody><tr><td>سيتم تحميل الإعلانات من قاعدة البيانات</td><td>—</td><td>—</td><td><span class="pill">قيد المراجعة / منشور / مرفوض</span></td><td><button disabled>مراجعة</button></td></tr></tbody></table></div><p class="muted">إضافة وتعديل وحذف الإعلانات، مراجعتها والموافقة عليها أو رفضها.</p></section>
+<section class="panel" id="users"><h2>إدارة المستخدمين</h2><p class="muted">قائمة الطلاب وأصحاب السكن، حالة الحساب، التحقق، وتعطيل الحسابات المخالفة.</p><button disabled>إدارة الحسابات</button></section>
+<section class="panel" id="media"><h2>الصور والملفات</h2><p class="muted">رفع صور العقارات، تنظيم الملفات، واستبدال أو حذف الصور غير المناسبة. التخزين الفعلي سيتم عبر Supabase Storage.</p><button disabled>رفع الصور</button></section>
+<section class="panel" id="content"><h2>محتوى الموقع والأسعار</h2><p class="muted">إدارة النصوص والأقسام والأسعار والمحتوى الظاهر للزوار.</p><button disabled>تعديل المحتوى</button></section>
+<section class="panel" id="admins"><h2>صلاحيات المديرين</h2><p class="muted">المطلوب إعداد أربعة حسابات بريد إلكتروني إدارية قابلة للتغيير. عناوين البريد نفسها لم تُحدد بعد، ولن نضع عناوين افتراضية أو نعتبر قائمة على المتصفح حماية.</p><div class="emails">
+<div class="emailbox"><label>المدير 1 — البريد الإلكتروني</label><input disabled placeholder="يُضاف عند إعداد Supabase Auth"></div>
+<div class="emailbox"><label>المدير 2 — البريد الإلكتروني</label><input disabled placeholder="يُضاف عند إعداد Supabase Auth"></div>
+<div class="emailbox"><label>المدير 3 — البريد الإلكتروني</label><input disabled placeholder="يُضاف عند إعداد Supabase Auth"></div>
+<div class="emailbox"><label>المدير 4 — البريد الإلكتروني</label><input disabled placeholder="يُضاف عند إعداد Supabase Auth"></div>
+</div><p class="muted">تغيير المديرين سيكون محميًا بسياسات قاعدة البيانات، وليس بتعديل JavaScript في المتصفح.</p></section>
+</div>
+</div>
+</main>
+</body></html>
