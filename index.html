@@ -261,7 +261,11 @@ footer{
    <a href="#students">شركاء السكن</a>
    <a href="#about">عن المنصة</a>
   </nav>
-  <button class="btn btn-small" onclick="openModal('addModal')">اعرض سكنك +</button>
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+   <button class="btn btn-outline btn-small" id="authNavBtn" onclick="window.sakanAuthNav()">تسجيل الدخول</button>
+   <button class="btn btn-small" onclick="openModal('addModal')">اعرض سكنك +</button>
+   <a class="btn btn-outline btn-small" id="adminNavBtn" href="admin-preview.html" style="display:none">لوحة الإدارة</a>
+  </div>
  </div>
 </header>
 
@@ -440,6 +444,7 @@ footer{
    <div class="form-group"><label>نوع السكن</label><select name="type"><option>شقة</option><option>غرفة</option><option>سرير</option></select></div>
    <div class="form-group"><label>عدد الغرف</label><input name="rooms" type="number" min="1" value="1"></div>
    <div class="form-group"><label>الوصف</label><textarea name="description"></textarea></div>
+   <div class="form-group"><label>صور السكن (اختياري، حتى 5 ميجابايت)</label><input name="photo" type="file" accept="image/jpeg,image/png,image/webp,image/avif"></div>
    <button class="btn" type="submit">إرسال الإعلان</button>
   </form>
  </div>
@@ -620,5 +625,332 @@ function openAdminDemo(){
 
 renderHouses();
 </script>
+
+<div class="modal" id="authModal" onclick="if(event.target.id==='authModal')closeModal('authModal')">
+ <div class="modal-content">
+  <div class="modal-header"><h2 id="authTitle">تسجيل الدخول إلى سَكَن</h2><button class="close" onclick="closeModal('authModal')">×</button></div>
+  <form id="authForm">
+   <div class="form-group" id="authNameWrap" style="display:none"><label>الاسم</label><input name="display_name" autocomplete="name"></div>
+   <div class="form-group"><label>البريد الإلكتروني</label><input name="email" type="email" autocomplete="email" required></div>
+   <div class="form-group"><label>كلمة المرور</label><input name="password" type="password" minlength="8" autocomplete="current-password" required></div>
+   <div class="form-group" id="authTypeWrap" style="display:none"><label>نوع الحساب</label><select name="user_type"><option value="student">طالب يبحث عن سكن</option><option value="owner">مالك سكن / معلن</option></select></div>
+   <button class="btn" type="submit" id="authSubmit" style="width:100%">دخول</button>
+  </form>
+  <p class="notice" id="authMessage" aria-live="polite"></p>
+  <button class="btn btn-outline btn-small" id="authToggle" type="button" onclick="window.sakanToggleAuth()">إنشاء حساب جديد</button>
+ </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./sakan-config.js"></script>
+<script>
+(() => {
+  if (!window.supabase || !window.SAKAN_SUPABASE_URL || !window.SAKAN_SUPABASE_PUBLISHABLE_KEY) {
+    console.error("Sakan Supabase client configuration is missing.");
+    return;
+  }
+
+  const client = window.supabase.createClient(
+    window.SAKAN_SUPABASE_URL,
+    window.SAKAN_SUPABASE_PUBLISHABLE_KEY
+  );
+  window.sakanClient = client;
+
+  let currentUser = null;
+  let authMode = "login";
+  let loadedHouses = [];
+  let requestSequence = 0;
+
+  const $ = (id) => document.getElementById(id);
+  const safe = (value) => window.escapeHTML ? window.escapeHTML(value) : String(value ?? "");
+  const typeArabic = (type) => ({ apartment: "شقة", room: "غرفة", bed: "سرير" }[type] || type);
+  const typeEnglish = (type) => ({ "شقة":"apartment", "غرفة":"room", "سرير":"bed" }[type] || "apartment");
+
+  function setAuthMessage(message, isError = false) {
+    const el = $("authMessage");
+    if (!el) return;
+    el.textContent = message;
+    el.style.color = isError ? "#ff9b9b" : "var(--muted)";
+  }
+
+  function setAuthMode(mode) {
+    authMode = mode;
+    $("authTitle").textContent = mode === "signup" ? "إنشاء حساب في سَكَن" : "تسجيل الدخول إلى سَكَن";
+    $("authSubmit").textContent = mode === "signup" ? "إنشاء الحساب" : "دخول";
+    $("authToggle").textContent = mode === "signup" ? "لدي حساب بالفعل" : "إنشاء حساب جديد";
+    $("authNameWrap").style.display = mode === "signup" ? "block" : "none";
+    $("authTypeWrap").style.display = mode === "signup" ? "block" : "none";
+    const pass = $("authForm").elements.password;
+    pass.autocomplete = mode === "signup" ? "new-password" : "current-password";
+    setAuthMessage("");
+  }
+
+  window.sakanToggleAuth = () => setAuthMode(authMode === "login" ? "signup" : "login");
+  window.sakanAuthNav = async () => {
+    if (currentUser) {
+      const { error } = await client.auth.signOut();
+      if (error) alert("تعذر تسجيل الخروج: " + error.message);
+      return;
+    }
+    setAuthMode("login");
+    window.openModal("authModal");
+  };
+
+  async function refreshSession() {
+    const { data, error } = await client.auth.getSession();
+    if (error) console.error("Session read failed:", error.message);
+    await handleSession(data?.session ?? null);
+  }
+
+  async function handleSession(session) {
+    currentUser = session?.user ?? null;
+    const authButton = $("authNavBtn");
+    if (authButton) authButton.textContent = currentUser ? "تسجيل الخروج" : "تسجيل الدخول";
+    const adminButton = $("adminNavBtn");
+    if (adminButton) adminButton.style.display = "none";
+
+    if (currentUser) {
+      const { data: roles, error } = await client
+        .from("user_roles").select("role").eq("user_id", currentUser.id);
+      if (error) console.warn("Could not read the current user's role:", error.message);
+      if (adminButton && (roles || []).some(r => r.role === "admin" || r.role === "moderator")) {
+        adminButton.style.display = "inline-flex";
+      }
+    }
+    await loadHouses();
+  }
+
+  client.auth.onAuthStateChange((_event, session) => {
+    // Defer database work outside the auth callback to avoid locking the auth client.
+    setTimeout(() => { handleSession(session); }, 0);
+  });
+
+  $("authForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const email = form.elements.email.value.trim();
+    const password = form.elements.password.value;
+    const submit = $("authSubmit");
+    submit.disabled = true;
+    setAuthMessage("جارٍ الاتصال...");
+    try {
+      if (authMode === "signup") {
+        const displayName = form.elements.display_name.value.trim();
+        if (displayName.length < 2) throw new Error("اكتب اسمًا صحيحًا.");
+        const userType = form.elements.user_type.value;
+        const { data, error } = await client.auth.signUp({
+          email, password,
+          options: {
+            data: { display_name: displayName, user_type: userType },
+            emailRedirectTo: window.location.origin + window.location.pathname
+          }
+        });
+        if (error) throw error;
+        if (data.session) {
+          setAuthMessage("تم إنشاء الحساب وتسجيل الدخول.");
+          window.closeModal("authModal");
+        } else {
+          setAuthMessage("تم إنشاء الحساب. راجع بريدك الإلكتروني لتأكيده ثم سجّل الدخول.");
+        }
+      } else {
+        const { error } = await client.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        setAuthMessage("تم تسجيل الدخول.");
+        window.closeModal("authModal");
+      }
+    } catch (error) {
+      setAuthMessage(error.message || "حدث خطأ غير متوقع.", true);
+    } finally {
+      submit.disabled = false;
+    }
+  });
+
+  async function loadHouses() {
+    const sequence = ++requestSequence;
+    const list = $("houseList");
+    if (!list) return;
+    list.innerHTML = '<div class="empty">جارٍ تحميل الإعلانات المنشورة...</div>';
+
+    const { data, error } = await client
+      .from("listings")
+      .select("id,owner_id,title,location,monthly_price,listing_type,rooms,description,listing_images(object_path,sort_order)")
+      .eq("status", "published")
+      .order("created_at", { ascending: false })
+      .limit(100);
+
+    if (sequence !== requestSequence) return;
+    if (error) {
+      console.error("Listings load failed:", error.message);
+      list.innerHTML = '<div class="empty">تعذر تحميل الإعلانات حاليًا. حاول تحديث الصفحة.</div>';
+      return;
+    }
+
+    const query = ($("search")?.value || "").trim().toLowerCase();
+    const type = $("type")?.value || "";
+    const maxPrice = Number($("maxPrice")?.value || 0);
+    const normalized = (data || []).map((row) => ({
+      id: row.id,
+      owner_id: row.owner_id,
+      title: row.title,
+      location: row.location,
+      price: Number(row.monthly_price),
+      type: typeArabic(row.listing_type),
+      rooms: row.rooms,
+      description: row.description,
+      images: (row.listing_images || []).sort((a,b) => a.sort_order - b.sort_order)
+    })).filter(h =>
+      (!query || (h.title + " " + h.location).toLowerCase().includes(query)) &&
+      (!type || h.type === type) &&
+      (!maxPrice || h.price <= maxPrice)
+    );
+
+    loadedHouses = normalized;
+    window.sakanLoadedListings = loadedHouses;
+
+    if (!normalized.length) {
+      list.innerHTML = '<div class="empty">مفيش إعلانات منشورة مطابقة دلوقتي. جرّب تغيّر البحث أو ارجع لاحقًا.</div>';
+      return;
+    }
+
+    const cards = await Promise.all(normalized.map(async (h) => {
+      let imageHtml = "🏠";
+      const firstImage = h.images[0];
+      if (firstImage?.object_path) {
+        const { data: signed, error: signedError } = await client.storage
+          .from("listing-photos").createSignedUrl(firstImage.object_path, 900);
+        if (!signedError && signed?.signedUrl) {
+          imageHtml = '<img src="' + safe(signed.signedUrl) + '" alt="صورة ' + safe(h.title) + '">';
+        }
+      }
+      return '<article class="card"><div class="house-img">' + imageHtml +
+        '<span class="price">' + h.price.toLocaleString("ar-EG") + ' جنيه / شهر</span></div>' +
+        '<div class="card-body"><h3>' + safe(h.title) + '</h3>' +
+        '<div class="location">📍 ' + safe(h.location) + '</div>' +
+        '<div class="features"><span>🏠 ' + safe(h.type) + '</span><span>🚪 ' + h.rooms + ' غرف</span></div>' +
+        '<div class="card-footer"><span class="owner">إعلان منشور</span>' +
+        '<button class="btn btn-small" data-sakan-details="' + safe(h.id) + '">التفاصيل</button></div></div></article>';
+    }));
+
+    if (sequence !== requestSequence) return;
+    list.innerHTML = cards.join("");
+    list.querySelectorAll("[data-sakan-details]").forEach((button) => {
+      button.addEventListener("click", () => window.sakanShowDetails(button.dataset.sakanDetails));
+    });
+  }
+
+  window.renderHouses = loadHouses;
+
+  window.sakanShowDetails = async (id) => {
+    const h = loadedHouses.find(item => item.id === id);
+    if (!h) return;
+    let gallery = "";
+    for (const photo of h.images) {
+      const { data, error } = await client.storage.from("listing-photos").createSignedUrl(photo.object_path, 900);
+      if (!error && data?.signedUrl) gallery += '<img src="' + safe(data.signedUrl) + '" alt="صورة السكن" style="width:100%;max-height:230px;object-fit:cover;border-radius:12px;margin-bottom:10px">';
+    }
+    $("detailsContent").innerHTML = gallery + '<h2>' + safe(h.title) + '</h2>' +
+      '<p class="location">📍 ' + safe(h.location) + '</p>' +
+      '<p style="color:var(--gold);margin:12px 0;font-weight:bold">' + h.price.toLocaleString("ar-EG") + ' جنيه شهريًا</p>' +
+      '<p>' + safe(h.description || "لا يوجد وصف.") + '</p>' +
+      '<p class="notice">عدد الغرف: ' + h.rooms + ' | النوع: ' + safe(h.type) + '</p>' +
+      '<button class="btn" id="sakanContactOwner" style="margin-top:18px">إرسال طلب تواصل للمالك</button>';
+    $("sakanContactOwner").addEventListener("click", () => window.sakanContactOwner(h));
+    window.openModal("detailsModal");
+  };
+
+  window.sakanContactOwner = async (listing) => {
+    if (!currentUser) {
+      window.closeModal("detailsModal");
+      setAuthMode("login");
+      window.openModal("authModal");
+      setAuthMessage("سجّل الدخول أولًا لإرسال طلب التواصل.");
+      return;
+    }
+    const message = window.prompt("اكتب رسالة مختصرة لصاحب السكن:");
+    if (!message || !message.trim()) return;
+    const { error } = await client.from("contact_requests").insert({
+      listing_id: listing.id,
+      requester_id: currentUser.id,
+      owner_id: listing.owner_id,
+      message: message.trim()
+    });
+    if (error) {
+      alert("تعذر إرسال الطلب: " + error.message);
+      return;
+    }
+    alert("تم إرسال طلب التواصل بنجاح.");
+  };
+
+  // Replace the local-only form handler with a database-backed listing submission.
+  const originalPublicForm = $("publicForm");
+  if (originalPublicForm) {
+    const form = originalPublicForm.cloneNode(true);
+    originalPublicForm.replaceWith(form);
+    form.insertAdjacentHTML("beforeend", "");
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!currentUser) {
+        window.closeModal("addModal");
+        setAuthMode("login");
+        window.openModal("authModal");
+        setAuthMessage("سجّل الدخول أولًا لإضافة إعلان.");
+        return;
+      }
+
+      const submit = form.querySelector('button[type="submit"]');
+      const photo = form.elements.photo?.files?.[0];
+      submit.disabled = true;
+      try {
+        if (photo && (!photo.type.startsWith("image/") || photo.size > 5 * 1024 * 1024)) {
+          throw new Error("الصورة لازم تكون بصيغة صورة مدعومة وحجمها لا يتجاوز 5 ميجابايت.");
+        }
+        const row = {
+          owner_id: currentUser.id,
+          title: form.elements.title.value.trim(),
+          location: form.elements.location.value.trim(),
+          monthly_price: Number(form.elements.price.value),
+          listing_type: typeEnglish(form.elements.type.value),
+          rooms: Number(form.elements.rooms.value) || 1,
+          description: form.elements.description.value.trim(),
+          status: "pending"
+        };
+        const { data: created, error } = await client.from("listings").insert(row).select("id").single();
+        if (error) throw error;
+
+        if (photo) {
+          const safeName = photo.name.replace(/[^a-zA-Z0-9._-]/g, "_").slice(-80) || "photo";
+          const path = currentUser.id + "/" + created.id + "/" + crypto.randomUUID() + "_" + safeName;
+          const { error: uploadError } = await client.storage.from("listing-photos").upload(path, photo, {
+            contentType: photo.type, upsert: false
+          });
+          if (uploadError) {
+            await client.from("listings").delete().eq("id", created.id);
+            throw uploadError;
+          }
+          const { error: imageError } = await client.from("listing_images").insert({
+            listing_id: created.id, owner_id: currentUser.id, object_path: path, alt_text: row.title
+          });
+          if (imageError) {
+            await client.storage.from("listing-photos").remove([path]);
+            await client.from("listings").delete().eq("id", created.id);
+            throw imageError;
+          }
+        }
+        form.reset();
+        window.closeModal("addModal");
+        alert("وصل إعلانك للإدارة للمراجعة. هيظهر للزوار بعد الموافقة عليه.");
+      } catch (error) {
+        alert("تعذر إرسال الإعلان: " + (error.message || "خطأ غير معروف"));
+      } finally {
+        submit.disabled = false;
+      }
+    });
+  }
+
+  setAuthMode("login");
+  refreshSession();
+})();
+</script>
+
 </body>
 </html>
