@@ -29,7 +29,7 @@ jobs:
           index = 0
           for html_file in ("index.html", "admin-preview.html"):
               source = Path(html_file).read_text(encoding="utf-8")
-              for match in re.finditer(r"<script(?![^>]*\\bsrc=)[^>]*>([\\s\\S]*?)</script>", source, re.I):
+              for match in re.finditer(r"<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)</script>", source, re.I):
                   script = match.group(1)
                   if script.strip():
                       Path(f"/tmp/sakan-inline-{index}.js").write_text(script, encoding="utf-8")
