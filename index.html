@@ -441,49 +441,11 @@ body.menu-open .side-menu{transform:translateX(0);visibility:visible}
 @media(prefers-reduced-motion:reduce){.night-painting{animation:none!important}}
 
 
-/* Painterly Starry Night treatment: expressive spiral currents across the whole page */
-.global-paint-current{position:fixed;z-index:1;inset:0;pointer-events:none;overflow:hidden;opacity:.105;mix-blend-mode:screen}
-.global-paint-current svg{position:absolute;width:min(105vw,1450px);height:120vh;left:-12%;top:-8%;animation:pageCurrentFlow 38s linear infinite;transform-origin:50% 50%}
-.global-paint-current path{vector-effect:non-scaling-stroke}
-@keyframes pageCurrentFlow{to{transform:rotate(360deg) scale(1.04)}}
-.hero .night-current{left:-2%;top:-2%;width:min(78vw,900px);height:108%;opacity:.76;overflow:visible;mask-image:none;-webkit-mask-image:none}
-.night-painting{position:absolute;inset:0;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 0 12px #8fc8f455);animation:paintingFloat 13s ease-in-out infinite alternate}
-.swirl-rotor{transform-box:view-box;transform-origin:50% 50%;animation:swirlTurn 29s linear infinite}
-.swirl-two{transform-origin:710px 165px;animation-duration:21s;animation-direction:reverse}
-.swirl-three{transform-origin:740px 430px;animation-duration:25s}
-.distant-waves{animation:waveGlide 11s ease-in-out infinite alternate}
-@keyframes swirlTurn{to{transform:rotate(360deg)}}
-@keyframes waveGlide{from{transform:translate3d(-10px,5px,0)}to{transform:translate3d(14px,-8px,0)}}
-@keyframes paintingFloat{from{transform:translate3d(-5px,4px,0) scale(.99)}to{transform:translate3d(7px,-5px,0) scale(1.015)}}
-.hero .container,.hero-content{z-index:2}
-.hero:after{opacity:.5;animation-duration:10s}
-.starfield:before{animation-duration:28s,3.5s}
-.starfield:after{animation-duration:34s}
-.ambient-orb.one{animation-duration:13s}
-.ambient-orb.two{animation-duration:16s}
-.cta:before{animation-duration:10s}
-/* Three feature panels become textured painted surfaces, not flat UI tiles */
-.about-art{border-radius:7px 24px 10px 22px;border:1px solid #d9c18a45;background-color:#173653;background-image:repeating-linear-gradient(164deg,#ffffff08 0 1px,transparent 1px 7px),repeating-linear-gradient(72deg,#7db5d522 0 1px,transparent 1px 11px),linear-gradient(145deg,#234967,#0b1c34 78%);box-shadow:inset 0 0 35px #e8c8790b,0 18px 45px #0004}
-.about-art:before{content:"";position:absolute;z-index:-1;inset:-20%;pointer-events:none;opacity:.58;background:repeating-radial-gradient(ellipse at 75% 25%,transparent 0 17px,#a9d7f326 18px 20px,transparent 22px 31px);transform:rotate(-13deg);animation:canvasDrift 17s ease-in-out infinite alternate}
-.about-art:after{content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;opacity:.5;background:repeating-linear-gradient(118deg,transparent 0 19px,#f3d58b13 20px 22px,transparent 24px 39px);mask-image:linear-gradient(135deg,#000,transparent 72%)}
-.about-main{background-color:#183d59;background-image:repeating-linear-gradient(155deg,#ffffff0a 0 1px,transparent 1px 8px),radial-gradient(ellipse at 18% 78%,#e2b85b3b,transparent 48%),linear-gradient(145deg,#285575,#0a1a32 82%)}
-.about-partner{background-color:#173c58;background-image:repeating-linear-gradient(25deg,#ffffff09 0 1px,transparent 1px 9px),radial-gradient(ellipse at 95% 10%,#8bc9f14a,transparent 57%),linear-gradient(140deg,#204968,#101f39)}
-.about-trust{background-color:#273b57;background-image:repeating-linear-gradient(145deg,#ffffff09 0 1px,transparent 1px 8px),radial-gradient(ellipse at 90% 90%,#e2bd6540,transparent 50%),linear-gradient(140deg,#334a67,#101b32)}
-.about-art h3,.about-art p,.about-art a,.about-index,.about-symbol{position:relative;z-index:2}
-.about-symbol{border-radius:48% 52% 45% 55%;background:repeating-linear-gradient(135deg,#f3c9691d 0 3px,#83b8e817 4px 7px);box-shadow:inset 0 0 18px #f3c96920,0 5px 18px #0003}
-.art-orbit{border-style:dashed;border-width:2px;box-shadow:0 0 28px #83b8e426,inset 0 0 40px #f3c96912}
-.orbit-a{animation:orbitPaint 19s linear infinite}
-.orbit-b{animation:orbitPaint 14s linear infinite reverse}
-@keyframes orbitPaint{to{transform:rotate(360deg)}}
-.art-footer{background-image:repeating-linear-gradient(165deg,#ffffff06 0 1px,transparent 1px 9px),radial-gradient(ellipse at 12% 10%,#47749a77,transparent 42%),linear-gradient(140deg,#0e2440,#071329)}
-@media(max-width:600px){.hero .night-current{width:145vw;height:86%;left:-58%;top:6%;opacity:.62}.night-painting{animation-duration:15s}.global-paint-current{opacity:.07}.global-paint-current svg{width:170vw;left:-45%;animation-duration:48s}.about-art:before{animation-duration:22s}}
-@media(prefers-reduced-motion:reduce){.global-paint-current svg,.night-painting,.swirl-rotor,.distant-waves,.about-art:before,.orbit-a,.orbit-b{animation:none!important}}
-
 </style>
 </head>
 
 <body>
-<div class="starfield" aria-hidden="true"></div><div class="global-paint-current" aria-hidden="true"><svg viewBox="0 0 1200 900" fill="none"><g stroke-linecap="round"><path d="M-80 180 C140 -20 390 10 470 180 C560 370 370 500 220 390 C100 300 190 170 300 190 C390 205 405 285 350 320" stroke="#8fc8f4" stroke-width="9"/><path d="M-60 220 C150 30 370 55 435 195 C500 335 370 435 250 365" stroke="#f5d47f" stroke-width="4"/><path d="M680 520 C790 350 1040 330 1130 490 C1220 650 1080 790 940 720 C830 665 870 550 965 545 C1040 540 1080 605 1045 650" stroke="#8fc8f4" stroke-width="8"/><path d="M650 560 C780 400 1010 390 1090 520 C1160 640 1060 735 950 685" stroke="#f5d47f" stroke-width="4"/></g></svg></div><div class="ambient-orb one" aria-hidden="true"></div><div class="ambient-orb two" aria-hidden="true"></div>
+<div class="starfield" aria-hidden="true"></div><div class="ambient-orb one" aria-hidden="true"></div><div class="ambient-orb two" aria-hidden="true"></div>
 
 <header>
  <div class="container nav">
@@ -519,36 +481,17 @@ body.menu-open .side-menu{transform:translateX(0);visibility:visible}
 <main id="mainSite">
 
 <section class="hero" id="home"><div class="night-current" aria-hidden="true">
- <svg class="night-painting" viewBox="0 0 900 620" role="presentation" focusable="false" aria-hidden="true">
- <defs>
-  <linearGradient id="nightGold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffe7a0"/><stop offset=".55" stop-color="#e9b957"/><stop offset="1" stop-color="#b98138"/></linearGradient>
-  <linearGradient id="nightBlue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d0edff"/><stop offset=".5" stop-color="#77b7e7"/><stop offset="1" stop-color="#397eaf"/></linearGradient>
-  <linearGradient id="nightCream"><stop stop-color="#fff0c1"/><stop offset="1" stop-color="#e9c879"/></linearGradient>
-  <filter id="brushGlow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
- </defs>
- <g class="distant-waves" fill="none" stroke-linecap="round">
-  <path d="M-30 420 C100 335 160 490 285 410 S485 345 600 425 S800 510 950 380" stroke="url(#nightBlue)" stroke-width="13" opacity=".35"/>
-  <path d="M-20 455 C105 375 180 520 310 445 S500 390 620 460 S820 535 940 420" stroke="url(#nightGold)" stroke-width="5" opacity=".65"/>
-  <path d="M-20 480 C110 405 190 545 325 470 S520 420 650 485 S830 550 950 455" stroke="#b4dcf3" stroke-width="3" opacity=".55"/>
-  <path d="M15 520 C150 450 220 580 360 505 S570 465 700 520 S850 570 930 500" stroke="#e8c879" stroke-width="3" opacity=".5"/>
- </g>
- <g class="swirl-rotor swirl-one" fill="none" stroke-linecap="round" filter="url(#brushGlow)">
-  <path d="M75 235 C100 75 285 10 430 90 C590 178 575 360 445 405 C330 445 220 365 245 260 C267 170 375 125 445 190 C500 242 470 315 420 330" stroke="url(#nightBlue)" stroke-width="17" opacity=".34"/>
-  <path d="M75 235 C100 75 285 10 430 90 C590 178 575 360 445 405 C330 445 220 365 245 260 C267 170 375 125 445 190 C500 242 470 315 420 330" stroke="url(#nightGold)" stroke-width="5" opacity=".95" stroke-dasharray="185 16 82 22"/>
-  <path d="M105 230 C135 105 285 55 410 118 C530 180 535 320 435 365 C345 405 260 345 275 265 C290 205 360 170 415 210 C455 240 445 280 410 298" stroke="#d8efff" stroke-width="3" opacity=".9" stroke-dasharray="70 13 115 18"/>
-  <path d="M145 225 C180 135 290 95 385 145 C470 190 480 295 415 330" stroke="#f4d78c" stroke-width="3" opacity=".9" stroke-dasharray="95 12 35 16"/>
- </g>
- <g class="swirl-rotor swirl-two" fill="none" stroke-linecap="round">
-  <path d="M570 85 C650 10 790 45 825 145 C860 245 790 325 710 305 C635 290 620 215 670 175 C710 145 760 165 765 205" stroke="url(#nightGold)" stroke-width="12" opacity=".68"/>
-  <path d="M590 100 C665 30 770 60 800 145 C830 225 775 285 715 275 C665 267 650 220 682 190" stroke="url(#nightBlue)" stroke-width="4" opacity=".9" stroke-dasharray="90 12 45 14"/>
-  <path d="M615 120 C680 65 755 85 775 150 C795 205 755 250 715 240" stroke="#fff0c1" stroke-width="3" opacity=".78"/>
- </g>
- <g class="swirl-rotor swirl-three" fill="none" stroke-linecap="round">
-  <path d="M600 360 C675 285 810 300 855 390 C900 480 825 555 745 530 C675 508 665 440 710 405 C750 375 800 395 805 435" stroke="url(#nightBlue)" stroke-width="14" opacity=".48"/>
-  <path d="M625 370 C695 315 795 325 830 395 C865 465 810 520 750 505 C700 492 690 450 720 425" stroke="url(#nightGold)" stroke-width="4" opacity=".95" stroke-dasharray="115 16 48 20"/>
- </g>
- <g fill="#ffe5a0" filter="url(#brushGlow)"><circle cx="520" cy="105" r="6"/><circle cx="545" cy="120" r="2.5"/><circle cx="565" cy="90" r="3"/><circle cx="180" cy="85" r="3"/><circle cx="490" cy="410" r="4"/><circle cx="835" cy="280" r="3"/></g>
-</svg>
+ <svg class="night-painting" viewBox="0 0 700 520" role="presentation" focusable="false">
+  <defs><linearGradient id="nightGold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f6d987"/><stop offset="1" stop-color="#e9ae54"/></linearGradient><linearGradient id="nightBlue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#b4ddf2"/><stop offset="1" stop-color="#4b91c3"/></linearGradient></defs>
+  <g fill="none" stroke-linecap="round">
+   <path d="M75 210 C115 65 300 25 415 112 C525 195 470 330 350 330 C250 330 220 230 285 175 C350 120 435 170 420 235 C407 285 350 292 326 260" stroke="url(#nightBlue)" stroke-width="5" opacity=".72"/>
+   <path d="M20 300 C65 430 210 485 330 430 C455 373 500 470 610 430" stroke="url(#nightGold)" stroke-width="4" opacity=".7"/>
+   <path d="M120 95 C210 10 390 20 505 100 C620 180 650 300 580 360" stroke="#9bc9e8" stroke-width="2" opacity=".48"/>
+   <path d="M155 385 C230 315 300 315 355 370 C405 420 475 400 520 350" stroke="#f3d58b" stroke-width="3" opacity=".6"/>
+   <path d="M495 65 C590 85 650 155 660 235" stroke="#8fc8f4" stroke-width="2" opacity=".5"/>
+  </g>
+  <g fill="#f5d47f"><circle cx="515" cy="125" r="5"/><circle cx="585" cy="285" r="3"/><circle cx="190" cy="145" r="3"/><circle cx="380" cy="420" r="4"/></g>
+ </svg>
 </div>
  <div class="container">
   <div class="hero-content">
