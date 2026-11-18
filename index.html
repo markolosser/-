@@ -290,11 +290,68 @@ header,main,footer{position:relative;z-index:2}
   .section-head{align-items:flex-start;flex-direction:column}
   .hero h1{font-size:38px}
 }
+
+/* Sakan visual refresh: ambient motion, depth and refined interactions */
+:root{--gold:#f5d47f;--blue:#8fc8f4;--glow:rgba(89,159,220,.18)}
+html{scroll-behavior:smooth;scroll-padding-top:88px}
+body{background:radial-gradient(ellipse at 50% -15%,#1b3b62 0%,transparent 48%),linear-gradient(160deg,#071329 0%,#0a1a33 48%,#09162c 100%);overflow-x:hidden}
+header{background:rgba(6,17,36,.76);box-shadow:0 8px 35px #0002}
+.logo{letter-spacing:.4px;text-shadow:0 0 22px #f3c96935}
+.links a{position:relative;transition:color .25s ease}
+.links a:after{content:"";position:absolute;right:0;bottom:-8px;width:0;height:2px;background:var(--gold);border-radius:3px;transition:width .28s ease}
+.links a:hover:after{width:100%}
+.btn{box-shadow:0 7px 22px #f3c9691c;transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s,filter .28s}
+.btn:hover{transform:translateY(-4px);box-shadow:0 13px 30px #f3c96930}
+.btn:active{transform:translateY(-1px) scale(.98)}
+.hero{isolation:isolate;min-height:560px;background:radial-gradient(ellipse at 10% 20%,#2a6391 0%,transparent 42%),radial-gradient(ellipse at 88% 78%,#38406d 0%,transparent 42%),linear-gradient(125deg,#08152c,#142d50 58%,#101f3b)}
+.hero:after{content:"";position:absolute;z-index:-1;width:520px;height:520px;left:-120px;top:5%;border:1px solid #f3d58b20;border-radius:48% 52% 62% 38%;box-shadow:0 0 90px #83b8e81b,inset 0 0 70px #83b8e810;animation:heroFloat 16s ease-in-out infinite alternate}
+.hero-content{animation:heroEnter .9s cubic-bezier(.2,.75,.25,1) both}
+.hero .tag{display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border:1px solid #f3c96942;background:#f3c96912;border-radius:30px;box-shadow:0 0 30px #f3c9690c}
+.hero h1{text-shadow:0 10px 35px #0003}
+.hero p{font-size:16px;line-height:2}
+.search-box{background:linear-gradient(145deg,#142e50ed,#0d203bed);border:1px solid #a8d3f522;box-shadow:0 24px 65px #0005,0 0 45px #75b7e40b;backdrop-filter:blur(18px);transition:transform .35s,box-shadow .35s}
+.search-box:hover{transform:translateY(-3px);box-shadow:0 28px 75px #0006,0 0 55px #75b7e415}
+.field input,.field select,.form-control,.roommate-filters input,.roommate-filters select{transition:border-color .25s,box-shadow .25s,background .25s}
+.field input:focus,.field select:focus,.form-control:focus,.roommate-filters input:focus,.roommate-filters select:focus{border-color:#91c9f5;box-shadow:0 0 0 3px #83b8e81c;background:#0c203b}
+section{position:relative}
+.section-head h2{letter-spacing:-.4px}
+.section-head h2:after{content:"";display:block;width:46px;height:3px;margin-top:9px;border-radius:4px;background:linear-gradient(90deg,var(--gold),transparent)}
+.card,.feature,.roommate-example-grid article{position:relative;background:linear-gradient(145deg,#142d4c,#0e203a);border:1px solid #b9d9f014;box-shadow:0 12px 34px #00000016;transition:transform .38s cubic-bezier(.2,.8,.2,1),border-color .35s,box-shadow .35s}
+.card:before,.feature:before{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:linear-gradient(125deg,#ffffff08,transparent 35%,transparent 70%,#83b8e808);opacity:.7}
+.card:hover,.feature:hover,.roommate-example-grid article:hover{transform:translateY(-8px);border-color:#f3c96970;box-shadow:0 22px 50px #0004,0 0 32px #83b8e40c}
+.house-img{background:radial-gradient(circle at 50% 25%,#41658c,#10213d 75%)}
+.house-img img{transition:transform .7s cubic-bezier(.2,.8,.2,1)}
+.card:hover .house-img img{transform:scale(1.055)}
+.students{background:radial-gradient(ellipse at 90% 10%,#254a711c,transparent 48%),linear-gradient(130deg,#102442,#0b1931)}
+.roommate-profile-card{overflow:hidden}
+.roommate-photo{box-shadow:0 0 0 5px #83b8e812,0 8px 22px #0004}
+.feature{overflow:hidden}
+.feature .symbol{display:inline-grid;place-items:center;width:58px;height:58px;border-radius:17px;background:linear-gradient(145deg,#f3c96920,#83b8e81c);border:1px solid #f3c9692c;transition:transform .35s}
+.feature:hover .symbol{transform:translateY(-4px) rotate(-5deg)}
+.cta{position:relative;overflow:hidden;background:radial-gradient(ellipse at 50% 0%,#41658a 0%,transparent 65%),linear-gradient(130deg,#17375a,#102442);box-shadow:0 25px 60px #0003}
+.cta:before{content:"";position:absolute;width:360px;height:360px;border:1px solid #f3c96926;border-radius:50%;left:-120px;top:-210px;box-shadow:0 0 70px #f3c96912;animation:heroFloat 14s ease-in-out infinite alternate}
+.starfield{opacity:.56;background:radial-gradient(ellipse at 15% 45%,#3679aa12,transparent 35%),radial-gradient(ellipse at 85% 20%,#d9b75d0b,transparent 34%)}
+.starfield:before{background-size:240px 220px;opacity:.72;animation:star-drift 48s linear infinite,twinkle 5s ease-in-out infinite alternate}
+.starfield:after{width:88vw;height:88vw;left:-34vw;top:8vh;border-color:#83b8e814;box-shadow:0 0 130px #3974a318,inset 0 0 110px #e8c66b0a;animation:night-orbit 58s ease-in-out infinite alternate}
+.ambient-orb{position:fixed;z-index:0;pointer-events:none;border-radius:50%;filter:blur(2px);mix-blend-mode:screen;opacity:.23}
+.ambient-orb.one{width:340px;height:340px;top:18vh;right:-190px;background:radial-gradient(circle,#4a9bd0 0%,transparent 70%);animation:orbOne 22s ease-in-out infinite alternate}
+.ambient-orb.two{width:420px;height:420px;bottom:5vh;left:-240px;background:radial-gradient(circle,#c49b4e 0%,transparent 70%);animation:orbTwo 26s ease-in-out infinite alternate}
+.reveal-ready .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.75,.25,1)}
+.reveal-ready .reveal.is-visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.08s!important}.reveal-delay-2{transition-delay:.16s!important}.reveal-delay-3{transition-delay:.24s!important}
+@keyframes heroEnter{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:translateY(0)}}
+@keyframes heroFloat{from{transform:translate3d(0,-8px,0) rotate(-12deg)}to{transform:translate3d(22px,20px,0) rotate(12deg)}}
+@keyframes orbOne{from{transform:translate3d(0,0,0) scale(.9)}to{transform:translate3d(-80px,130px,0) scale(1.25)}}
+@keyframes orbTwo{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(100px,-110px,0) scale(.8)}}
+@keyframes twinkle{from{opacity:.45}to{opacity:1}}
+@media(max-width:600px){.hero{min-height:520px}.hero:after{width:320px;height:320px;left:-170px}.ambient-orb{opacity:.14}.search-box{border-radius:15px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.hero-content,.hero:after,.ambient-orb,.starfield:before,.starfield:after,.cta:before{animation:none!important}.reveal-ready .reveal{opacity:1;transform:none;transition:none}}
+
 </style>
 </head>
 
 <body>
-<div class="starfield" aria-hidden="true"></div>
+<div class="starfield" aria-hidden="true"></div><div class="ambient-orb one" aria-hidden="true"></div><div class="ambient-orb two" aria-hidden="true"></div>
 
 <header>
  <div class="container nav">
@@ -993,6 +1050,31 @@ function openAdminDemo(){
   // Listing publication is restricted to administrators in the database and admin dashboard.
   setAuthMode("login");
   refreshSession();
+})();
+</script>
+
+
+<script>
+(() => {
+  const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce || !("IntersectionObserver" in window)) return;
+  document.body.classList.add("reveal-ready");
+  const targets = document.querySelectorAll("main section, .search-box, .card, .feature, .roommate-example-grid article, .cta");
+  targets.forEach((el, i) => {
+    el.classList.add("reveal");
+    if (el.matches(".cards .card, .features-grid .feature, .roommate-example-grid article")) {
+      el.classList.add("reveal-delay-" + ((i % 3) + 1));
+    }
+  });
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {threshold: 0.12, rootMargin: "0px 0px -35px 0px"});
+  targets.forEach(el => observer.observe(el));
 })();
 </script>
 
