@@ -347,6 +347,23 @@ section{position:relative}
 @media(max-width:600px){.hero{min-height:520px}.hero:after{width:320px;height:320px;left:-170px}.ambient-orb{opacity:.14}.search-box{border-radius:15px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.hero-content,.hero:after,.ambient-orb,.starfield:before,.starfield:after,.cta:before{animation:none!important}.reveal-ready .reveal{opacity:1;transform:none;transition:none}}
 
+
+/* Subtle Starry-Night-inspired current: lightweight CSS-only swirls */
+.hero{isolation:isolate}
+.hero .night-current{position:absolute;z-index:0;left:-5%;top:3%;width:min(58vw,690px);height:94%;pointer-events:none;opacity:.28;overflow:hidden;mask-image:radial-gradient(ellipse at 48% 48%,#000 8%,rgba(0,0,0,.82) 48%,transparent 76%);-webkit-mask-image:radial-gradient(ellipse at 48% 48%,#000 8%,rgba(0,0,0,.82) 48%,transparent 76%)}
+.night-current:before,.night-current:after{content:"";position:absolute;inset:8%;border-radius:50%;background:repeating-conic-gradient(from 12deg,transparent 0deg 13deg,#8fc8f42a 14deg 15deg,transparent 17deg 29deg,#f5d47f26 30deg 31deg,transparent 33deg 45deg);mask:repeating-radial-gradient(ellipse at 50% 50%,#000 0 2px,transparent 4px 17px);-webkit-mask:repeating-radial-gradient(ellipse at 50% 50%,#000 0 2px,transparent 4px 17px);animation:currentTurn 100s linear infinite}
+.night-current:after{inset:22% 14% 12% 20%;transform:rotate(25deg) scaleX(1.2);opacity:.7;animation:currentTurnBack 130s linear infinite}
+.hero .container,.hero-content{z-index:1}
+@keyframes currentTurn{to{transform:rotate(360deg)}}
+@keyframes currentTurnBack{to{transform:rotate(-335deg) scaleX(1.2)}}
+/* Section accent grows from a short stroke to the exact heading width */
+.section-head h2{display:inline-block;position:relative}
+.section-head h2:after{width:0;height:3px;margin-top:9px;transition:width 1.05s cubic-bezier(.2,.75,.25,1);background:linear-gradient(90deg,var(--gold),#8fc8f4 72%,transparent)}
+.section-head.reveal.is-visible h2:after{width:100%}
+.section-head h2:after{display:block}
+@media(max-width:600px){.hero .night-current{width:100vw;height:70%;left:-32%;top:15%;opacity:.2}}
+@media(prefers-reduced-motion:reduce){.night-current:before,.night-current:after{animation:none!important}.section-head h2:after{transition:none;width:100%}}
+
 </style>
 </head>
 
@@ -372,7 +389,7 @@ section{position:relative}
 
 <main id="mainSite">
 
-<section class="hero" id="home">
+<section class="hero" id="home"><div class="night-current" aria-hidden="true"></div>
  <div class="container">
   <div class="hero-content">
    <span class="tag">✦ بيتك الجديد يبدأ من هنا</span>
