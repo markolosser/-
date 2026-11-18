@@ -359,6 +359,15 @@ section{position:relative}
 .section-head h2:after{display:block}
 @media(max-width:600px){.hero .night-current{width:100vw;height:70%;left:-32%;top:15%;opacity:.2}}
 @media(prefers-reduced-motion:reduce){.night-current:before,.night-current:after{animation:none!important}.section-head h2:after{transition:none;width:100%}}
+/* A calm, original Starry Night-inspired illustration */
+.hero{position:relative;overflow:hidden;background:radial-gradient(ellipse at 18% 45%,#244c70 0%,transparent 48%),linear-gradient(125deg,#08152c,#142d50 58%,#101f3b)}
+.hero:after{opacity:.45}
+.starry-art{position:absolute;left:-2%;top:0;width:min(61%,790px);height:100%;z-index:0;opacity:.76;pointer-events:none;filter:drop-shadow(0 12px 30px #020b18aa)}
+.hero .container{position:relative;z-index:2}
+.hero-content{position:relative;max-width:690px}
+@media(max-width:700px){.starry-art{width:100%;height:78%;top:12%;left:-24%;opacity:.25}.hero{overflow:hidden}.hero-content{max-width:100%}}
+@media(prefers-reduced-motion:reduce){.starry-art{transform:none}}
+
 
 
 /* Van Gogh-inspired editorial identity and compact navigation */
@@ -472,6 +481,30 @@ body.menu-open .side-menu{transform:translateX(0);visibility:visible}
 <main id="mainSite">
 
 <section class="hero" id="home">
+ <svg class="starry-art" viewBox="0 0 760 560" aria-hidden="true" focusable="false">
+  <defs>
+   <linearGradient id="skyStroke" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#9bc9e8"/><stop offset="1" stop-color="#477eae"/></linearGradient>
+   <linearGradient id="goldStroke" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f8df91"/><stop offset="1" stop-color="#d7a94e"/></linearGradient>
+  </defs>
+  <circle cx="565" cy="112" r="42" fill="#f5d47f" opacity=".92"/>
+  <circle cx="580" cy="96" r="39" fill="#173758"/>
+  <g fill="#f6d987">
+   <path d="M420 72l7 19 19 7-19 7-7 19-7-19-19-7 19-7z"/>
+   <path d="M650 205l5 13 13 5-13 5-5 13-5-13-13-5 13-5z"/>
+   <path d="M500 245l4 10 10 4-10 4-4 10-4-10-10-4 10-4z"/>
+   <circle cx="350" cy="150" r="3"/><circle cx="690" cy="80" r="3"/>
+  </g>
+  <g fill="none" stroke-linecap="round">
+   <path d="M290 160C370 80 480 55 570 85" stroke="url(#skyStroke)" stroke-width="13" opacity=".65"/>
+   <path d="M300 198C400 130 520 125 640 160" stroke="url(#goldStroke)" stroke-width="8" opacity=".72"/>
+   <path d="M275 245C390 190 520 205 680 250" stroke="url(#skyStroke)" stroke-width="10" opacity=".52"/>
+   <path d="M330 292C440 255 555 275 700 325" stroke="url(#goldStroke)" stroke-width="7" opacity=".55"/>
+   <path d="M365 345C470 320 585 345 720 390" stroke="url(#skyStroke)" stroke-width="9" opacity=".48"/>
+  </g>
+  <path d="M0 470L65 445 105 455 145 420 185 450 230 430 270 465 315 450 360 470 410 450 455 465 500 440 545 462 590 438 640 465 700 440 760 462V560H0Z" fill="#07162b" opacity=".92"/>
+  <path d="M105 450V350l-18 55 18-22 17 22-17-55M105 350l-9 29 9-12 9 12z" fill="#0a1b30"/>
+  <g fill="#e7c875" opacity=".85"><rect x="390" y="468" width="11" height="16" rx="2"/><rect x="430" y="462" width="13" height="21" rx="2"/><rect x="470" y="472" width="10" height="14" rx="2"/></g>
+ </svg>
  <div class="container">
   <div class="hero-content">
    <span class="tag">✦ بيتك الجديد يبدأ من هنا</span>
