@@ -136,7 +136,7 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
   try{
    if(!activeUser)throw new Error("سجّل الدخول بحساب الإدارة أولاً.");
    const photo=form.elements.photo.files[0];
-   if(photo&&(!/^image\\/(jpeg|png|webp|avif)$/.test(photo.type)||photo.size>5*1024*1024))throw new Error("الصورة يجب أن تكون JPEG أو PNG أو WEBP أو AVIF وبحد أقصى 5 ميجابايت.");
+   if(photo&&(!["image/jpeg","image/png","image/webp","image/avif"].includes(photo.type)||photo.size>5*1024*1024))throw new Error("الصورة يجب أن تكون JPEG أو PNG أو WEBP أو AVIF وبحد أقصى 5 ميجابايت.");
    const row={owner_id:activeUser.id,title:form.elements.title.value.trim(),location:form.elements.location.value.trim(),monthly_price:Number(form.elements.price.value),listing_type:form.elements.type.value,rooms:Number(form.elements.rooms.value)||1,description:form.elements.description.value.trim(),status:"published"};
    const {data:created,error}=await client.from("listings").insert(row).select("id").single();if(error)throw error;
    if(photo){
