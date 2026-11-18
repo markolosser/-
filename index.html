@@ -637,6 +637,7 @@ renderHouses();
    <button class="btn" type="submit" id="authSubmit" style="width:100%">دخول</button>
   </form>
   <p class="notice" id="authMessage" aria-live="polite"></p>
+  <button class="btn btn-outline btn-small" id="authResendBtn" type="button" style="display:none">إعادة إرسال رسالة تأكيد البريد</button>
   <button class="btn btn-outline btn-small" id="authToggle" type="button" onclick="window.sakanToggleAuth()">إنشاء حساب جديد</button>
  </div>
 </div>
@@ -725,6 +726,26 @@ renderHouses();
     setTimeout(() => { handleSession(session); }, 0);
   });
 
+  $("authResendBtn").addEventListener("click", async () => {
+    const email = $("authForm").elements.email.value.trim();
+    if (!email) { setAuthMessage("اكتب البريد الإلكتروني أولًا.", true); return; }
+    const button = $("authResendBtn");
+    button.disabled = true;
+    try {
+      const { error } = await client.auth.resend({
+        type: "signup",
+        email,
+        options: { emailRedirectTo: "https://markolosser.github.io/-/" }
+      });
+      if (error) throw error;
+      setAuthMessage("تم إرسال رسالة تأكيد جديدة. افتح أحدث رسالة فقط.");
+    } catch (error) {
+      setAuthMessage(error.message || "تعذر إعادة إرسال الرسالة.", true);
+    } finally {
+      button.disabled = false;
+    }
+  });
+
   $("authForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     const form = event.currentTarget;
@@ -754,7 +775,13 @@ renderHouses();
         }
       } else {
         const { error } = await client.auth.signInWithPassword({ email, password });
-        if (error) throw error;
+        if (error) {
+          if (error.message && error.message.toLowerCase().includes("email not confirmed")) {
+            $("authResendBtn").style.display = "inline-flex";
+            throw new Error("البريد الإلكتروني لم يتم تأكيده. اضغط إعادة إرسال رسالة التأكيد.");
+          }
+          throw error;
+        }
         setAuthMessage("تم تسجيل الدخول.");
         window.closeModal("authModal");
       }
