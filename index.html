@@ -436,7 +436,7 @@ footer{
 <div class="modal" id="addModal" onclick="backdropClose(event,'addModal')">
  <div class="modal-content">
   <div class="modal-header"><h2>اعرض سكنك</h2><button class="close" onclick="closeModal('addModal')">×</button></div>
-  <p class="notice">نموذج تجريبي لإضافة إعلان. الإعلانات تُحفظ على هذا المتصفح فقط.</p>
+  <p class="notice">سجّل الدخول لإرسال إعلانك. لن يظهر للزوار إلا بعد مراجعة الإدارة والموافقة عليه.</p>
   <form id="publicForm">
    <div class="form-group"><label>اسم السكن</label><input name="title" required></div>
    <div class="form-group"><label>المنطقة</label><input name="location" required></div>
@@ -457,7 +457,7 @@ const starterHouses = [
  {id:3,title:"سرير في سكن مشترك",location:"منطقة الجامعة - المنيا",price:700,type:"سرير",rooms:1,description:"مكان في سكن مشترك بسعر اقتصادي.",owner:"إعلان تجريبي",image:""}
 ];
 
-let houses = JSON.parse(localStorage.getItem("sakan_houses") || "null") || starterHouses;
+let houses = [];
 
 function save(){
  localStorage.setItem("sakan_houses",JSON.stringify(houses));
@@ -713,7 +713,7 @@ renderHouses();
       const { data: roles, error } = await client
         .from("user_roles").select("role").eq("user_id", currentUser.id);
       if (error) console.warn("Could not read the current user's role:", error.message);
-      if (adminButton && (roles || []).some(r => r.role === "admin" || r.role === "moderator")) {
+      if (adminButton && (roles || []).some(r => r.role === "admin")) {
         adminButton.style.display = "inline-flex";
       }
     }
