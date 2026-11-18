@@ -58,7 +58,7 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
 <div><label>تفاصيل العنوان</label><input name="address_details" maxlength="300" placeholder="الشارع / علامة مميزة"></div>
 <div><label>السعر الشهري بالجنيه</label><input name="price" type="number" min="1" required></div>
 <div><label>نوع السكن</label><select name="type"><option value="apartment">شقة</option><option value="room">غرفة</option><option value="bed">سرير</option></select></div>
-<div><label>عدد الغرف</label><input name="rooms" type="number" min="1" value="1"></div>
+<div><label>عدد الغرف</label><input name="rooms" type="number" min="1" value="1"></div><div><label>إجمالي الأماكن</label><input name="spots_total" type="number" min="0"></div><div><label>الأماكن المتبقية</label><input name="spots_available" type="number" min="0"></div>
 <div><label>عدد الحمامات</label><input name="bathrooms" type="number" min="0" value="1"></div>
 <div><label>الدور</label><input name="floor" maxlength="40" placeholder="مثال: الثالث"></div>
 <div><label>مفروش؟</label><select name="furnished"><option value="true">مفروش</option><option value="false">غير مفروش</option></select></div>
@@ -88,10 +88,10 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
 (() => {
  const client=window.supabase.createClient(window.SAKAN_SUPABASE_URL,window.SAKAN_SUPABASE_PUBLISHABLE_KEY);
  const $=id=>document.getElementById(id);
- let activeUser=null;
+ let activeUser=null,listingsCache=[];
  const esc=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
  const date=value=>value?new Date(value).toLocaleDateString("ar-EG"):"—";
- const statusLabel=s=>({pending:"قيد المراجعة",published:"منشور",rejected:"مرفوض",archived:"مؤرشف"}[s]||s);
+ const statusLabel=s=>({pending:"قيد المراجعة",published:"منشور",rejected:"مرفوض",archived:"مؤرشف"}[s]||s);const availabilityLabel=s=>({available:"متاح",negotiating:"تم التفاوض",rented:"تم البيع / التأجير",full:"مكتمل العدد",paused:"موقوف مؤقتًا"}[s]||"متاح");
  function message(text,error=false){$("loginMessage").textContent=text;$("loginMessage").style.color=error?"#ff9b9b":"var(--muted)"}
  function show(section){["loginSection","deniedSection","dashboardSection"].forEach(id=>$(id).classList.toggle("hidden",id!==section));$("logoutBtn").classList.toggle("hidden",section==="loginSection");}
  async function signOut(){await client.auth.signOut();activeUser=null;show("loginSection");$("adminIdentity").textContent=""}
@@ -109,7 +109,7 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
  }
  async function loadDashboard(){
   const [listings,profiles,contacts,roles,settings]=await Promise.all([
-   client.from("listings").select("id,owner_id,title,location,monthly_price,status,rejection_reason,created_at").order("created_at",{ascending:false}).limit(250),
+   client.from("listings").select("id,owner_id,title,location,monthly_price,status,availability_status,spots_total,spots_available,rejection_reason,created_at").order("created_at",{ascending:false}).limit(250),
    client.from("profiles").select("id,display_name,phone,user_type,created_at").order("created_at",{ascending:false}).limit(250),
    client.from("contact_requests").select("id,requester_id,owner_id,message,status,created_at").order("created_at",{ascending:false}).limit(250),
    client.from("user_roles").select("user_id,role,created_at").eq("role","admin").order("created_at",{ascending:true}),
@@ -117,10 +117,10 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
   ]);
   const failed=[listings,profiles,contacts,roles,settings].find(x=>x.error);
   if(failed){alert("تعذر تحميل لوحة الإدارة: "+failed.error.message);return}
-  const L=listings.data||[],P=profiles.data||[],C=contacts.data||[],R=roles.data||[],S=settings.data||[];
+  const L=listings.data||[],P=profiles.data||[],C=contacts.data||[],R=roles.data||[],S=settings.data||[];listingsCache=L;
   $("metricListings").textContent=L.length;$("metricPending").textContent=L.filter(x=>x.status==="pending").length;$("metricProfiles").textContent=P.length;$("metricContacts").textContent=C.length;
   const profileById=new Map(P.map(p=>[p.id,p]));
-  $("listingRows").innerHTML=L.map(x=>'<tr><td>'+esc(x.title)+'</td><td>'+esc(x.location)+'</td><td>'+Number(x.monthly_price).toLocaleString("ar-EG")+' جنيه</td><td>'+esc(profileById.get(x.owner_id)?.display_name||x.owner_id.slice(0,8))+'</td><td><span class="pill '+(x.status==="published"?"good":x.status==="rejected"?"bad":"")+'">'+esc(statusLabel(x.status))+'</span></td><td><div class="actions">'+(x.status!=="published"?'<button class="green" data-action="publish" data-id="'+x.id+'">موافقة ونشر</button>':"")+(x.status!=="rejected"?'<button class="danger" data-action="reject" data-id="'+x.id+'">رفض</button>':"")+'<button class="secondary" data-action="archive" data-id="'+x.id+'">أرشفة</button></div></td></tr>').join("")||'<tr><td colspan="6">لا توجد إعلانات حتى الآن.</td></tr>';
+  $("listingRows").innerHTML=L.map(x=>'<tr><td>'+esc(x.title)+'</td><td>'+esc(x.location)+'</td><td>'+Number(x.monthly_price).toLocaleString("ar-EG")+' جنيه</td><td>'+esc(profileById.get(x.owner_id)?.display_name||x.owner_id.slice(0,8))+'</td><td>'+esc(statusLabel(x.status))+'<br><small>'+esc(availabilityLabel(x.availability_status))+' · '+(x.spots_available==null?"العدد غير محدد":x.spots_available+" متبقي")+'</small></td><td><div class="actions">'+(x.status!=="published"?'<button class="green" data-action="publish" data-id="'+x.id+'">موافقة ونشر</button>':"")+(x.status!=="rejected"?'<button class="danger" data-action="reject" data-id="'+x.id+'">رفض</button>':"")+'<button class="secondary" data-action="archive" data-id="'+x.id+'">أرشفة</button><select data-availability="'+x.id+'"><option value="available" '+(x.availability_status==="available"?"selected":"")+'>متاح</option><option value="negotiating" '+(x.availability_status==="negotiating"?"selected":"")+'>تم التفاوض</option><option value="rented" '+(x.availability_status==="rented"?"selected":"")+'>تم البيع / التأجير</option><option value="full" '+(x.availability_status==="full"?"selected":"")+'>مكتمل العدد</option><option value="paused" '+(x.availability_status==="paused"?"selected":"")+'>إيقاف مؤقت</option></select><input type="number" min="0" placeholder="المتبقي" data-spots="'+x.id+'" value="'+(x.spots_available??"")+'" style="width:75px"><button class="green" data-action="save-spots" data-id="'+x.id+'">حفظ العدد</button></div></td></tr>').join("")||'<tr><td colspan="6">لا توجد إعلانات حتى الآن.</td></tr>';
   $("userRows").innerHTML=P.map(p=>'<tr><td>'+esc(p.display_name||"—")+'</td><td>'+esc(p.user_type)+'</td><td>'+esc(p.phone||"—")+'</td><td><small>'+esc(p.id)+'</small></td></tr>').join("")||'<tr><td colspan="4">لا يوجد مستخدمون.</td></tr>';
   $("contactRows").innerHTML=C.map(c=>'<tr><td>'+esc(c.message)+'</td><td>'+esc(profileById.get(c.owner_id)?.display_name||c.owner_id.slice(0,8))+'</td><td>'+esc(profileById.get(c.requester_id)?.display_name||c.requester_id.slice(0,8))+'</td><td>'+esc(c.status)+'</td><td><select data-contact="'+c.id+'"><option value="new" '+(c.status==="new"?"selected":"")+'>جديد</option><option value="read" '+(c.status==="read"?"selected":"")+'>تمت المراجعة</option><option value="closed" '+(c.status==="closed"?"selected":"")+'>مغلق</option></select></td></tr>').join("")||'<tr><td colspan="5">لا توجد طلبات تواصل.</td></tr>';
   $("adminRows").innerHTML=R.map(r=>'<tr><td><small>'+esc(r.user_id)+'</small></td><td>'+esc(r.role)+'</td><td>'+date(r.created_at)+'</td></tr>').join("")||'<tr><td colspan="3">لم يتم تعيين مديرين بعد.</td></tr>';
@@ -131,9 +131,11 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
   if(action==="publish")update={status:"published",rejection_reason:null};
   if(action==="reject"){const reason=prompt("سبب الرفض (اختياري):")||"";update={status:"rejected",rejection_reason:reason};}
   if(action==="archive")update={status:"archived"};
+  if(action==="save-spots"){const v=document.querySelector('[data-spots="'+id+'"]')?.value.trim(),total=Number(listingsCache.find(x=>x.id===id)?.spots_total);if(v!==""&&(!Number.isInteger(Number(v))||Number(v)<0||(total>0&&Number(v)>total))){alert("راجع عدد الأماكن المتبقية.");return;}update={spots_available:v===""?null:Number(v)};}
   b.disabled=true;const {error}=await client.from("listings").update(update).eq("id",id);
   if(error)alert("فشل تحديث الإعلان: "+error.message);else await loadDashboard();b.disabled=false;
  });
+ $("listingRows").addEventListener("change",async e=>{const el=e.target.closest("[data-availability]");if(!el)return;const {error}=await client.from("listings").update({availability_status:el.value}).eq("id",el.dataset.availability);if(error)alert("فشل تحديث حالة السكن: "+error.message);await loadDashboard();});
  $("contactRows").addEventListener("change",async e=>{
   const el=e.target.closest("select[data-contact]");if(!el)return;
   const {error}=await client.from("contact_requests").update({status:el.value}).eq("id",el.dataset.contact);
@@ -162,7 +164,8 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
     if(isImage&&file.size>5*1024*1024)throw new Error("كل صورة يجب ألا تتجاوز 5 ميجابايت: "+file.name);
     if(isVideo&&file.size>50*1024*1024)throw new Error("كل فيديو يجب ألا يتجاوز 50 ميجابايت: "+file.name);
    }
-   const row={owner_id:activeUser.id,title:form.elements.title.value.trim(),location:form.elements.location.value.trim(),address_details:form.elements.address_details.value.trim(),monthly_price:Number(form.elements.price.value),listing_type:form.elements.type.value,rooms:Number(form.elements.rooms.value)||1,bathrooms:Number(form.elements.bathrooms.value)||0,floor:form.elements.floor.value.trim(),furnished:form.elements.furnished.value==="true",utilities_included:form.elements.utilities_included.value==="true",available_from:form.elements.available_from.value||null,amenities:form.elements.amenities.value.split(",").map(x=>x.trim()).filter(Boolean),description:form.elements.description.value.trim(),status:"published"};
+   const totalRaw=form.elements.spots_total.value.trim(),availableRaw=form.elements.spots_available.value.trim(),total=totalRaw===""?null:Number(totalRaw),available=availableRaw===""?null:Number(availableRaw);if(total!==null&&(!Number.isInteger(total)||total<0)||available!==null&&(!Number.isInteger(available)||available<0||(total!==null&&available>total)))throw new Error("راجع إجمالي الأماكن والأماكن المتبقية.");
+   const row={owner_id:activeUser.id,title:form.elements.title.value.trim(),location:form.elements.location.value.trim(),address_details:form.elements.address_details.value.trim(),monthly_price:Number(form.elements.price.value),listing_type:form.elements.type.value,rooms:Number(form.elements.rooms.value)||1,spots_total:total,spots_available:available,availability_status:available===0?"full":"available",bathrooms:Number(form.elements.bathrooms.value)||0,floor:form.elements.floor.value.trim(),furnished:form.elements.furnished.value==="true",utilities_included:form.elements.utilities_included.value==="true",available_from:form.elements.available_from.value||null,amenities:form.elements.amenities.value.split(",").map(x=>x.trim()).filter(Boolean),description:form.elements.description.value.trim(),status:"published"};
    const {data:created,error}=await client.from("listings").insert(row).select("id").single();if(error)throw error;
    const uploadedPaths=[];
    try{
