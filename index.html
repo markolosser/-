@@ -526,28 +526,6 @@ function addHouse(form,image=""){
  form.reset();
 }
 
-document.getElementById("publicForm").addEventListener("submit",e=>{
- e.preventDefault();
- addHouse(e.target);
- closeModal("addModal");
- alert("تمت إضافة الإعلان التجريبي على هذا المتصفح.");
-});
-
-document.getElementById("adminForm").addEventListener("submit",async e=>{
- e.preventDefault();
- const files=document.getElementById("photoInput").files;
- let image="";
- if(files.length){
-  if(files[0].size>1500000){
-   alert("الصورة كبيرة. استخدم صورة أقل من 1.5 ميجابايت في النسخة التجريبية.");
-   return;
-  }
-  image=await readImage(files[0]);
- }
- addHouse(e.target,image);
- alert("تمت إضافة الإعلان التجريبي.");
-});
-
 function readImage(file){
  return new Promise((resolve,reject)=>{
   const reader=new FileReader();
@@ -556,17 +534,6 @@ function readImage(file){
   reader.readAsDataURL(file);
  });
 }
-
-document.getElementById("photoInput").addEventListener("change",async e=>{
- const preview=document.getElementById("preview");
- preview.innerHTML="";
- for(const file of [...e.target.files].slice(0,5)){
-  if(!file.type.startsWith("image/"))continue;
-  const img=document.createElement("img");
-  img.src=await readImage(file);
-  preview.appendChild(img);
- }
-});
 
 function renderAdmin(){
  document.getElementById("adminRows").innerHTML=houses.map(h=>`
@@ -604,7 +571,6 @@ function openAdminDemo(){
  window.scrollTo(0,0);
 }
 
-renderHouses();
 </script>
 
 <div class="modal" id="authModal" onclick="if(event.target.id==='authModal')closeModal('authModal')">
@@ -642,6 +608,7 @@ renderHouses();
   let authMode = "login";
   let loadedHouses = [];
   let requestSequence = 0;
+  let lastEmailResendAt = 0;
 
   const $ = (id) => document.getElementById(id);
   const safe = (value) => window.escapeHTML ? window.escapeHTML(value) : String(value ?? "");
@@ -711,7 +678,10 @@ renderHouses();
     const email = $("authForm").elements.email.value.trim();
     if (!email) { setAuthMessage("اكتب البريد الإلكتروني أولًا.", true); return; }
     const button = $("authResendBtn");
+    const secondsLeft = Math.ceil((60000 - (Date.now() - lastEmailResendAt)) / 1000);
+    if (secondsLeft > 0) { setAuthMessage("استنى " + secondsLeft + " ثانية قبل طلب رسالة جديدة.", true); return; }
     button.disabled = true;
+    lastEmailResendAt = Date.now();
     try {
       const { error } = await client.auth.resend({
         type: "signup",
@@ -721,7 +691,8 @@ renderHouses();
       if (error) throw error;
       setAuthMessage("تم إرسال رسالة تأكيد جديدة. افتح أحدث رسالة فقط.");
     } catch (error) {
-      setAuthMessage(error.message || "تعذر إعادة إرسال الرسالة.", true);
+      const detail = String(error.message || "");
+      setAuthMessage(/rate limit|too many requests|429/i.test(detail) ? "خدمة البريد وصلت للحد المؤقت لإرسال الرسائل. بلاش تكرر الطلب؛ لازم تفعيل SMTP مخصص للموقع من إعدادات Supabase." : (detail || "تعذر إعادة إرسال الرسالة."), true);
     } finally {
       button.disabled = false;
     }
@@ -767,7 +738,8 @@ renderHouses();
         window.closeModal("authModal");
       }
     } catch (error) {
-      setAuthMessage(error.message || "حدث خطأ غير متوقع.", true);
+      const detail = String(error.message || "");
+      setAuthMessage(/rate limit|too many requests|429/i.test(detail) ? "Supabase أوقف إرسال رسائل التأكيد مؤقتًا بسبب حد الإرسال. التسجيل لن يكتمل برسالة جديدة حتى يتوفر SMTP مخصص أو تنتهي مهلة الحد." : (detail || "حدث خطأ غير متوقع."), true);
     } finally {
       submit.disabled = false;
     }
