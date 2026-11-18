@@ -161,6 +161,16 @@ section{padding:65px 0}
 .students{
   background:linear-gradient(130deg,#102442,#0b1931);
 }
+.roommate-toolbar{display:grid;grid-template-columns:1fr auto;gap:14px;margin-bottom:20px;align-items:start}
+.roommate-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.roommate-filters input,.roommate-filters select,.roommate-form input,.roommate-form select,.roommate-form textarea{width:100%;padding:11px;border-radius:10px;background:#091a32;color:white;border:1px solid var(--border)}
+.roommate-profile-card{padding:19px}.roommate-profile-top{display:flex;gap:13px;align-items:center;margin-bottom:13px}
+.roommate-photo{width:68px;height:68px;border-radius:50%;object-fit:cover;background:#24466b;border:2px solid #f3c96988}
+.roommate-meta{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}.roommate-meta span{font-size:11px;padding:5px 9px;border-radius:20px;background:#83b8e81a;color:#d9eaff}
+.roommate-example-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:13px}.roommate-example-grid article{padding:15px;border-radius:13px;background:#ffffff08;border:1px solid var(--border)}.roommate-example-grid p{font-size:12px;color:var(--muted);margin-top:5px}
+.roommate-examples{margin-top:28px}.roommate-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.roommate-form .wide{grid-column:1/-1}.roommate-form label{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}.roommate-form textarea{min-height:95px}.roommate-form .checkrow{display:flex;gap:8px;flex-wrap:wrap}.roommate-form .checkrow label{display:flex;gap:6px;align-items:center;background:#ffffff08;border:1px solid var(--border);padding:7px 10px;border-radius:9px}.roommate-form .checkrow input{width:auto}
+@media(max-width:700px){.roommate-toolbar{grid-template-columns:1fr}.roommate-example-grid{grid-template-columns:1fr}.roommate-form{grid-template-columns:1fr}.roommate-form .wide{grid-column:auto}}
+
 .student-card{padding:20px}
 .avatar{
   width:55px;height:55px;border-radius:50%;
@@ -368,26 +378,19 @@ header,main,footer{position:relative;z-index:2}
     <p>اتعرف على طلاب عندهم نفس احتياجاتك.</p>
    </div>
   </div>
-  <div class="cards">
-   <div class="card student-card">
-    <div class="student-top"><div class="avatar">👨🏻‍🎓</div><div><h3>طالب جامعي</h3><span class="owner">طالب - مثال تجريبي</span></div></div>
-    <p>بدور على شريك سكن قريب من الجامعة، يفضل يكون منظم وملتزم.</p>
-    <div class="features"><span>📍 قريب من الجامعة</span><span>🤝 شريك واحد</span></div>
-    <button class="btn btn-small" onclick="alert('سيتم تفعيل التواصل بعد ربط حسابات المستخدمين.')">عرض الملف</button>
-   </div>
-   <div class="card student-card">
-    <div class="student-top"><div class="avatar">👨🏽‍🎓</div><div><h3>طالب جامعي</h3><span class="owner">طالب - مثال تجريبي</span></div></div>
-    <p>محتاج شقة مشتركة بسعر مناسب، ويفضل السكن قريب من المواصلات.</p>
-    <div class="features"><span>📍 منطقة الجامعة</span><span>🤝 شريكان</span></div>
-    <button class="btn btn-small" onclick="alert('سيتم تفعيل التواصل بعد ربط حسابات المستخدمين.')">عرض الملف</button>
-   </div>
-   <div class="card student-card">
-    <div class="student-top"><div class="avatar">👨🏻‍🎓</div><div><h3>طالب جامعي</h3><span class="owner">طالب - مثال تجريبي</span></div></div>
-    <p>بدور على سكن هادي ومناسب للمذاكرة، مع طلاب جامعيين.</p>
-    <div class="features"><span>📍 وسط المدينة</span><span>🤝 شريك واحد</span></div>
-    <button class="btn btn-small" onclick="alert('سيتم تفعيل التواصل بعد ربط حسابات المستخدمين.')">عرض الملف</button>
-   </div>
-  </div>
+<div class="roommate-toolbar"><div class="roommate-filters">
+<input id="roommateSearch" placeholder="ابحث بالجامعة أو المنطقة أو التخصص">
+<select id="roommateUniversity"><option value="">كل الجامعات</option><option>جامعة المنيا</option><option>جامعة المنيا الأهلية</option><option>جامعة دراية</option><option>جامعة أسيوط</option></select>
+<select id="roommateYear"><option value="">كل الفرق</option><option>الأولى</option><option>الثانية</option><option>الثالثة</option><option>الرابعة</option><option>الخامسة</option><option>امتياز</option></select>
+<select id="roommateBudget"><option value="">كل الميزانيات</option><option value="1500">حتى 1500 جنيه</option><option value="2500">حتى 2500 جنيه</option><option value="4000">حتى 4000 جنيه</option></select>
+<select id="roommateLifestyle"><option value="">كل الأنماط</option><option value="quiet">هدوء ومذاكرة</option><option value="social">اجتماعي</option><option value="clean">نظافة وتنظيم</option><option value="sports">رياضة</option><option value="gaming">ألعاب</option></select>
+</div><button class="btn" id="createRoommateProfile">+ أنشئ ملفك وابحث عن شريك</button></div>
+<div id="roommateList" class="cards"><div class="empty">جارٍ تحميل ملفات الطلاب...</div></div>
+<div class="roommate-examples"><h3>أمثلة لملفات تساعدك تختار</h3><div class="roommate-example-grid">
+<article><strong>📚 طالب مذاكرة</strong><p>يفضل الهدوء، قريب من الجامعة، وتقسيم المصاريف بالتساوي.</p></article>
+<article><strong>⚽ طالب اجتماعي</strong><p>يحب الرياضة والخروجات وسكن قريب من المواصلات.</p></article>
+<article><strong>🧹 طالب منظم</strong><p>يهتم بالنظافة والترتيب والالتزام بالمواعيد.</p></article>
+</div></div>
  </div>
 </section>
 
@@ -457,6 +460,25 @@ header,main,footer{position:relative;z-index:2}
  </div>
 </footer>
 
+<div class="modal" id="roommateModal" onclick="if(event.target.id==='roommateModal')closeModal('roommateModal')"><div class="modal-content" style="width:min(760px,100%)">
+<div class="modal-header"><h2>ملف شريك السكن</h2><button class="close" type="button" onclick="closeModal('roommateModal')">×</button></div>
+<p class="notice">بياناتك ووسيلة التواصل هتظهر للطلاب عند نشر الملف.</p>
+<form id="roommateForm" class="roommate-form">
+<div><label>اسم العرض</label><input name="display_name" required minlength="2" maxlength="80"></div><div><label>الصورة الشخصية</label><input name="avatar" type="file" accept="image/jpeg,image/png,image/webp"></div>
+<div><label>الجامعة</label><select name="university" required><option value="">اختر</option><option>جامعة المنيا</option><option>جامعة المنيا الأهلية</option><option>جامعة دراية</option><option>جامعة أسيوط</option><option>أخرى</option></select></div>
+<div><label>الكلية</label><input name="faculty" placeholder="مثال: الصيدلة"></div><div><label>التخصص / القسم</label><input name="department"></div>
+<div><label>الفرقة الدراسية</label><select name="study_year"><option value="">اختر</option><option>الأولى</option><option>الثانية</option><option>الثالثة</option><option>الرابعة</option><option>الخامسة</option><option>امتياز</option><option>خريج</option></select></div>
+<div><label>المنطقة المفضلة</label><input name="preferred_location" placeholder="قريب من الجامعة"></div><div><label>الميزانية من (جنيه)</label><input name="budget_min" type="number" min="0"></div><div><label>الميزانية إلى (جنيه)</label><input name="budget_max" type="number" min="0"></div>
+<div><label>عدد الشركاء</label><select name="roommate_count"><option value="">مش فارقة</option><option value="1">واحد</option><option value="2">اثنان</option><option value="3">ثلاثة</option><option value="4">أربعة أو أكثر</option></select></div>
+<div><label>نوع السكن</label><select name="housing_type"><option value="">أي نوع</option><option>شقة</option><option>غرفة</option><option>سرير</option></select></div><div><label>موعد الانتقال</label><input name="move_in_date" type="date"></div>
+<div><label>رقم الموبايل / واتساب</label><input name="contact_phone" type="tel" required placeholder="01xxxxxxxxx"></div><div><label>طريقة التواصل</label><select name="contact_method"><option value="whatsapp">واتساب</option><option value="phone">اتصال</option></select></div>
+<div><label>التدخين</label><select name="smoking_preference"><option value="no_preference">مش فارقة</option><option value="no_smoking">أفضل بدون تدخين</option><option value="smoking_ok">مش مشكلة</option></select></div><div><label>مواعيد النوم</label><select name="sleep_schedule"><option value="flexible">مرنة</option><option value="early">بنام بدري</option><option value="late">بسهر</option></select></div>
+<div><label>النظافة</label><select name="cleanliness"><option value="moderate">متوسط</option><option value="very_tidy">منظم جدًا</option><option value="flexible">مرن</option></select></div>
+<div class="wide"><label>اهتماماتك</label><div class="checkrow"><label><input type="checkbox" name="lifestyle" value="quiet"> هدوء ومذاكرة</label><label><input type="checkbox" name="lifestyle" value="social"> اجتماعي</label><label><input type="checkbox" name="lifestyle" value="clean"> نظافة</label><label><input type="checkbox" name="lifestyle" value="sports"> رياضة</label><label><input type="checkbox" name="lifestyle" value="gaming"> ألعاب</label><label><input type="checkbox" name="lifestyle" value="cooking"> طبخ</label><label><input type="checkbox" name="lifestyle" value="non_smoking"> بدون تدخين</label></div></div>
+<div class="wide"><label>نبذة عنك وعن الشريك المناسب</label><textarea name="bio" maxlength="1200" placeholder="مثال: طالب صيدلة، بحب الهدوء والنظافة وبدور على شريك قريب من الجامعة..."></textarea></div>
+<div class="wide"><label><input type="checkbox" name="is_active" checked style="width:auto"> نشر ملفي للطلاب</label></div>
+<div class="wide"><button class="btn" id="roommateSave" type="submit">حفظ ونشر الملف</button><p id="roommateMessage" class="notice"></p></div>
+</form></div></div>
 <!-- Listing Details -->
 <div class="modal" id="detailsModal" onclick="backdropClose(event,'detailsModal')">
  <div class="modal-content details-modal-content">
@@ -914,6 +936,59 @@ function openAdminDemo(){
     const message = encodeURIComponent("مرحبًا، أنا مهتم بالسكن: " + listing.title + " - " + listing.location + ". ممكن تفاصيل أكتر؟");
     window.open("https://wa.me/" + SAKAN_CONTACT_PHONE + "?text=" + message, "_blank", "noopener,noreferrer");
   };
+
+
+  const roommateTags={quiet:"هدوء ومذاكرة",social:"اجتماعي",clean:"نظافة",sports:"رياضة",gaming:"ألعاب",cooking:"طبخ",non_smoking:"بدون تدخين"};
+  let roommateProfiles=[];
+  const normalizePhone=v=>{let n=String(v||"").replace(/[^0-9]/g,"");if(n.startsWith("00"))n=n.slice(2);if(n.startsWith("0"))n="20"+n.slice(1);return n;};
+  function renderRoommates(){
+    const q=$("roommateSearch").value.trim().toLowerCase(),u=$("roommateUniversity").value,y=$("roommateYear").value,b=Number($("roommateBudget").value||0),tag=$("roommateLifestyle").value;
+    const rows=roommateProfiles.filter(p=>(!q||[p.display_name,p.university,p.faculty,p.department,p.preferred_location,p.bio].join(" ").toLowerCase().includes(q))&&(!u||p.university===u)&&(!y||p.study_year===y)&&(!b||!p.budget_max||Number(p.budget_max)<=b)&&(!tag||(p.lifestyle||[]).includes(tag)));
+    $("roommateList").innerHTML=rows.length?rows.map(p=>{
+      const avatar=p.avatar_path?client.storage.from("roommate-avatars").getPublicUrl(p.avatar_path).data.publicUrl:"";
+      const phone=normalizePhone(p.contact_phone),msg=encodeURIComponent("مرحبًا "+p.display_name+"، شوفت ملفك على سَكَن وحابب نتكلم بخصوص شريك السكن.");
+      const link=p.contact_method==="phone"?"tel:+ "+phone:"https://wa.me/"+phone+"?text="+msg;
+      const budget=p.budget_min||p.budget_max?Number(p.budget_min||0).toLocaleString("ar-EG")+" - "+Number(p.budget_max||0).toLocaleString("ar-EG")+" جنيه":"غير محددة";
+      return '<article class="card roommate-profile-card"><div class="roommate-profile-top">'+(avatar?'<img class="roommate-photo" src="'+safe(avatar)+'">':'<div class="roommate-photo" style="display:grid;place-items:center;font-size:28px">🎓</div>')+'<div><h3>'+safe(p.display_name)+'</h3><span class="owner">'+safe(p.university)+'</span></div></div><p class="location">'+safe([p.faculty,p.department,p.study_year?"الفرقة "+p.study_year:""].filter(Boolean).join(" · "))+'</p><div class="roommate-meta"><span>📍 '+safe(p.preferred_location||"أي منطقة")+'</span><span>💰 '+budget+'</span>'+(p.housing_type?'<span>🏠 '+safe(p.housing_type)+'</span>':"")+'</div><p>'+safe(p.bio||"لم يضف نبذة.")+'</p><div class="roommate-meta">'+(p.lifestyle||[]).map(t=>'<span>'+safe(roommateTags[t]||t)+'</span>').join("")+'</div><a class="btn btn-small" style="display:inline-flex;margin-top:10px" href="'+safe(link)+'" '+(p.contact_method==="whatsapp"?'target="_blank" rel="noopener noreferrer"':"")+'>'+(p.contact_method==="phone"?"اتصل بالطالب":"واتساب · تواصل مع الطالب")+'</a></article>';
+    }).join(""):'<div class="empty">مفيش ملفات مطابقة حاليًا. غيّر التصنيفات أو أنشئ ملفك.</div>';
+  }
+  async function loadRoommates(){
+    const {data,error}=await client.from("roommate_profiles").select("*").eq("is_active",true).order("updated_at",{ascending:false}).limit(100);
+    if(error){console.warn(error.message);$("roommateList").innerHTML='<div class="empty">تعذر تحميل ملفات الشركاء.</div>';return;}
+    roommateProfiles=data||[];renderRoommates();
+  }
+  async function editRoommateProfile(){
+    if(!currentUser){setAuthMode("login");window.openModal("authModal");setAuthMessage("سجّل الدخول الأول علشان تنشئ ملفك.");return;}
+    const form=$("roommateForm");form.reset();form.elements.is_active.checked=true;
+    const {data,error}=await client.from("roommate_profiles").select("*").eq("user_id",currentUser.id).maybeSingle();
+    if(error){alert("تعذر تحميل ملفك: "+error.message);return;}
+    if(data){
+      ["display_name","university","faculty","department","study_year","preferred_location","budget_min","budget_max","roommate_count","housing_type","move_in_date","contact_phone","contact_method","smoking_preference","sleep_schedule","cleanliness","bio"].forEach(k=>{if(form.elements[k])form.elements[k].value=data[k]??"";});
+      form.elements.is_active.checked=data.is_active;
+      form.querySelectorAll('[name="lifestyle"]').forEach(x=>x.checked=(data.lifestyle||[]).includes(x.value));
+    }else{form.elements.display_name.value=currentUser.user_metadata?.display_name||"";}
+    $("roommateMessage").textContent="";window.openModal("roommateModal");
+  }
+  $("createRoommateProfile").addEventListener("click",editRoommateProfile);
+  ["roommateSearch","roommateUniversity","roommateYear","roommateBudget","roommateLifestyle"].forEach(id=>$(id).addEventListener(id==="roommateSearch"?"input":"change",renderRoommates));
+  $("roommateForm").addEventListener("submit",async e=>{
+    e.preventDefault();if(!currentUser)return;
+    const form=e.currentTarget,btn=$("roommateSave"),msg=$("roommateMessage");btn.disabled=true;msg.textContent="جارٍ الحفظ...";
+    let newPath=null;
+    try{
+      const phone=form.elements.contact_phone.value.trim(),min=form.elements.budget_min.value===""?null:Number(form.elements.budget_min.value),max=form.elements.budget_max.value===""?null:Number(form.elements.budget_max.value);
+      if(!/^\+?[0-9\s()-]{8,20}$/.test(phone))throw new Error("رقم الموبايل غير صحيح.");
+      if(min!==null&&max!==null&&min>max)throw new Error("الميزانية من لازم تكون أقل من الميزانية إلى.");
+      const old=roommateProfiles.find(p=>p.user_id===currentUser.id);let avatar=old?.avatar_path||null;const file=form.elements.avatar.files[0];
+      if(file){if(!["image/jpeg","image/png","image/webp"].includes(file.type)||file.size>5242880)throw new Error("الصورة JPG أو PNG أو WEBP وبحد أقصى 5MB.");const ext=file.type==="image/png"?"png":file.type==="image/webp"?"webp":"jpg";newPath=currentUser.id+"/"+crypto.randomUUID()+"."+ext;const {error}=await client.storage.from("roommate-avatars").upload(newPath,file,{contentType:file.type});if(error)throw error;avatar=newPath;}
+      const row={user_id:currentUser.id,display_name:form.elements.display_name.value.trim(),avatar_path:avatar,university:form.elements.university.value,faculty:form.elements.faculty.value.trim(),department:form.elements.department.value.trim(),study_year:form.elements.study_year.value,preferred_location:form.elements.preferred_location.value.trim(),budget_min:min,budget_max:max,roommate_count:form.elements.roommate_count.value?Number(form.elements.roommate_count.value):null,housing_type:form.elements.housing_type.value,move_in_date:form.elements.move_in_date.value||null,contact_phone:phone,contact_method:form.elements.contact_method.value,smoking_preference:form.elements.smoking_preference.value,sleep_schedule:form.elements.sleep_schedule.value,cleanliness:form.elements.cleanliness.value,lifestyle:Array.from(form.querySelectorAll('[name="lifestyle"]:checked')).map(x=>x.value),bio:form.elements.bio.value.trim(),is_active:form.elements.is_active.checked,updated_at:new Date().toISOString()};
+      const {error}=await client.from("roommate_profiles").upsert(row,{onConflict:"user_id"});if(error)throw error;
+      if(newPath&&old?.avatar_path)await client.storage.from("roommate-avatars").remove([old.avatar_path]);
+      await loadRoommates();msg.textContent="تم حفظ ملفك.";setTimeout(()=>window.closeModal("roommateModal"),600);
+    }catch(err){if(newPath)await client.storage.from("roommate-avatars").remove([newPath]);msg.textContent="تعذر الحفظ: "+err.message;}
+    finally{btn.disabled=false;}
+  });
+  loadRoommates();
 
   // Listing publication is restricted to administrators in the database and admin dashboard.
   setAuthMode("login");
