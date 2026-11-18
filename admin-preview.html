@@ -47,9 +47,24 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
   <div class="card"><div class="muted">طلبات التواصل</div><div class="metric" id="metricContacts">—</div></div>
  </div>
  <div class="layout">
-  <nav><a class="active" href="#listings">الإعلانات</a><a href="#users">المستخدمون</a><a href="#contacts">طلبات التواصل</a><a href="#admins">المديرون</a><a href="#settings">إعدادات الموقع</a></nav>
+  <nav><a href="#add-listing">إضافة سكن</a><a class="active" href="#listings">الإعلانات</a><a href="#users">المستخدمون</a><a href="#contacts">طلبات التواصل</a><a href="#admins">المديرون</a><a href="#settings">إعدادات الموقع</a></nav>
   <div>
-   <section class="panel" id="listings"><div class="panelhead"><h2>مراجعة إعلانات السكن</h2><button class="secondary" id="refreshBtn">تحديث البيانات</button></div><div class="tablewrap"><table><thead><tr><th>العنوان</th><th>المنطقة</th><th>السعر</th><th>المالك</th><th>الحالة</th><th>الإجراءات</th></tr></thead><tbody id="listingRows"><tr><td colspan="6">جارٍ التحميل...</td></tr></tbody></table></div></section>
+   <section class="panel" id="add-listing"><div class="panelhead"><h2>إضافة سكن جديد بواسطة الإدارة</h2></div>
+<p class="muted">الإعلان يُضاف مباشرة باسم حساب الإدارة ويظهر بعد الحفظ. المستخدمون العاديون لا يملكون صلاحية إنشاء إعلانات.</p>
+<form id="adminListingForm">
+<div class="grid" style="grid-template-columns:repeat(2,1fr);margin:10px 0">
+<div><label>اسم السكن</label><input name="title" required maxlength="140"></div>
+<div><label>المنطقة والعنوان</label><input name="location" required maxlength="220"></div>
+<div><label>السعر الشهري بالجنيه</label><input name="price" type="number" min="1" required></div>
+<div><label>نوع السكن</label><select name="type"><option value="apartment">شقة</option><option value="room">غرفة</option><option value="bed">سرير</option></select></div>
+<div><label>عدد الغرف</label><input name="rooms" type="number" min="1" value="1"></div>
+<div><label>صور السكن (اختياري)</label><input name="photo" type="file" accept="image/jpeg,image/png,image/webp,image/avif"></div>
+</div>
+<label>وصف السكن</label><textarea name="description" rows="4" maxlength="3000"></textarea>
+<div class="actions" style="margin-top:12px"><button id="adminListingSubmit" type="submit">إضافة ونشر السكن</button></div>
+<p id="adminListingMessage" class="tabmessage" aria-live="polite"></p>
+</form></section>
+<section class="panel" id="listings"><div class="panelhead"><h2>مراجعة إعلانات السكن</h2><button class="secondary" id="refreshBtn">تحديث البيانات</button></div><div class="tablewrap"><table><thead><tr><th>العنوان</th><th>المنطقة</th><th>السعر</th><th>المالك</th><th>الحالة</th><th>الإجراءات</th></tr></thead><tbody id="listingRows"><tr><td colspan="6">جارٍ التحميل...</td></tr></tbody></table></div></section>
    <section class="panel" id="users"><h2>المستخدمون</h2><div class="tablewrap"><table><thead><tr><th>الاسم</th><th>النوع</th><th>رقم التواصل</th><th>معرّف الحساب</th></tr></thead><tbody id="userRows"></tbody></table></div></section>
    <section class="panel" id="contacts"><h2>طلبات التواصل</h2><div class="tablewrap"><table><thead><tr><th>الرسالة</th><th>صاحب السكن</th><th>مقدم الطلب</th><th>الحالة</th><th>الإجراء</th></tr></thead><tbody id="contactRows"></tbody></table></div></section>
    <section class="panel" id="admins"><h2>المديرون المعتمدون</h2><p class="muted">تظهر هنا الحسابات التي لها دور admin. إضافة مدراء جدد تتم من قاعدة البيانات بعد التأكد من إنشاء حسابهم في الموقع.</p><div class="tablewrap"><table><thead><tr><th>معرّف الحساب</th><th>الدور</th><th>منذ</th></tr></thead><tbody id="adminRows"></tbody></table></div></section>
@@ -114,6 +129,27 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
   const el=e.target.closest("select[data-contact]");if(!el)return;
   const {error}=await client.from("contact_requests").update({status:el.value}).eq("id",el.dataset.contact);
   if(error)alert("فشل تحديث الطلب: "+error.message);else await loadDashboard();
+ });
+ $("adminListingForm").addEventListener("submit",async e=>{
+  e.preventDefault();const form=e.currentTarget,button=$("adminListingSubmit"),msg=$("adminListingMessage");
+  button.disabled=true;msg.textContent="جارٍ حفظ الإعلان...";
+  try{
+   if(!activeUser)throw new Error("سجّل الدخول بحساب الإدارة أولاً.");
+   const photo=form.elements.photo.files[0];
+   if(photo&&(!/^image\\/(jpeg|png|webp|avif)$/.test(photo.type)||photo.size>5*1024*1024))throw new Error("الصورة يجب أن تكون JPEG أو PNG أو WEBP أو AVIF وبحد أقصى 5 ميجابايت.");
+   const row={owner_id:activeUser.id,title:form.elements.title.value.trim(),location:form.elements.location.value.trim(),monthly_price:Number(form.elements.price.value),listing_type:form.elements.type.value,rooms:Number(form.elements.rooms.value)||1,description:form.elements.description.value.trim(),status:"published"};
+   const {data:created,error}=await client.from("listings").insert(row).select("id").single();if(error)throw error;
+   if(photo){
+    const safeName=photo.name.replace(/[^a-zA-Z0-9._-]/g,"_").slice(-80)||"photo";
+    const path=activeUser.id+"/"+created.id+"/"+crypto.randomUUID()+"_"+safeName;
+    const {error:uploadError}=await client.storage.from("listing-photos").upload(path,photo,{contentType:photo.type,upsert:false});
+    if(uploadError){await client.from("listings").delete().eq("id",created.id);throw uploadError;}
+    const {error:imageError}=await client.from("listing_images").insert({listing_id:created.id,owner_id:activeUser.id,object_path:path,alt_text:row.title});
+    if(imageError){await client.storage.from("listing-photos").remove([path]);await client.from("listings").delete().eq("id",created.id);throw imageError;}
+   }
+   form.reset();msg.textContent="تم نشر السكن بنجاح على الموقع.";await loadDashboard();
+  }catch(error){msg.textContent="تعذر إضافة السكن: "+(error.message||"خطأ غير معروف");msg.style.color="#ff9b9b";}
+  finally{button.disabled=false;}
  });
  $("refreshBtn").addEventListener("click",loadDashboard);
  client.auth.onAuthStateChange(()=>setTimeout(checkSession,0));
