@@ -1090,7 +1090,7 @@ function openAdminDemo(){
     const amenities = h.amenities.length
       ? '<div class="details-tags">' + h.amenities.map(item => '<span>' + safe(item) + '</span>').join("") + '</div>'
       : '<p>لم تتم إضافة مميزات محددة.</p>';
-    const stateText={available:"متاح",negotiating:"تم التفاوض بالفعل",rented:"تم البيع / التأجير",full:"اكتمل العدد ولا توجد أماكن شاغرة",paused:"الإعلان موقوف مؤقتًا"}[h.availability_status]||"متاح";const isClosed=["rented","full","paused"].includes(h.availability_status);const capacityText=h.spots_available!=null?"الأماكن المتبقية: "+h.spots_available:"عدد الأماكن غير محدد";
+    const stateText={available:"متاح",negotiating:"تم التفاوض بالفعل",rented:"تم البيع / التأجير",full:"اكتمل العدد ولا توجد أماكن شاغرة",paused:"الإعلان موقوف مؤقتًا"}[h.availability_status]||"متاح";const isClosed=["negotiating","rented","full","paused"].includes(h.availability_status);const capacityText=h.spots_available!=null?"الأماكن المتبقية: "+h.spots_available:"عدد الأماكن غير محدد";
     const whatsappText = encodeURIComponent("مرحبًا، أنا مهتم بالسكن: " + h.title + " - " + h.location + ". ممكن تفاصيل أكتر؟");
     const whatsappUrl = "https://wa.me/" + SAKAN_CONTACT_PHONE + "?text=" + whatsappText;
     $("detailsContent").innerHTML =
