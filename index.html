@@ -523,10 +523,46 @@ animation:starPulse 3.5s ease-in-out infinite alternate}
 .hero-content{position:relative;z-index:3}
 @media(max-width:580px){.hero-content{padding:58px 18px 72px}}
 @media(prefers-reduced-motion:reduce){.hero-aurora:before,.hero-aurora:after{animation:none!important}}
+
+/* A richer, recognizable star field */
+.hero-stars{opacity:1;background-image:
+radial-gradient(2px 2px at 5% 14%,#fff 98%,transparent),radial-gradient(2px 2px at 12% 62%,#ffe6a1 98%,transparent),
+radial-gradient(3px 3px at 19% 28%,#fff 98%,transparent),radial-gradient(1.5px 1.5px at 24% 86%,#d8eaff 98%,transparent),
+radial-gradient(2px 2px at 32% 12%,#ffe6a1 98%,transparent),radial-gradient(2px 2px at 37% 53%,#fff 98%,transparent),
+radial-gradient(3px 3px at 44% 79%,#fff0c7 98%,transparent),radial-gradient(1.5px 1.5px at 49% 34%,#d8eaff 98%,transparent),
+radial-gradient(2px 2px at 56% 8%,#fff 98%,transparent),radial-gradient(2px 2px at 61% 68%,#ffe6a1 98%,transparent),
+radial-gradient(3px 3px at 68% 42%,#fff 98%,transparent),radial-gradient(1.5px 1.5px at 73% 91%,#d8eaff 98%,transparent),
+radial-gradient(2px 2px at 80% 17%,#ffe6a1 98%,transparent),radial-gradient(3px 3px at 86% 59%,#fff 98%,transparent),
+radial-gradient(2px 2px at 93% 31%,#fff0c7 98%,transparent),radial-gradient(1.5px 1.5px at 97% 82%,#d8eaff 98%,transparent)}
+/* Four-point twinkling stars layered over the tiny distant stars */
+.hero-stars:after{background-image:
+linear-gradient(transparent 46%,rgba(255,239,194,.95) 49%,rgba(255,239,194,.95) 51%,transparent 54%),
+linear-gradient(90deg,transparent 46%,rgba(255,239,194,.95) 49%,rgba(255,239,194,.95) 51%,transparent 54%),
+radial-gradient(circle,rgba(255,255,255,.95),transparent 68%);
+background-size:22px 22px,22px 22px,22px 22px;
+background-position:19% 28%,68% 42%,86% 59%;background-repeat:no-repeat;
+filter:drop-shadow(0 0 7px rgba(255,220,145,.8));animation:starPulse 3.4s ease-in-out infinite alternate}
+.hero-stars:before{background-image:
+radial-gradient(1px 1px at 7% 34%,#fff 98%,transparent),radial-gradient(1px 1px at 16% 91%,#fff 98%,transparent),
+radial-gradient(1px 1px at 28% 47%,#ffe6a1 98%,transparent),radial-gradient(1px 1px at 35% 22%,#fff 98%,transparent),
+radial-gradient(1px 1px at 42% 9%,#fff 98%,transparent),radial-gradient(1px 1px at 53% 87%,#fff 98%,transparent),
+radial-gradient(1px 1px at 64% 19%,#ffe6a1 98%,transparent),radial-gradient(1px 1px at 76% 49%,#fff 98%,transparent),
+radial-gradient(1px 1px at 89% 8%,#fff 98%,transparent),radial-gradient(1px 1px at 95% 72%,#ffe6a1 98%,transparent);
+animation:starDrift 34s linear infinite}
+.scroll-meteor{position:fixed;z-index:9999;top:18vh;left:12vw;width:190px;height:3px;pointer-events:none;opacity:0;transform:translate3d(0,0,0) rotate(-28deg);transform-origin:right center;
+background:linear-gradient(90deg,transparent,rgba(123,190,255,.08) 48%,rgba(195,225,255,.9) 91%,#fff 100%);
+filter:drop-shadow(0 0 7px rgba(132,194,255,.9));transition:opacity .22s ease,transform .28s cubic-bezier(.2,.75,.25,1)}
+.scroll-meteor:before{content:"";position:absolute;right:-7px;top:-5px;width:13px;height:13px;border-radius:50%;background:#fff;box-shadow:0 0 9px 4px #b9dcff,0 0 25px 9px rgba(107,174,255,.7)}
+.scroll-meteor:after{content:"";position:absolute;right:-2px;top:-10px;width:5px;height:23px;background:#fff;border-radius:50%;transform:rotate(45deg);box-shadow:0 0 12px 3px #b9dcff}
+.scroll-meteor.visible{opacity:.95}
+@media(max-width:600px){.scroll-meteor{width:125px;top:22vh}}
+@media(prefers-reduced-motion:reduce){.hero-stars,.hero-stars:before,.hero-stars:after,.scroll-meteor{animation:none!important;transition:none!important}}
+
 </style>
 </head>
 
 <body>
+<div class="scroll-meteor" aria-hidden="true"></div>
 <div class="starfield" aria-hidden="true"></div><div class="ambient-orb one" aria-hidden="true"></div><div class="ambient-orb two" aria-hidden="true"></div>
 
 <header>
@@ -1322,6 +1358,27 @@ function openAdminDemo(){
   btn.setAttribute('aria-label',english?'Switch to Arabic':'Switch to English');
  }
  btn.addEventListener('click',apply);
+})();
+</script>
+
+
+<script>
+/* The shooting star glides with the visitor's scroll, following scroll direction. */
+(function(){
+ const meteor=document.querySelector('.scroll-meteor');
+ if(!meteor)return;
+ let lastY=window.scrollY,frame=0;
+ window.addEventListener('scroll',function(){
+  const y=window.scrollY,delta=y-lastY;lastY=y;
+  if(frame)cancelAnimationFrame(frame);
+  frame=requestAnimationFrame(function(){
+   const progress=Math.max(0,Math.min(1,y/Math.max(1,document.documentElement.scrollHeight-window.innerHeight)));
+   const x=8+progress*68;
+   const drift=delta>=0?1:-1;
+   meteor.style.transform='translate3d('+x+'vw,'+(drift>0?progress*18:-progress*18)+'vh,0) rotate('+(drift>0?-28:152)+'deg)';
+   meteor.classList.add('visible');
+  });
+ },{passive:true});
 })();
 </script>
 
