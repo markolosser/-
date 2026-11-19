@@ -96,7 +96,7 @@ header{
   background:var(--panel);padding:20px;
   border:1px solid var(--border);
   border-radius:18px;display:grid;
-  grid-template-columns:2fr 1fr 1fr auto;
+  grid-template-columns:2fr repeat(4,minmax(0,1fr)) auto;
   gap:12px;box-shadow:0 15px 35px #0004;
 }
 
@@ -892,12 +892,28 @@ mask-image:linear-gradient(135deg,transparent 5%,#000 45%,#000 100%)}
     <option value="سرير">سرير</option>
    </select>
   </div>
+  <div class="field">
+   <label for="genderFilter">نوع الطلاب</label>
+   <select id="genderFilter" onchange="renderHouses()">
+    <option value="">كل الفئات</option>
+    <option value="male_students">سكن طلاب</option>
+    <option value="female_students">سكن طالبات</option>
+   </select>
+  </div>
   <div class="field price-filter-field">
    <label for="maxPrice">أقصى سعر شهري</label>
    <select id="maxPrice" onchange="handlePricePreset()">
     <option value="">كل الأسعار</option><option value="1000">1000 جنيه</option><option value="2000">2000 جنيه</option><option value="3000">3000 جنيه</option><option value="5000">5000 جنيه</option><option value="custom">✍ اكتب السعر بنفسك</option>
    </select>
    <input id="customMaxPrice" class="custom-price-input" type="text" inputmode="numeric" autocomplete="off" placeholder="اكتب أقصى سعر بالجنيه" aria-label="اكتب أقصى سعر بالجنيه" oninput="renderHouses()" hidden>
+  </div>
+  <div class="field">
+   <label for="priceSort">ترتيب السعر</label>
+   <select id="priceSort" onchange="renderHouses()">
+    <option value="">الترتيب الافتراضي</option>
+    <option value="low">من الأقل للأعلى</option>
+    <option value="high">من الأعلى للأقل</option>
+   </select>
   </div>
   <button class="btn" onclick="renderHouses()">ابحث الآن</button>
  </div>
@@ -1375,7 +1391,9 @@ function openAdminDemo(){
 
     const query = ($("search")?.value || "").trim().toLowerCase();
     const type = $("type")?.value || "";
+    const gender = $("genderFilter")?.value || "";
     const maxPrice = getSelectedMaxPrice();
+    const priceSort = $("priceSort")?.value || "";
     const normalized = (data || []).map((row) => ({
       id: row.id,
       owner_id: row.owner_id,
@@ -1398,8 +1416,11 @@ function openAdminDemo(){
     })).filter(h =>
       (!query || (h.title + " " + h.location).toLowerCase().includes(query)) &&
       (!type || h.type === type) &&
+      (!gender || h.gender_type === gender) &&
       (!maxPrice || h.price <= maxPrice)
     );
+    if (priceSort === "low") normalized.sort((a, b) => a.price - b.price);
+    else if (priceSort === "high") normalized.sort((a, b) => b.price - a.price);
 
     loadedHouses = normalized;
     window.sakanLoadedListings = loadedHouses;
@@ -1625,7 +1646,9 @@ function renderRoomBeds(h){
   ['.search-box .field:nth-child(1) label','ابحث عن المنطقة أو اسم السكن','Search area or housing name'],
   ['.search-box .field:nth-child(1) input','مثلاً: المنيا، الجامعة...','e.g. Minya, university...'],
   ['.search-box .field:nth-child(2) label','نوع السكن','Housing type'],
-  ['.search-box .field:nth-child(3) label','أقصى سعر شهري','Maximum monthly price'],
+  ['.search-box .field:nth-child(3) label','نوع الطلاب','Student gender'],
+  ['.search-box .field:nth-child(4) label','أقصى سعر شهري','Maximum monthly price'],
+  ['.search-box .field:nth-child(5) label','ترتيب السعر','Price order'],
   ['.search-box button','ابحث الآن','Search']
  ];
  let english=false;
