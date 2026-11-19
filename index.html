@@ -587,15 +587,13 @@ animation:moonSail 10s ease-in-out infinite alternate}
 .hero-star{color:#f2c85f!important;text-shadow:0 0 5px rgba(242,200,95,.3),0 0 13px rgba(242,200,95,.2)!important;opacity:.3;animation:hero-star-life 4.8s ease-in-out var(--delay,0s) infinite!important}
 .hero-star:nth-child(even){animation-delay:calc(var(--delay,0s) + 2.4s)!important}
 @keyframes hero-star-life{0%,100%{opacity:.24;transform:translate(-50%,-50%) translateY(2px) scale(.84);filter:brightness(.9)}42%,58%{opacity:1;transform:translate(-50%,-50%) translateY(-3px) scale(1.13);filter:brightness(1.18)}}
-.hero-planet{position:absolute;left:17%;top:12%;width:clamp(142px,15vw,188px);aspect-ratio:1;z-index:2;filter:drop-shadow(0 0 9px rgba(255,229,174,.46)) drop-shadow(0 0 24px rgba(235,184,103,.28));animation:saturn-float 8s ease-in-out infinite}
-.hero-planet:before{content:"";position:absolute;inset:-28%;border-radius:50%;background:radial-gradient(ellipse,rgba(245,201,125,.2),rgba(245,201,125,.07) 42%,transparent 72%);filter:blur(11px);animation:saturn-glow 6s ease-in-out infinite alternate;pointer-events:none}
-.hero-planet svg{width:100%;height:100%;overflow:visible;position:relative}
-.saturn-ring-spin{transform-origin:90px 90px;animation:saturn-ring-turn 28s linear infinite}
-@keyframes saturn-float{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-7px) rotate(1deg)}}
-@keyframes saturn-glow{from{opacity:.58;transform:scale(.96)}to{opacity:1;transform:scale(1.06)}}
-@keyframes saturn-ring-turn{from{transform:rotate(-5deg)}to{transform:rotate(5deg)}}
-@media(max-width:700px){.hero-planet{left:6%;top:7%;width:102px;opacity:.96}}
-@media(prefers-reduced-motion:reduce){.hero-star,.hero-planet,.hero-planet:before,.saturn-ring-spin{animation:none!important}.hero-star{opacity:.82}}
+.hero-crest{position:absolute;left:15%;top:13%;width:clamp(150px,18vw,218px);aspect-ratio:1;z-index:2;pointer-events:none;opacity:.82;filter:drop-shadow(0 0 18px rgba(232,196,119,.16));animation:crest-hover 11s ease-in-out infinite}
+.hero-crest svg{display:block;width:100%;height:100%;overflow:visible}
+.crest-orbit{transform-origin:110px 110px;animation:crest-turn 90s linear infinite}
+@keyframes crest-hover{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes crest-turn{to{transform:rotate(360deg)}}
+@media(max-width:700px){.hero-crest{left:5%;top:5%;width:86px;opacity:.52}}
+@media(prefers-reduced-motion:reduce){.hero-star,.hero-crest,.crest-orbit{animation:none!important}.hero-star{opacity:.82}}
 
 </style>
 </head>
@@ -640,42 +638,23 @@ animation:moonSail 10s ease-in-out infinite alternate}
 <section class="hero" id="home">
  <div class="hero-stars" aria-hidden="true"></div>
  <div class="hero-aurora" aria-hidden="true"></div>
- <div class="hero-planet" aria-hidden="true">
-  <svg viewBox="0 0 180 180" role="presentation" focusable="false">
+ <div class="hero-crest" aria-hidden="true">
+  <svg viewBox="0 0 220 220" role="presentation" focusable="false">
    <defs>
-    <radialGradient id="saturnBody" cx="34%" cy="27%" r="78%">
-     <stop offset="0" stop-color="#fff1c4"/>
-     <stop offset=".28" stop-color="#e9c17a"/>
-     <stop offset=".62" stop-color="#bd8954"/>
-     <stop offset="1" stop-color="#73513f"/>
-    </radialGradient>
-    <linearGradient id="saturnRings" x1="0" y1="0" x2="1" y2="1">
-     <stop offset="0" stop-color="#fff1c2"/>
-     <stop offset=".3" stop-color="#eac77f"/>
-     <stop offset=".58" stop-color="#bd9465"/>
-     <stop offset=".82" stop-color="#f4d99b"/>
-     <stop offset="1" stop-color="#8d684c"/>
-    </linearGradient>
-    <linearGradient id="saturnRim" x1="0" y1="0" x2="0" y2="1">
-     <stop offset="0" stop-color="#fff4cf" stop-opacity=".9"/>
-     <stop offset="1" stop-color="#a8784b" stop-opacity=".28"/>
-    </linearGradient>
-    <clipPath id="saturnFrontClip"><circle cx="90" cy="83" r="36"/></clipPath>
+    <radialGradient id="crestGlow"><stop offset="0" stop-color="#f7d994" stop-opacity=".2"/><stop offset="1" stop-color="#f7d994" stop-opacity="0"/></radialGradient>
+    <linearGradient id="crestGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0c2"/><stop offset=".48" stop-color="#e8c477"/><stop offset="1" stop-color="#b8894f"/></linearGradient>
    </defs>
-   <g class="saturn-ring-spin">
-    <path d="M14 91 C43 47 132 34 166 76 C136 116 49 139 14 91Z" fill="none" stroke="url(#saturnRings)" stroke-width="12" opacity=".76"/>
-    <path d="M14 91 C43 47 132 34 166 76" fill="none" stroke="#fff0c0" stroke-width="1.5" opacity=".72"/>
-    <path d="M14 91 C49 124 137 112 166 76" fill="none" stroke="#8d684c" stroke-width="1.2" opacity=".45"/>
+   <circle cx="110" cy="110" r="92" fill="url(#crestGlow)"/>
+   <g class="crest-orbit">
+    <ellipse cx="110" cy="110" rx="78" ry="35" fill="none" stroke="#e8c477" stroke-opacity=".46" stroke-width="1.1" transform="rotate(-32 110 110)"/>
+    <ellipse cx="110" cy="110" rx="78" ry="35" fill="none" stroke="#e8c477" stroke-opacity=".28" stroke-width="1" transform="rotate(48 110 110)"/>
    </g>
-   <circle cx="90" cy="83" r="36" fill="url(#saturnBody)" stroke="url(#saturnRim)" stroke-width="1.5"/>
-   <g clip-path="url(#saturnFrontClip)" opacity=".38">
-    <path d="M48 65 Q90 78 132 64" fill="none" stroke="#fff0c7" stroke-width="5"/>
-    <path d="M48 82 Q90 94 132 80" fill="none" stroke="#8f6245" stroke-width="4"/>
-    <path d="M52 101 Q90 110 128 99" fill="none" stroke="#f8dda1" stroke-width="3"/>
-   </g>
-   <path d="M14 91 C43 47 132 34 166 76" fill="none" stroke="url(#saturnRings)" stroke-width="8" stroke-linecap="round" opacity=".95"/>
-   <path d="M17 89 C49 51 130 41 162 76" fill="none" stroke="#fff3ce" stroke-width="1.2" stroke-linecap="round" opacity=".78"/>
-   <circle cx="77" cy="67" r="3" fill="#fff4d4" opacity=".28"/>
+   <circle cx="110" cy="110" r="55" fill="none" stroke="#f3d58b" stroke-opacity=".22" stroke-width="1" stroke-dasharray="1 7"/>
+   <path d="M110 59 L119 101 L161 110 L119 119 L110 161 L101 119 L59 110 L101 101Z" fill="url(#crestGold)" opacity=".92"/>
+   <path d="M110 83 L115 105 L137 110 L115 115 L110 137 L105 115 L83 110 L105 105Z" fill="#fff2cb" opacity=".82"/>
+   <circle cx="110" cy="110" r="4" fill="#fff7dc"/>
+   <circle cx="37" cy="76" r="2.2" fill="#f3d58b"/><circle cx="178" cy="145" r="2" fill="#f3d58b"/>
+   <path d="M110 20v13 M110 187v13 M20 110h13 M187 110h13" stroke="#e8c477" stroke-opacity=".48" stroke-width="1"/>
   </svg>
  </div>
  
