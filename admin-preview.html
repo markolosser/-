@@ -39,7 +39,7 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
 <section id="deniedSection" class="authbox hidden"><div class="panel"><h1>لا توجد صلاحية إدارية</h1><p class="muted">الحساب مسجّل، لكنه غير مضاف إلى قائمة المديرين المعتمدين. لن تظهر أي بيانات إدارية لهذا الحساب.</p><button id="deniedLogout" class="secondary">تسجيل الخروج</button></div></section>
 <section id="dashboardSection" class="hidden">
  <div class="panelhead"><div><h1>لوحة إدارة سَكَن</h1><div class="muted">إدارة الإعلانات والمستخدمين وطلبات التواصل والإعدادات</div></div><span class="pill good">Admin access</span></div>
- <div class="notice">الإجراءات في هذه اللوحة تُنفّذ عبر Supabase وتخضع لسياسات RLS. إضافة أو إزالة مدير لا تتم من المتصفح؛ تُدار بصلاحية قاعدة بيانات آمنة.</div>
+ <div class="notice">إدارة صلاحيات المديرين متاحة للمديرين المعتمدين فقط، وتُحمى من خلال سياسات قاعدة البيانات.</div>
  <div class="grid">
   <div class="card"><div class="muted">كل الإعلانات</div><div class="metric" id="metricListings">—</div></div>
   <div class="card"><div class="muted">بانتظار المراجعة</div><div class="metric" id="metricPending">—</div></div>
@@ -76,7 +76,17 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
 <section class="panel" id="listings"><div class="panelhead"><h2>مراجعة إعلانات السكن</h2><button class="secondary" id="refreshBtn">تحديث البيانات</button></div><div class="tablewrap"><table><thead><tr><th>العنوان</th><th>المنطقة</th><th>السعر</th><th>المالك</th><th>الحالة</th><th>الإجراءات</th></tr></thead><tbody id="listingRows"><tr><td colspan="6">جارٍ التحميل...</td></tr></tbody></table></div></section>
    <section class="panel" id="users"><h2>المستخدمون</h2><div class="tablewrap"><table><thead><tr><th>الاسم</th><th>النوع</th><th>رقم التواصل</th><th>معرّف الحساب</th></tr></thead><tbody id="userRows"></tbody></table></div></section>
    <section class="panel" id="contacts"><h2>طلبات التواصل</h2><div class="tablewrap"><table><thead><tr><th>الرسالة</th><th>صاحب السكن</th><th>مقدم الطلب</th><th>الحالة</th><th>الإجراء</th></tr></thead><tbody id="contactRows"></tbody></table></div></section>
-   <section class="panel" id="admins"><h2>المديرون المعتمدون</h2><p class="muted">تظهر هنا الحسابات التي لها دور admin. إضافة مدراء جدد تتم من قاعدة البيانات بعد التأكد من إنشاء حسابهم في الموقع.</p><div class="tablewrap"><table><thead><tr><th>معرّف الحساب</th><th>الدور</th><th>منذ</th></tr></thead><tbody id="adminRows"></tbody></table></div></section>
+   <section class="panel" id="admins">
+<h2>إدارة المديرين</h2>
+<p class="muted">أضف حسابًا مسجلًا بالفعل في سَكَن باستخدام بريده الإلكتروني، أو أزل صلاحية الإدارة. لن يتم حذف حساب المستخدم نفسه.</p>
+<form id="addAdminForm" class="toolbar" style="margin:14px 0">
+<div style="flex:1;min-width:220px"><label for="newAdminEmail">البريد الإلكتروني للحساب</label><input id="newAdminEmail" name="email" type="email" placeholder="name@example.com" required></div>
+<button id="addAdminBtn" type="submit">إضافة كمدير</button>
+</form>
+<p id="adminManageMessage" class="tabmessage" aria-live="polite"></p>
+<div class="tablewrap"><table><thead><tr><th>البريد الإلكتروني</th><th>معرّف الحساب</th><th>تاريخ الإضافة</th><th>الإجراء</th></tr></thead><tbody id="adminRows"><tr><td colspan="4">جارٍ التحميل...</td></tr></tbody></table></div>
+<p class="muted">لا يمكنك إزالة صلاحيتك من هذه الشاشة؛ اطلب من مدير آخر تنفيذ ذلك. ولا يمكن إزالة آخر مدير في النظام.</p>
+</section>
    <section class="panel" id="settings"><h2>إعدادات الموقع</h2><p class="muted">الإعدادات محفوظة في جدول site_settings ومحجوبة عن المستخدمين العاديين.</p><div id="settingsList" class="muted">لا توجد إعدادات محفوظة حتى الآن.</div></section>
   </div>
  </div>
@@ -108,24 +118,47 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
   show("dashboardSection");await loadDashboard();
  }
  async function loadDashboard(){
-  const [listings,profiles,contacts,roles,settings]=await Promise.all([
+  const [listings,profiles,contacts,roles,settings,adminList]=await Promise.all([
    client.from("listings").select("id,owner_id,title,location,monthly_price,status,availability_status,spots_total,spots_available,rejection_reason,created_at").order("created_at",{ascending:false}).limit(250),
    client.from("profiles").select("id,display_name,phone,user_type,created_at").order("created_at",{ascending:false}).limit(250),
    client.from("contact_requests").select("id,requester_id,owner_id,message,status,created_at").order("created_at",{ascending:false}).limit(250),
    client.from("user_roles").select("user_id,role,created_at").eq("role","admin").order("created_at",{ascending:true}),
-   client.from("site_settings").select("key,value,updated_at").order("key")
+   client.from("site_settings").select("key,value,updated_at").order("key"),
+   client.rpc("list_sakan_admins")
   ]);
-  const failed=[listings,profiles,contacts,roles,settings].find(x=>x.error);
+  const failed=[listings,profiles,contacts,roles,settings,adminList].find(x=>x.error);
   if(failed){alert("تعذر تحميل لوحة الإدارة: "+failed.error.message);return}
-  const L=listings.data||[],P=profiles.data||[],C=contacts.data||[],R=roles.data||[],S=settings.data||[];listingsCache=L;
+  const L=listings.data||[],P=profiles.data||[],C=contacts.data||[],R=roles.data||[],S=settings.data||[],A=adminList.data||[];listingsCache=L;
   $("metricListings").textContent=L.length;$("metricPending").textContent=L.filter(x=>x.status==="pending").length;$("metricProfiles").textContent=P.length;$("metricContacts").textContent=C.length;
   const profileById=new Map(P.map(p=>[p.id,p]));
   $("listingRows").innerHTML=L.map(x=>'<tr><td>'+esc(x.title)+'</td><td>'+esc(x.location)+'</td><td>'+Number(x.monthly_price).toLocaleString("ar-EG")+' جنيه</td><td>'+esc(profileById.get(x.owner_id)?.display_name||x.owner_id.slice(0,8))+'</td><td>'+esc(statusLabel(x.status))+'<br><small>'+esc(availabilityLabel(x.availability_status))+' · '+(x.spots_available==null?"العدد غير محدد":x.spots_available+" متبقي")+'</small></td><td><div class="actions">'+(x.status!=="published"?'<button class="green" data-action="publish" data-id="'+x.id+'">موافقة ونشر</button>':"")+(x.status!=="rejected"?'<button class="danger" data-action="reject" data-id="'+x.id+'">رفض</button>':"")+'<button class="secondary" data-action="archive" data-id="'+x.id+'">أرشفة</button><select data-availability="'+x.id+'"><option value="available" '+(x.availability_status==="available"?"selected":"")+'>متاح</option><option value="negotiating" '+(x.availability_status==="negotiating"?"selected":"")+'>تم التفاوض</option><option value="rented" '+(x.availability_status==="rented"?"selected":"")+'>تم البيع / التأجير</option><option value="full" '+(x.availability_status==="full"?"selected":"")+'>مكتمل العدد</option><option value="paused" '+(x.availability_status==="paused"?"selected":"")+'>إيقاف مؤقت</option></select><input type="number" min="0" placeholder="المتبقي" data-spots="'+x.id+'" value="'+(x.spots_available??"")+'" style="width:75px"><button class="green" data-action="save-spots" data-id="'+x.id+'">حفظ العدد</button></div></td></tr>').join("")||'<tr><td colspan="6">لا توجد إعلانات حتى الآن.</td></tr>';
   $("userRows").innerHTML=P.map(p=>'<tr><td>'+esc(p.display_name||"—")+'</td><td>'+esc(p.user_type)+'</td><td>'+esc(p.phone||"—")+'</td><td><small>'+esc(p.id)+'</small></td></tr>').join("")||'<tr><td colspan="4">لا يوجد مستخدمون.</td></tr>';
   $("contactRows").innerHTML=C.map(c=>'<tr><td>'+esc(c.message)+'</td><td>'+esc(profileById.get(c.owner_id)?.display_name||c.owner_id.slice(0,8))+'</td><td>'+esc(profileById.get(c.requester_id)?.display_name||c.requester_id.slice(0,8))+'</td><td>'+esc(c.status)+'</td><td><select data-contact="'+c.id+'"><option value="new" '+(c.status==="new"?"selected":"")+'>جديد</option><option value="read" '+(c.status==="read"?"selected":"")+'>تمت المراجعة</option><option value="closed" '+(c.status==="closed"?"selected":"")+'>مغلق</option></select></td></tr>').join("")||'<tr><td colspan="5">لا توجد طلبات تواصل.</td></tr>';
-  $("adminRows").innerHTML=R.map(r=>'<tr><td><small>'+esc(r.user_id)+'</small></td><td>'+esc(r.role)+'</td><td>'+date(r.created_at)+'</td></tr>').join("")||'<tr><td colspan="3">لم يتم تعيين مديرين بعد.</td></tr>';
+  $("adminRows").innerHTML=A.map(r=>'<tr><td>'+esc(r.email||"بريد غير متاح")+'</td><td><small>'+esc(r.user_id)+'</small></td><td>'+date(r.created_at)+'</td><td>'+(r.user_id===activeUser.id?'<span class="pill good">حسابك الحالي</span>':'<button class="danger" data-remove-admin="'+esc(r.user_id)+'">إزالة الصلاحية</button>')+'</td></tr>').join("")||'<tr><td colspan="4">لم يتم تعيين مديرين بعد.</td></tr>';
   $("settingsList").innerHTML=S.map(s=>'<div style="border-bottom:1px solid var(--line);padding:8px 0"><strong>'+esc(s.key)+'</strong><pre style="white-space:pre-wrap;color:var(--muted)">'+esc(JSON.stringify(s.value))+'</pre></div>').join("")||"لا توجد إعدادات محفوظة حتى الآن.";
  }
+ $("addAdminForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const form=e.currentTarget,button=$("addAdminBtn"),msg=$("adminManageMessage");
+  const email=form.elements.email.value.trim().toLowerCase();
+  if(!email)return;
+  button.disabled=true;msg.style.color="var(--muted)";msg.textContent="جارٍ إضافة المدير...";
+  const {data,error}=await client.rpc("add_admin_by_email",{target_email:email});
+  if(error){msg.textContent="تعذرت إضافة المدير: "+error.message;msg.style.color="#ff9b9b";}
+  else{msg.textContent="تم منح صلاحية الإدارة للحساب: "+(data?.[0]?.email||email);form.reset();await loadDashboard();}
+  button.disabled=false;
+ });
+ $("adminRows").addEventListener("click",async e=>{
+  const button=e.target.closest("[data-remove-admin]");
+  if(!button)return;
+  const userId=button.dataset.removeAdmin;
+  if(userId===activeUser?.id){alert("لا يمكنك إزالة صلاحيتك من هنا. اطلب من مدير آخر تنفيذ ذلك.");return;}
+  if(!confirm("هل أنت متأكد من إزالة صلاحية الإدارة عن هذا الحساب؟ لن يتم حذف الحساب أو بياناته."))return;
+  button.disabled=true;
+  const {error}=await client.from("user_roles").delete().eq("user_id",userId).eq("role","admin");
+  if(error){alert("تعذرت إزالة الصلاحية: "+error.message);button.disabled=false;}
+  else{$("adminManageMessage").textContent="تمت إزالة صلاحية الإدارة فقط، والحساب وبياناته لم تُحذف.";await loadDashboard();}
+ });
  $("listingRows").addEventListener("click",async e=>{
   const b=e.target.closest("button[data-action]");if(!b)return;const id=b.dataset.id,action=b.dataset.action;let update={};
   if(action==="publish")update={status:"published",rejection_reason:null};
