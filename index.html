@@ -620,6 +620,24 @@ animation:moonSail 10s ease-in-out infinite alternate}
 header,main,footer{position:relative;z-index:2}
 @media(prefers-reduced-motion:reduce){.starfield .page-star{animation:none!important}}
 
+
+/* About cards: concise copy with subtle Van Gogh-inspired painted night swirls */
+.about-art-grid{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:minmax(310px,auto);gap:14px}
+.about-art{min-height:310px;padding:24px 22px;border-radius:20px;background-color:#142b49}
+.about-main{grid-row:auto;min-height:310px;background:radial-gradient(ellipse at 15% 85%,#d5a94b22,transparent 45%),linear-gradient(145deg,#1d4564,#0b1a33 78%)}
+.about-partner{background:radial-gradient(ellipse at 95% 10%,#79b9e52c,transparent 55%),linear-gradient(140deg,#183b58,#101f39)}
+.about-trust{background:radial-gradient(ellipse at 90% 90%,#d7b65a25,transparent 48%),linear-gradient(140deg,#253b59,#101b32)}
+.about-art:after{content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;opacity:.55;background:
+repeating-radial-gradient(ellipse at 82% 18%,transparent 0 19px,rgba(238,194,112,.11) 20px 21px,transparent 22px 34px),
+repeating-linear-gradient(148deg,transparent 0 25px,rgba(143,190,218,.055) 26px 28px,transparent 29px 48px);
+mask-image:linear-gradient(135deg,transparent 5%,#000 45%,#000 100%)}
+.about-art .about-symbol{margin:22px 0 12px}
+.about-art h3{font-size:clamp(21px,2.2vw,28px);line-height:1.4}
+.about-art p{font-size:12px;line-height:1.85;max-width:290px}
+.about-art a{margin-top:14px}
+@media(max-width:850px){.about-art-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto}.about-main{grid-column:1/-1;min-height:250px}}
+@media(max-width:580px){.about-art-grid{grid-template-columns:1fr}.about-main{grid-column:auto;min-height:230px}.about-art{min-height:225px}}
+
 </style>
 </head>
 
@@ -782,11 +800,11 @@ header,main,footer{position:relative;z-index:2}
    <div><h2>ليه <span class="gold">سَكَن؟</span></h2><p>كل اللي تحتاجه علشان تلاقي مكانك.</p></div>
   </div>
   <div class="about-art-grid">
-   <article class="about-art about-main"><span class="about-index">01 / FIND YOUR PLACE</span><div class="about-symbol">⌕</div><h3>كل اختياراتك<br>في مكان واحد</h3><p>اكتشف السكن وقارن الأسعار والمناطق والتفاصيل، من غير دوشة البحث في مجموعات كتير.</p><a href="#houses">ابدأ الاستكشاف <b>←</b></a><i class="art-orbit orbit-a"></i><i class="art-orbit orbit-b"></i></article>
-   <article class="about-art about-partner"><span class="about-index">02 / FIND YOUR PEOPLE</span><div class="about-symbol">✳</div><h3>مشوارك أحلى<br>مع شريك مناسب</h3><p>اتعرف على طلاب قريبين منك في الجامعة والميزانية وطريقة الحياة.</p><a href="#students">قابل شريكك <b>←</b></a><i class="art-star">✦</i></article>
-   <article class="about-art about-trust"><span class="about-index">03 / FEEL AT HOME</span><div class="about-symbol">⌂</div><h3>تفاصيل أوضح<br>وقرار أريح</h3><p>بيانات ومواصفات تساعدك تكوّن صورة أفضل قبل ما تتواصل وتقرر.</p><a href="#houses">اعرف أكتر <b>←</b></a><i class="trust-ring"></i></article>
+   <article class="about-art about-main"><span class="about-index">01 / FIND YOUR PLACE</span><div class="about-symbol">⌕</div><h3>كل السكن<br>في مكان واحد</h3><p>اكتشف الخيارات وقارن السعر والموقع بسهولة.</p><a href="#houses">اكتشف السكن <b>←</b></a><i class="art-orbit orbit-a"></i><i class="art-orbit orbit-b"></i></article>
+   <article class="about-art about-partner"><span class="about-index">02 / FIND YOUR PEOPLE</span><div class="about-symbol">✳</div><h3>شريك سكن<br>يشبهك</h3><p>قابل طلاب يشاركونك اهتماماتك وميزانيتك.</p><a href="#students">ابحث عن شريك <b>←</b></a><i class="art-star">✦</i></article>
+   <article class="about-art about-trust"><span class="about-index">03 / TRUSTED DETAILS</span><div class="about-symbol">✓</div><h3>ثقة في<br>كل تفصيلة</h3><p>فريقنا يراجع صور السكن وتفاصيله قبل عرضها.</p><a href="#houses">تصفّح السكن <b>←</b></a><i class="trust-ring"></i></article>
   </div>
-  <div class="about-signature"><span>سَكَن</span><p>مساحة تجمعك بالمكان والناس اللي شبهك.</p></div>
+  <div class="about-signature"><span>سَكَن</span><p>اختيار أوضح.. وراحة بال أكتر.</p></div>
  </div>
 </section>
 
