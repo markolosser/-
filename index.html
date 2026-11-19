@@ -737,6 +737,28 @@ mask-image:linear-gradient(135deg,transparent 5%,#000 45%,#000 100%)}
 @media(max-width:580px){.cta{margin:25px auto 34px;padding:48px 20px 44px;border-radius:21px}.cta-kicker{font-size:9px;letter-spacing:2px}.cta p{font-size:13px}.cta:after{top:17px;right:7%}}
 @media(prefers-reduced-motion:reduce){.cta .btn span{transition:none}}
 
+
+/* Simplify the final footer heading and keep the original plain Sakan wordmark */
+.footer-art-top{
+ isolation:auto;overflow:visible;border-radius:0;padding:0 0 38px;
+ background:transparent;border:0;border-bottom:1px solid #ffffff20;
+ box-shadow:none;
+}
+.footer-art-top:before,.footer-art-top:after{content:none!important;display:none!important}
+.footer-art-top h2{ text-shadow:none!important }
+.footer-art-top h2 span{color:#f5d47f!important;text-shadow:none!important}
+.footer-backtop{background:transparent!important;box-shadow:none!important}
+.footer-art-bottom>.logo{
+ position:static!important;display:inline!important;align-items:initial!important;justify-content:initial!important;
+ min-width:0!important;min-height:0!important;padding:0!important;border:0!important;border-radius:0!important;
+ color:var(--gold)!important;background:none!important;box-shadow:none!important;
+ font-size:27px!important;font-weight:900!important;letter-spacing:.4px!important;
+ text-shadow:0 0 22px #f3c96935!important;
+}
+.footer-art-bottom>.logo:before,.footer-art-bottom>.logo:after{content:none!important;display:none!important}
+.footer-art-bottom>.logo span{color:white!important}
+@media(max-width:580px){.footer-art-top{padding:0 0 28px!important;border-radius:0!important}}
+
 </style>
 </head>
 
