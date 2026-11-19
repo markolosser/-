@@ -759,6 +759,18 @@ mask-image:linear-gradient(135deg,transparent 5%,#000 45%,#000 100%)}
 .footer-art-bottom>.logo span{color:white!important}
 @media(max-width:580px){.footer-art-top{padding:0 0 28px!important;border-radius:0!important}}
 
+
+.custom-price-input{width:100%;margin-top:8px;padding:11px 12px;border:1px solid var(--border);border-radius:10px;background:#091a32;color:#fff;font:inherit}
+.custom-price-input:focus{outline:none;border-color:#91c9f5;box-shadow:0 0 0 3px #83b8e81c}.custom-price-input[hidden]{display:none}
+.room-bed-section{margin-top:8px}.room-bed-legend{display:flex;gap:14px;flex-wrap:wrap;margin:10px 0 14px;color:#c5d3e2;font-size:12px}
+.room-bed-legend span{display:inline-flex;align-items:center;gap:6px}.room-bed-legend i,.bed-place i{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;font-size:10px;font-style:normal}
+.room-bed-legend .free,.bed-place .free{background:#1d9b70;color:#fff}.room-bed-legend .busy,.bed-place .busy{background:#a85c55;color:#fff}
+.room-bed-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}.room-bed-card{padding:13px;border:1px solid var(--border);border-radius:13px;background:#ffffff08}
+.room-bed-card>strong{display:block;color:#f5d47f;font-size:13px;margin-bottom:10px}.room-bed-list{display:flex;gap:10px;flex-wrap:wrap}
+.bed-place{position:relative;display:inline-flex;align-items:center;justify-content:center;width:42px;height:39px;border-radius:9px;background:#ffffff08;font-size:23px}
+.bed-place i{position:absolute;right:-5px;top:-6px;border:2px solid #102442;width:17px;height:17px;font-size:9px}
+@media(max-width:580px){.room-bed-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
 </style>
 </head>
 
@@ -865,15 +877,12 @@ mask-image:linear-gradient(135deg,transparent 5%,#000 45%,#000 100%)}
     <option value="سرير">سرير</option>
    </select>
   </div>
-  <div class="field">
-   <label>أقصى سعر شهري</label>
-   <select id="maxPrice" onchange="renderHouses()">
-    <option value="">كل الأسعار</option>
-    <option value="1000">1000 جنيه</option>
-    <option value="2000">2000 جنيه</option>
-    <option value="3000">3000 جنيه</option>
-    <option value="5000">5000 جنيه</option>
+  <div class="field price-filter-field">
+   <label for="maxPrice">أقصى سعر شهري</label>
+   <select id="maxPrice" onchange="handlePricePreset()">
+    <option value="">كل الأسعار</option><option value="1000">1000 جنيه</option><option value="2000">2000 جنيه</option><option value="3000">3000 جنيه</option><option value="5000">5000 جنيه</option><option value="custom">✍ اكتب السعر بنفسك</option>
    </select>
+   <input id="customMaxPrice" class="custom-price-input" type="text" inputmode="numeric" autocomplete="off" placeholder="اكتب أقصى سعر بالجنيه" aria-label="اكتب أقصى سعر بالجنيه" oninput="renderHouses()" hidden>
   </div>
   <button class="btn" onclick="renderHouses()">ابحث الآن</button>
  </div>
@@ -1022,6 +1031,11 @@ let houses = [];
 function save(){
  localStorage.setItem("sakan_houses",JSON.stringify(houses));
 }
+
+
+function normalizePriceDigits(value){return String(value||"").replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(/[۰-۹]/g,d=>"۰۱۲۳۴۵۶۷۸۹".indexOf(d)).replace(/[٬,]/g,"").trim()}
+function getSelectedMaxPrice(){const v=document.getElementById("maxPrice")?.value||"";return v==="custom"?(Number(normalizePriceDigits(document.getElementById("customMaxPrice")?.value))||0):(Number(v)||0)}
+function handlePricePreset(){const select=document.getElementById("maxPrice"),custom=document.getElementById("customMaxPrice");if(!select||!custom)return;const on=select.value==="custom";custom.hidden=!on;if(on){custom.value="";custom.focus()}renderHouses()}
 
 function renderHouses(){
  const query=document.getElementById("search").value.trim().toLowerCase();
@@ -1408,6 +1422,15 @@ function openAdminDemo(){
   const SAKAN_CONTACT_PHONE = "201203029724";
   const SAKAN_CONTACT_DISPLAY = "01203029724";
 
+
+function renderRoomBeds(h){
+ const rooms=Math.max(1,Math.min(20,Number(h.rooms)||1)),total=Math.max(0,Math.min(60,Number(h.spots_total)||0)),available=Math.max(0,Math.min(total,Number(h.spots_available)||0));
+ if(!total)return '<div class="details-section room-bed-section"><h3>الغرف والأماكن الشاغرة</h3><p class="notice">عدد الأسرة لم يتم تحديده لهذا السكن بعد.</p></div>';
+ let occupiedLeft=total-available,groups="",base=Math.floor(total/rooms),extra=total%rooms;
+ for(let r=0;r<rooms;r++){let n=base+(r<extra?1:0);if(!n)continue;let icons="";for(let b=0;b<n;b++){let busy=occupiedLeft>0;if(busy)occupiedLeft--;icons+='<span class="bed-place" title="'+(busy?'سرير مشغول':'سرير شاغر')+'"><span>🛏️</span><i class="'+(busy?'busy':'free')+'">'+(busy?'●':'✓')+'</i></span>'}groups+='<div class="room-bed-card"><strong>غرفة '+(r+1)+'</strong><div class="room-bed-list">'+icons+'</div></div>'}
+ return '<div class="details-section room-bed-section"><h3>الغرف والأماكن الشاغرة</h3><div class="room-bed-legend"><span><i class="free">✓</i> شاغر ('+available+')</span><span><i class="busy">●</i> مشغول ('+(total-available)+')</span></div><div class="room-bed-grid">'+groups+'</div></div>'
+}
+
   window.sakanShowDetails = async (id) => {
     const h = loadedHouses.find(item => item.id === id);
     if (!h) return;
@@ -1434,12 +1457,12 @@ function openAdminDemo(){
         '<div class="details-specs">' +
           '<div class="details-spec"><strong>نوع السكن</strong><span>🏠 ' + safe(h.type) + '</span></div>' +
           '<div class="details-spec"><strong>الغرف</strong><span>🚪 ' + h.rooms + '</span></div>' +
-          '<div class="details-spec"><strong>الحمامات</strong><span>🚿 ' + h.bathrooms + '</span></div>' +
           '<div class="details-spec"><strong>التأثيث</strong><span>' + (h.furnished ? '🛋️ مفروش' : 'بدون فرش') + '</span></div>' +
           '<div class="details-spec"><strong>الدور</strong><span>🏢 ' + safe(h.floor || "غير محدد") + '</span></div>' +
           '<div class="details-spec"><strong>المرافق</strong><span>' + (h.utilities_included ? '⚡ ضمن السعر' : 'غير مشمولة') + '</span></div>' +
         '<div class="details-spec"><strong>حالة السكن</strong><span>' + safe(stateText) + '</span></div><div class="details-spec"><strong>التوفر</strong><span>' + safe(capacityText) + '</span></div>' +
         '</div>' +
+        renderRoomBeds(h) +
         (h.available_from ? '<div class="details-section"><h3>موعد الإتاحة</h3><p>' + safe(h.available_from) + '</p></div>' : '') +
         '<div class="details-section"><h3>مميزات السكن</h3>' + amenities + '</div>' +
         '<div class="details-section"><h3>وصف السكن</h3><p>' + safe(h.description || "لا يوجد وصف إضافي.") + '</p></div>' +
