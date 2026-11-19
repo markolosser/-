@@ -706,6 +706,37 @@ mask-image:linear-gradient(135deg,transparent 5%,#000 45%,#000 100%)}
 }
 @media(prefers-reduced-motion:reduce){.side-menu:before{animation:none!important}}
 
+
+/* Refined closing call-to-action + restore the footer logo to its original wordmark */
+.cta{
+ position:relative;isolation:isolate;overflow:hidden;
+ max-width:940px;margin:34px auto 46px;padding:66px 28px 62px;
+ text-align:center;border:1px solid rgba(245,212,127,.22);border-radius:26px;
+ background:
+  radial-gradient(ellipse at 50% 0%,rgba(111,153,190,.22),transparent 52%),
+  radial-gradient(ellipse at 8% 100%,rgba(202,157,79,.10),transparent 42%),
+  linear-gradient(135deg,#142d4b 0%,#0d1e36 55%,#172b49 100%);
+ box-shadow:0 24px 65px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.07);
+}
+.cta:before{
+ content:"";position:absolute;z-index:-1;inset:-35%;
+ background:repeating-radial-gradient(ellipse at 50% 48%,transparent 0 31px,rgba(140,177,205,.075) 32px 33px,transparent 35px 58px);
+ transform:rotate(-9deg);opacity:.65;pointer-events:none;
+}
+.cta:after{content:"✦";position:absolute;top:27px;right:8%;font-size:22px;color:#f5d47f;text-shadow:0 0 20px rgba(245,212,127,.6);opacity:.75;pointer-events:none}
+.cta-kicker{display:inline-block;margin-bottom:17px;color:#a9c7df;font:10px Arial,sans-serif;letter-spacing:3px}
+.cta h2{position:relative;margin:0 0 12px;font-size:clamp(27px,4.2vw,40px);line-height:1.45;color:#f5f0e5}
+.cta h2 span{color:#f5d47f;text-shadow:0 0 24px rgba(245,212,127,.18)}
+.cta p{max-width:490px;margin:0 auto 25px;color:#bdcada;font-size:14px;line-height:2}
+.cta .btn{display:inline-flex;align-items:center;justify-content:center;gap:13px;min-width:154px;padding:13px 24px;border-radius:13px;box-shadow:0 9px 28px rgba(243,201,105,.18)}
+.cta .btn span{font-size:18px;transition:transform .25s}
+.cta .btn:hover span{transform:translateX(-4px)}
+.footer-art-bottom>.logo{display:inline;font-size:27px;font-weight:900;letter-spacing:.4px;color:var(--gold);min-width:0;min-height:0;padding:0;border:0;border-radius:0;background:none;box-shadow:none;text-shadow:0 0 22px #f3c96935}
+.footer-art-bottom>.logo:before,.footer-art-bottom>.logo:after{content:none;display:none}
+.footer-art-bottom>.logo span{color:white}
+@media(max-width:580px){.cta{margin:25px auto 34px;padding:48px 20px 44px;border-radius:21px}.cta-kicker{font-size:9px;letter-spacing:2px}.cta p{font-size:13px}.cta:after{top:17px;right:7%}}
+@media(prefers-reduced-motion:reduce){.cta .btn span{transition:none}}
+
 </style>
 </head>
 
@@ -879,9 +910,10 @@ mask-image:linear-gradient(135deg,transparent 5%,#000 45%,#000 100%)}
 <section>
  <div class="container">
   <div class="cta">
-   <h2>لسه بتدور على سكن؟</h2>
-   <p>ابدأ رحلتك واكتشف اختياراتك على سَكَن.</p>
-   <a href="#houses" class="btn">يلا نبدأ</a>
+   <span class="cta-kicker">YOUR NEXT CHAPTER STARTS HERE</span>
+   <h2>لسه بتدور على <span>سكن؟</span></h2>
+   <p>خطوتك الجاية تبدأ من هنا.. اختار المكان اللي يناسبك وخلي سَكَن يسهّل عليك الباقي.</p>
+   <a href="#houses" class="btn">يلا بينا <span aria-hidden="true">←</span></a>
   </div>
  </div>
 </section>
