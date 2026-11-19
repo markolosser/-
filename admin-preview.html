@@ -20,6 +20,19 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
 .hidden{display:none!important}.room-editor{margin-top:14px;padding:16px;border:1px solid #ffffff22;border-radius:13px;background:#0a1b32}.room-editor-toolbar{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}.room-editor-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0}.room-edit-card{padding:13px;border:1px solid #36b98288;border-radius:12px;background:#102b3e;min-width:0}.room-edit-head{display:flex;gap:8px;align-items:center}.room-edit-head input{flex:1;min-width:0}.bed-edit-list{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}.bed-edit{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:8px;font-size:12px;background:#164332;border:1px solid #3bc58b;color:#c6ffe4}.bed-edit.occupied{background:#482832;border-color:#d66b78;color:#ffd0d5}.room-editor-actions{display:flex;gap:7px;flex-wrap:wrap}.room-editor-message{min-height:22px;font-size:12px;color:var(--muted);margin-top:8px}@media(max-width:650px){.room-editor-list{grid-template-columns:1fr}}.authbox{width:min(470px,100%);margin:35px auto}.authbox .panel{padding:25px}.field{margin-bottom:12px}.tabmessage{min-height:24px;color:var(--muted);font-size:13px}.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 @media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}nav{position:static;display:grid;grid-template-columns:repeat(3,1fr)}}
 @media(max-width:550px){.grid{grid-template-columns:1fr 1fr}h1{font-size:23px}nav{grid-template-columns:repeat(2,1fr)}}
+
+.smart-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:16px 0}
+.smart-kpi{padding:14px;border:1px solid var(--line);border-radius:12px;background:#ffffff08}
+.smart-kpi strong{display:block;font-size:23px;color:var(--gold)}.smart-kpi span{font-size:12px;color:var(--muted)}
+.smart-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.smart-chart{padding:15px;border:1px solid var(--line);border-radius:12px;background:#091a32;min-width:0}
+.smart-chart h3{font-size:15px;margin:0 0 12px}
+.smart-bars{display:grid;gap:10px}.smart-bar{display:grid;grid-template-columns:100px 1fr 35px;gap:8px;align-items:center;font-size:12px}
+.smart-track{height:10px;background:#ffffff18;border-radius:20px;overflow:hidden}.smart-fill{height:100%;background:linear-gradient(90deg,#75b8e8,#f3c969);border-radius:20px}
+.smart-months{height:150px;display:flex;align-items:end;gap:8px}.smart-month{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11px;color:var(--muted)}.smart-month i{width:70%;background:linear-gradient(0deg,#4d8ec4,#f3c969);border-radius:6px 6px 0 0;min-height:3px}
+.smart-insights{margin-top:14px;padding:16px;border:1px solid #f3c96955;border-radius:12px;background:#f3c96909}.smart-insights h3{margin:0 0 10px}
+#smartInsights{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.smart-tip{padding:12px;border-radius:10px;background:#ffffff09;font-size:13px}.smart-tip b{display:block;color:var(--gold);margin-bottom:4px}
+@media(max-width:700px){.smart-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.smart-grid,#smartInsights{grid-template-columns:1fr}.smart-bar{grid-template-columns:85px 1fr 30px}}
 </style>
 </head>
 <body>
@@ -47,7 +60,7 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
   <div class="card"><div class="muted">طلبات التواصل</div><div class="metric" id="metricContacts">—</div></div>
  </div>
  <div class="layout">
-  <nav><a href="#add-listing">إضافة سكن</a><a class="active" href="#listings">الإعلانات</a><a href="#users">المستخدمون</a><a href="#contacts">طلبات التواصل</a><a href="#admins">المديرون</a><a href="#settings">إعدادات الموقع</a></nav>
+  <nav><a href="#add-listing">إضافة سكن</a><a class="active" href="#listings">الإعلانات</a><a href="#users">المستخدمون</a><a href="#contacts">طلبات التواصل</a><a href="#admins">المديرون</a><a href="#settings">إعدادات الموقع</a><a href="#smart-charge">Smart Charge ⚡</a></nav>
   <div>
    <section class="panel" id="add-listing"><div class="panelhead"><h2>إضافة سكن جديد بواسطة الإدارة</h2></div>
 <p class="muted">الإعلان يُضاف مباشرة باسم حساب الإدارة ويظهر بعد الحفظ. المستخدمون العاديون لا يملكون صلاحية إنشاء إعلانات.</p>
@@ -87,6 +100,22 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
 <div class="tablewrap"><table><thead><tr><th>البريد الإلكتروني</th><th>معرّف الحساب</th><th>تاريخ الإضافة</th><th>الإجراء</th></tr></thead><tbody id="adminRows"><tr><td colspan="4">جارٍ التحميل...</td></tr></tbody></table></div>
 <p class="muted">لا يمكنك إزالة صلاحيتك من هذه الشاشة؛ اطلب من مدير آخر تنفيذ ذلك. ولا يمكن إزالة آخر مدير في النظام.</p>
 </section>
+
+   <section class="panel" id="smart-charge">
+    <div class="panelhead"><div><h2>⚡ Smart Charge</h2><p class="muted">تحليلات حقيقية من بيانات سَكَن وتوصيات تساعد الإدارة وأصحاب السكن.</p></div><button class="secondary" id="smartRefresh" type="button">تحديث التحليلات</button></div>
+    <p class="muted" id="smartUpdated"></p>
+    <div class="smart-kpis" id="smartKpis"></div>
+    <div class="smart-grid">
+     <article class="smart-chart"><h3>حالة الإعلانات</h3><div id="smartStatus"></div></article>
+     <article class="smart-chart"><h3>أنواع السكن</h3><div id="smartTypes"></div></article>
+     <article class="smart-chart"><h3>أكثر المناطق عرضًا</h3><div id="smartAreas"></div></article>
+     <article class="smart-chart"><h3>نشاط الإعلانات آخر 6 شهور</h3><div id="smartTrend"></div></article>
+     <article class="smart-chart"><h3>متوسط السعر حسب النوع</h3><div id="smartPrices"></div></article>
+     <article class="smart-chart"><h3>حالة طلبات التواصل</h3><div id="smartContacts"></div></article>
+    </div>
+    <div class="smart-insights"><h3>💡 توصيات وفرص</h3><div id="smartInsights"></div></div>
+    <p class="muted">البيانات حسب السجلات المتاحة في قاعدة البيانات، وبحد أقصى 250 سجلًا لكل قسم في الاستعلام الحالي. لا تتوفر حاليًا بيانات زيارات أو مشاهدات الإعلانات.</p>
+   </section>
    <section class="panel" id="settings"><h2>إعدادات الموقع</h2><p class="muted">الإعدادات محفوظة في جدول site_settings ومحجوبة عن المستخدمين العاديين.</p><div id="settingsList" class="muted">لا توجد إعدادات محفوظة حتى الآن.</div></section>
   </div>
  </div>
@@ -118,17 +147,18 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
   show("dashboardSection");await loadDashboard();
  }
  async function loadDashboard(){
-  const [listings,profiles,contacts,roles,settings,adminList]=await Promise.all([
+  const [listings,profiles,contacts,roles,settings,adminList,roommates]=await Promise.all([
    client.from("listings").select("id,owner_id,title,location,address_details,monthly_price,listing_type,rooms,bathrooms,floor,gender_type,utilities_included,available_from,amenities,description,status,availability_status,spots_total,spots_available,room_distribution,rejection_reason,created_at").order("created_at",{ascending:false}).limit(250),
    client.from("profiles").select("id,display_name,phone,user_type,created_at").order("created_at",{ascending:false}).limit(250),
    client.from("contact_requests").select("id,requester_id,owner_id,message,status,created_at").order("created_at",{ascending:false}).limit(250),
    client.from("user_roles").select("user_id,role,created_at").eq("role","admin").order("created_at",{ascending:true}),
    client.from("site_settings").select("key,value,updated_at").order("key"),
-   client.rpc("list_sakan_admins")
+   client.rpc("list_sakan_admins"),
+   client.from("roommate_profiles").select("user_id,is_active,is_paused,created_at").limit(250)
   ]);
   const failed=[listings,profiles,contacts,roles,settings,adminList].find(x=>x.error);
   if(failed){alert("تعذر تحميل لوحة الإدارة: "+failed.error.message);return}
-  const L=listings.data||[],P=profiles.data||[],C=contacts.data||[],R=roles.data||[],S=settings.data||[],A=adminList.data||[];listingsCache=L;
+  const L=listings.data||[],P=profiles.data||[],C=contacts.data||[],R=roles.data||[],S=settings.data||[],A=adminList.data||[],M=roommates.data||[];listingsCache=L;
   $("metricListings").textContent=L.length;$("metricPending").textContent=L.filter(x=>x.status==="pending").length;$("metricProfiles").textContent=P.length;$("metricContacts").textContent=C.length;
   const profileById=new Map(P.map(p=>[p.id,p]));
   $("listingRows").innerHTML=L.map(x=>'<tr><td>'+esc(x.title)+'</td><td>'+esc(x.location)+'</td><td>'+Number(x.monthly_price).toLocaleString("ar-EG")+' جنيه</td><td>'+esc(profileById.get(x.owner_id)?.display_name||x.owner_id.slice(0,8))+'</td><td>'+esc(statusLabel(x.status))+'<br><small>'+esc(availabilityLabel(x.availability_status))+' · '+(x.spots_available==null?"العدد غير محدد":x.spots_available+" متبقي")+'</small></td><td><div class="actions">'+(x.status!=="published"?'<button class="green" data-action="publish" data-id="'+x.id+'">موافقة ونشر</button>':"")+'<button class="secondary" data-action="edit" data-id="'+x.id+'">تعديل كل التفاصيل</button>'+(x.status!=="rejected"?'<button class="danger" data-action="reject" data-id="'+x.id+'">رفض</button>':"")+'<button class="secondary" data-action="archive" data-id="'+x.id+'">أرشفة</button><button class="danger" data-action="delete" data-id="'+x.id+'">حذف نهائي</button><button class="green" data-action="rooms" data-id="'+x.id+'">توزيع الغرف والأسرة</button><select data-availability="'+x.id+'"><option value="available" '+(x.availability_status==="available"?"selected":"")+'>متاح</option><option value="negotiating" '+(x.availability_status==="negotiating"?"selected":"")+'>تم التفاوض</option><option value="rented" '+(x.availability_status==="rented"?"selected":"")+'>تم البيع / التأجير</option><option value="full" '+(x.availability_status==="full"?"selected":"")+'>مكتمل العدد</option><option value="paused" '+(x.availability_status==="paused"?"selected":"")+'>إيقاف مؤقت</option></select><input type="number" min="0" placeholder="المتبقي" data-spots="'+x.id+'" value="'+(x.spots_available??"")+'" style="width:75px"><button class="green" data-action="save-spots" data-id="'+x.id+'">حفظ العدد</button></div></td></tr>').join("")||'<tr><td colspan="6">لا توجد إعلانات حتى الآن.</td></tr>';
@@ -136,6 +166,7 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
   $("contactRows").innerHTML=C.map(c=>'<tr><td>'+esc(c.message)+'</td><td>'+esc(profileById.get(c.owner_id)?.display_name||c.owner_id.slice(0,8))+'</td><td>'+esc(profileById.get(c.requester_id)?.display_name||c.requester_id.slice(0,8))+'</td><td>'+esc(c.status)+'</td><td><select data-contact="'+c.id+'"><option value="new" '+(c.status==="new"?"selected":"")+'>جديد</option><option value="read" '+(c.status==="read"?"selected":"")+'>تمت المراجعة</option><option value="closed" '+(c.status==="closed"?"selected":"")+'>مغلق</option></select></td></tr>').join("")||'<tr><td colspan="5">لا توجد طلبات تواصل.</td></tr>';
   $("adminRows").innerHTML=A.map(r=>'<tr><td>'+esc(r.email||"بريد غير متاح")+'</td><td><small>'+esc(r.user_id)+'</small></td><td>'+date(r.created_at)+'</td><td>'+(r.user_id===activeUser.id?'<span class="pill good">حسابك الحالي</span>':'<button class="danger" data-remove-admin="'+esc(r.user_id)+'">إزالة الصلاحية</button>')+'</td></tr>').join("")||'<tr><td colspan="4">لم يتم تعيين مديرين بعد.</td></tr>';
   $("settingsList").innerHTML=S.map(s=>'<div style="border-bottom:1px solid var(--line);padding:8px 0"><strong>'+esc(s.key)+'</strong><pre style="white-space:pre-wrap;color:var(--muted)">'+esc(JSON.stringify(s.value))+'</pre></div>').join("")||"لا توجد إعدادات محفوظة حتى الآن.";
+  renderSmart(L,P,C,M);
  }
  $("addAdminForm").addEventListener("submit",async e=>{
   e.preventDefault();
@@ -305,6 +336,37 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
   const latest=listingsCache.find(x=>x.id===savedId);if(latest){editingDistribution={id:savedId,rooms:latest.room_distribution||[]};renderRoomEditor();}
  });
 
+
+ function fmt(n){return Number(n||0).toLocaleString("ar-EG",{maximumFractionDigits:1});}
+ function bars(id,items){const el=$(id);if(!items.length){el.textContent="لا توجد بيانات كافية حتى الآن.";return;}const max=Math.max(1,...items.map(x=>x.v));el.innerHTML='<div class="smart-bars">'+items.map(x=>'<div class="smart-bar"><span>'+esc(x.n)+'</span><div class="smart-track"><div class="smart-fill" style="width:'+Math.max(2,x.v/max*100)+'%"></div></div><b>'+fmt(x.v)+'</b></div>').join("")+'</div>';}
+ function renderSmart(L,P,C,M){
+  const pub=L.filter(x=>x.status==="published"),prices=pub.map(x=>Number(x.monthly_price)||0).filter(x=>x>0),avg=prices.length?prices.reduce((a,b)=>a+b,0)/prices.length:0,free=L.reduce((a,x)=>a+(Number(x.spots_available)||0),0),allBeds=L.reduce((a,x)=>a+(Number(x.spots_total)||0),0),active=M.filter(x=>x.is_active&&!x.is_paused).length;
+  const k=[["كل الإعلانات",L.length],["الإعلانات المنشورة",pub.length],["بانتظار المراجعة",L.filter(x=>x.status==="pending").length],["متوسط السعر",fmt(avg)+" ج"],["المستخدمون",P.length],["طلبات التواصل",C.length],["أسرة متاحة",free],["شركاء سكن نشطون",active]];
+  $("smartKpis").innerHTML=k.map(x=>'<div class="smart-kpi"><strong>'+x[1]+'</strong><span>'+x[0]+'</span></div>').join("");
+  const labels={pending:"قيد المراجعة",published:"منشور",rejected:"مرفوض",archived:"مؤرشف"};
+  bars("smartStatus",Object.keys(labels).map(k=>({n:labels[k],v:L.filter(x=>x.status===k).length})).filter(x=>x.v));
+  const types={apartment:"شقة",room:"غرفة",bed:"سرير"};
+  bars("smartTypes",Object.keys(types).map(k=>({n:types[k],v:pub.filter(x=>x.listing_type===k).length})).filter(x=>x.v));
+  const areas={};pub.forEach(x=>{const a=x.location||"غير محدد";areas[a]=(areas[a]||0)+1;});
+  bars("smartAreas",Object.entries(areas).sort((a,b)=>b[1]-a[1]).slice(0,7).map(x=>({n:x[0],v:x[1]})));
+  const months=new Map();for(let i=5;i>=0;i--){const d=new Date();d.setDate(1);d.setMonth(d.getMonth()-i);const key=d.getFullYear()+"-"+(d.getMonth()+1);months.set(key,{n:d.toLocaleDateString("ar-EG",{month:"short"}),v:0});}
+  L.forEach(x=>{if(!x.created_at)return;const d=new Date(x.created_at),key=d.getFullYear()+"-"+(d.getMonth()+1);if(months.has(key))months.get(key).v++;});
+  const vals=Array.from(months.values()),peak=Math.max(1,...vals.map(x=>x.v));
+  $("smartTrend").innerHTML='<div class="smart-months">'+vals.map(x=>'<div class="smart-month"><b>'+x.v+'</b><i style="height:'+Math.max(3,x.v/peak*100)+'px"></i><span>'+esc(x.n)+'</span></div>').join("")+'</div>';
+  bars("smartPrices",Object.keys(types).map(k=>{const a=pub.filter(x=>x.listing_type===k).map(x=>Number(x.monthly_price)||0).filter(x=>x>0);return {n:types[k],v:a.length?Math.round(a.reduce((p,q)=>p+q,0)/a.length):0};}).filter(x=>x.v));
+  bars("smartContacts",[{n:"جديدة",v:C.filter(x=>x.status==="new").length},{n:"تمت مراجعتها",v:C.filter(x=>x.status==="read").length},{n:"مغلقة",v:C.filter(x=>x.status==="closed").length}]);
+  const tips=[],pending=L.filter(x=>x.status==="pending").length;
+  if(pending)tips.push(["مراجعة الإعلانات",pending+" إعلان ينتظر المراجعة. راجعها لتقليل وقت انتظار أصحاب السكن."]);
+  if(allBeds)tips.push(["تحديث التوفر",free+" سرير متاح من أصل "+allBeds+" سرير مسجل ("+Math.round(free/allBeds*100)+"%). شجّع الملاك على تحديث العدد عند الحجز."]);
+  const top=Object.entries(areas).sort((a,b)=>b[1]-a[1])[0];if(top)tips.push(["تركيز المعروض",top[0]+" هي أكثر منطقة بها إعلانات ("+top[1]+"). قارن ذلك بطلبات الطلاب قبل زيادة المعروض."]);
+  if(avg)tips.push(["مرجع الأسعار","متوسط أسعار الإعلانات المنشورة "+fmt(avg)+" جنيه شهريًا؛ مؤشر للمعروض على سَكَن وليس سعر السوق كله."]);
+  const newC=C.filter(x=>x.status==="new").length;if(newC)tips.push(["متابعة الطلبات",newC+" طلب تواصل جديد يحتاج متابعة."]);
+  if(M.length)tips.push(["شركاء السكن",active+" ملفًا نشطًا من "+M.length+" ملفًا."]);
+  if(!tips.length)tips.push(["ابدأ من هنا","مع إضافة بيانات أكثر ستظهر توصيات أكثر دقة."]);
+  $("smartInsights").innerHTML=tips.map(x=>'<div class="smart-tip"><b>'+esc(x[0])+'</b>'+esc(x[1])+'</div>').join("");
+  $("smartUpdated").textContent="آخر تحديث: "+new Date().toLocaleString("ar-EG");
+ }
+ $("smartRefresh").addEventListener("click",loadDashboard);
  $("refreshBtn").addEventListener("click",loadDashboard);
  client.auth.onAuthStateChange(()=>setTimeout(checkSession,0));
  checkSession();
