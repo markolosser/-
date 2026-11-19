@@ -238,7 +238,7 @@ footer{
 .details-section p{color:#dce6f2;white-space:pre-line}
 .details-tags{display:flex;gap:8px;flex-wrap:wrap}
 .details-tags span{padding:6px 11px;border-radius:30px;background:#83b8e81a;border:1px solid #83b8e833;color:#dcecff;font-size:12px}
-.room-bed-section{margin-top:8px;padding:18px;border:1px solid #83b8e833;border-radius:16px;background:linear-gradient(145deg,#0b1c32,#102844)}.room-bed-section>h3{font-size:18px;margin:0 0 8px;color:#f3c969}.room-bed-section .room-bed-summary{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0 16px}.room-bed-section .room-bed-summary span{padding:7px 12px;border-radius:10px;background:#ffffff09;border:1px solid var(--border);font-size:12px;font-weight:800}.room-distribution-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.room-distribution-card{padding:15px;border-radius:14px;background:linear-gradient(145deg,#0d2039,#102947);border:1px solid #83b8e844;min-width:0}.room-distribution-card h4{font-size:15px;margin-bottom:12px;color:#eaf7f0}.room-beds{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.room-bed{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:11px 5px;border-radius:11px;font-size:12px;min-width:0;font-weight:800}.room-bed .bed-icon{font-size:24px;line-height:1.3}.room-bed.available{background:#123d32;border:1.5px solid #39c98a;color:#a9ffd7;box-shadow:inset 0 0 18px #39c98a12}.room-bed.occupied{background:#482832;border:1.5px solid #d66b78;color:#ffd0d5;box-shadow:inset 0 0 18px #d66b7812}.room-bed-empty{color:var(--muted);font-size:12px}.room-distribution-note{color:var(--muted);font-size:12px;margin-top:10px}.room-bed-legend{display:flex;gap:14px;flex-wrap:wrap;margin:8px 0 12px;font-size:12px;color:#dce6f2}.room-bed-legend span{display:inline-flex;align-items:center;gap:6px}.room-bed-legend i{width:10px;height:10px;border-radius:3px;display:inline-block}.room-bed-legend .free-dot{background:#39c98a}.room-bed-legend .busy-dot{background:#d66b78}@media(max-width:600px){.room-distribution-grid{grid-template-columns:1fr}.room-beds{grid-template-columns:repeat(3,minmax(0,1fr))}}\n.contact-panel{margin:20px 0 0;padding:18px;border:1px solid #f3c96955;border-radius:16px;background:linear-gradient(120deg,#f3c96912,#83b8e80b)}
+.room-bed-section{margin-top:8px;padding:18px;border:1px solid #83b8e833;border-radius:16px;background:linear-gradient(145deg,#0b1c32,#102844)}.room-bed-section>h3{font-size:18px;margin:0 0 8px;color:#f3c969}.listing-gender-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:30px;background:#83b8e81a;border:1px solid #83b8e855;color:#dcecff;font-size:12px;font-weight:800;margin:8px 0}.details-gender-badge{margin:0 0 10px}.room-bed-section .room-bed-summary{display:flex;gap:9px;flex-wrap:wrap;margin:12px 0 16px}.room-bed-section .room-bed-summary span{padding:7px 12px;border-radius:10px;background:#ffffff09;border:1px solid var(--border);font-size:12px;font-weight:800}.room-distribution-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.room-distribution-card{padding:15px;border-radius:14px;background:linear-gradient(145deg,#0d2039,#102947);border:1px solid #83b8e844;min-width:0}.room-distribution-card h4{font-size:15px;margin-bottom:12px;color:#eaf7f0}.room-beds{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.room-bed{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:11px 5px;border-radius:11px;font-size:12px;min-width:0;font-weight:800}.room-bed .bed-icon{font-size:24px;line-height:1.3}.room-bed.available{background:#123d32;border:1.5px solid #39c98a;color:#a9ffd7;box-shadow:inset 0 0 18px #39c98a12}.room-bed.occupied{background:#482832;border:1.5px solid #d66b78;color:#ffd0d5;box-shadow:inset 0 0 18px #d66b7812}.room-bed-empty{color:var(--muted);font-size:12px}.room-distribution-note{color:var(--muted);font-size:12px;margin-top:10px}.room-bed-legend{display:flex;gap:14px;flex-wrap:wrap;margin:8px 0 12px;font-size:12px;color:#dce6f2}.room-bed-legend span{display:inline-flex;align-items:center;gap:6px}.room-bed-legend i{width:10px;height:10px;border-radius:3px;display:inline-block}.room-bed-legend .free-dot{background:#39c98a}.room-bed-legend .busy-dot{background:#d66b78}@media(max-width:600px){.room-distribution-grid{grid-template-columns:1fr}.room-beds{grid-template-columns:repeat(3,minmax(0,1fr))}}\n.contact-panel{margin:20px 0 0;padding:18px;border:1px solid #f3c96955;border-radius:16px;background:linear-gradient(120deg,#f3c96912,#83b8e80b)}
 .contact-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:13px}
 .contact-actions a{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:170px;text-align:center}
 .call-action{background:#f3c969;color:#17223a}
@@ -1361,7 +1361,7 @@ function openAdminDemo(){
 
     const { data, error } = await client
       .from("listings")
-      .select("id,owner_id,title,location,address_details,monthly_price,listing_type,rooms,bathrooms,floor,furnished,utilities_included,available_from,amenities,description,availability_status,spots_total,spots_available,room_distribution,listing_images(object_path,sort_order,media_type,caption)")
+      .select("id,owner_id,title,location,address_details,monthly_price,listing_type,rooms,bathrooms,floor,furnished,utilities_included,available_from,amenities,description,gender_type,availability_status,spots_total,spots_available,room_distribution,listing_images(object_path,sort_order,media_type,caption)")
       .eq("status", "published")
       .order("created_at", { ascending: false })
       .limit(100);
@@ -1392,6 +1392,7 @@ function openAdminDemo(){
       available_from: row.available_from || "",
       amenities: row.amenities || [],
       description: row.description,
+      gender_type: row.gender_type || null,
       availability_status:row.availability_status||"available",spots_total:row.spots_total,spots_available:row.spots_available,room_distribution:Array.isArray(row.room_distribution)?row.room_distribution:[],
       images: (row.listing_images || []).sort((a,b) => a.sort_order - b.sort_order)
     })).filter(h =>
@@ -1422,7 +1423,8 @@ function openAdminDemo(){
       }
       const stateText={available:"متاح",negotiating:"تم التفاوض",rented:"تم البيع / التأجير",full:"مكتمل العدد",paused:"موقوف مؤقتًا"}[h.availability_status]||"متاح";
       const capacity=h.spots_available!==null&&h.spots_available!==undefined?'<span>🛏️ متبقي '+h.spots_available+' مكان</span>':"";
-      return '<article class="card"><div class="house-img">' + imageHtml + '<span class="price">' + h.price.toLocaleString("ar-EG") + ' جنيه / شهر</span></div><div class="card-body"><h3>' + safe(h.title) + '</h3><div class="location">📍 ' + safe(h.location) + '</div><div class="features"><span>🏠 ' + safe(h.type) + '</span><span>🚪 ' + h.rooms + ' غرف</span>'+capacity+'</div><div class="card-footer"><span class="owner">' + safe(stateText) + '</span><button class="btn btn-small" data-sakan-details="' + safe(h.id) + '">التفاصيل</button></div></div></article>';
+      const genderBadge=h.gender_type=== "male_students"?'<span class="listing-gender-badge">👨‍🎓 طلاب</span>':h.gender_type==="female_students"?'<span class="listing-gender-badge">👩‍🎓 طالبات</span>':"";
+      return '<article class="card"><div class="house-img">' + imageHtml + '<span class="price">' + h.price.toLocaleString("ar-EG") + ' جنيه / شهر</span></div><div class="card-body"><h3>' + safe(h.title) + '</h3>'+genderBadge+'<div class="location">📍 ' + safe(h.location) + '</div><div class="features"><span>🏠 ' + safe(h.type) + '</span><span>🚪 ' + h.rooms + ' غرف</span>'+capacity+'</div><div class="card-footer"><span class="owner">' + safe(stateText) + '</span><button class="btn btn-small" data-sakan-details="' + safe(h.id) + '">التفاصيل</button></div></div></article>';
     }));
 
     if (sequence !== requestSequence) return;
@@ -1446,11 +1448,11 @@ function renderRoomBeds(h){
   const beds=Array.isArray(room.beds)?room.beds:[];
   const bedHtml=beds.map((bed,bedIndex)=>{
    const free=bed.status==="available";total++;if(free)available++;else occupied++;
-   return '<div class="room-bed '+(free?'available':'occupied')+'"><span class="bed-icon" aria-hidden="true">🛏️</span><strong>سرير '+(bedIndex+1)+'</strong><span>'+(free?'متاح للحجز':'محجوز')+'</span></div>';
+   return '<div class="room-bed '+(free?'available':'occupied')+'"><span class="bed-icon" aria-hidden="true">🛏️</span><strong>سرير '+(bedIndex+1)+'</strong><span>'+(free?'متاح للحجز':'غير متاح للحجز')+'</span></div>';
   }).join("");
   return '<article class="room-distribution-card"><h4>🚪 '+safe(room.name||('غرفة '+(index+1)))+'</h4>'+(beds.length?'<div class="room-beds">'+bedHtml+'</div>':'<p class="room-bed-empty">لا توجد أسرة مسجلة في هذه الغرفة.</p>')+'</article>';
  }).join("");
- return '<section class="details-section room-bed-section"><h3>توزيع الغرف والأسرة</h3><div class="room-bed-legend"><span><i class="free-dot"></i> أخضر: متاح للحجز</span><span><i class="busy-dot"></i> أحمر: محجوز</span></div><div class="room-distribution-grid">'+cards+'</div></section>';
+ return '<section class="details-section room-bed-section"><h3>توزيع الغرف والأسرة</h3><div class="room-bed-legend"><span><i class="free-dot"></i> أخضر: متاح للحجز</span><span><i class="busy-dot"></i> أحمر: غير متاح للحجز</span></div><div class="room-distribution-grid">'+cards+'</div></section>';
 }
 
   window.sakanShowDetails = async (id) => {
@@ -1469,12 +1471,13 @@ function renderRoomBeds(h){
       ? '<div class="details-tags">' + h.amenities.map(item => '<span>' + safe(item) + '</span>').join("") + '</div>'
       : '<p>لم تتم إضافة مميزات محددة.</p>';
     const stateText={available:"متاح",negotiating:"تم التفاوض بالفعل",rented:"تم البيع / التأجير",full:"اكتمل العدد ولا توجد أماكن شاغرة",paused:"الإعلان موقوف مؤقتًا"}[h.availability_status]||"متاح";const isClosed=["negotiating","rented","full","paused"].includes(h.availability_status);const capacityText=h.spots_available!=null?"الأماكن المتبقية: "+h.spots_available:"عدد الأماكن غير محدد";
+    const genderLabel=h.gender_type==="male_students"?'👨‍🎓 سكن طلاب':h.gender_type==="female_students"?'👩‍🎓 سكن طالبات':"";
     const whatsappText = encodeURIComponent("مرحبًا، أنا مهتم بالسكن: " + h.title + " - " + h.location + ". ممكن تفاصيل أكتر؟");
     const whatsappUrl = "https://wa.me/" + SAKAN_CONTACT_PHONE + "?text=" + whatsappText;
     $("detailsContent").innerHTML =
       '<div class="details-inner">' +
         '<div class="details-gallery">' + (gallery || '<p class="notice">لا توجد صور أو فيديوهات مضافة لهذا السكن.</p>') + '</div>' +
-        '<div class="details-heading"><div><h2>' + safe(h.title) + '</h2><p class="details-location">📍 ' + safe(h.location) + (h.address_details ? ' — ' + safe(h.address_details) : '') + '</p></div>' +
+        '<div class="details-heading"><div><h2>' + safe(h.title) + '</h2>' + (genderLabel?'<span class="listing-gender-badge details-gender-badge">' + genderLabel + '</span>':'') + '<p class="details-location">📍 ' + safe(h.location) + (h.address_details ? ' — ' + safe(h.address_details) : '') + '</p></div>' +
         '<div class="details-price">' + h.price.toLocaleString("ar-EG") + ' جنيه <small>/ شهريًا</small></div></div>' +
         '<div class="details-specs">' +
           '<div class="details-spec"><strong>نوع السكن</strong><span>🏠 ' + safe(h.type) + '</span></div>' +
