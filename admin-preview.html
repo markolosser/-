@@ -156,7 +156,7 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
    client.rpc("list_sakan_admins"),
    client.from("roommate_profiles").select("user_id,is_active,is_paused,created_at").limit(250)
   ]);
-  const failed=[listings,profiles,contacts,roles,settings,adminList].find(x=>x.error);
+  const failed=[listings,profiles,contacts,roles,settings,adminList,roommates].find(x=>x.error);
   if(failed){alert("تعذر تحميل لوحة الإدارة: "+failed.error.message);return}
   const L=listings.data||[],P=profiles.data||[],C=contacts.data||[],R=roles.data||[],S=settings.data||[],A=adminList.data||[],M=roommates.data||[];listingsCache=L;
   $("metricListings").textContent=L.length;$("metricPending").textContent=L.filter(x=>x.status==="pending").length;$("metricProfiles").textContent=P.length;$("metricContacts").textContent=C.length;
