@@ -607,11 +607,24 @@ animation:moonSail 10s ease-in-out infinite alternate}
  .search-section{margin-top:-35px}
 }
 
+
+/* Warm, irregular star-like particles across the page; no dots, circles or grid */
+.starfield{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;opacity:1;background:none}
+.starfield:before,.starfield:after{content:none!important;display:none!important}
+.starfield .page-star{position:absolute;display:block;color:#f4d27b;line-height:1;font-family:Georgia,serif;text-shadow:0 0 7px rgba(245,205,112,.35);opacity:var(--star-opacity,.48);transform:translate3d(0,0,0) rotate(0deg);animation:page-star-float var(--star-duration,9s) ease-in-out var(--star-delay,0s) infinite alternate}
+.starfield .page-star.small{font-size:8px;color:#e9c878}
+.starfield .page-star.medium{font-size:11px;color:#f6d98f}
+.starfield .page-star.large{font-size:15px;color:#f8df9e;text-shadow:0 0 10px rgba(245,205,112,.5)}
+@keyframes page-star-float{0%{transform:translate3d(0,0,0) rotate(0deg);opacity:calc(var(--star-opacity,.48)*.65)}50%{opacity:var(--star-opacity,.48)}100%{transform:translate3d(var(--star-x,5px),var(--star-y,-8px),0) rotate(24deg);opacity:var(--star-opacity,.48)}}
+.ambient-orb{display:none!important}
+header,main,footer{position:relative;z-index:2}
+@media(prefers-reduced-motion:reduce){.starfield .page-star{animation:none!important}}
+
 </style>
 </head>
 
 <body>
-<div class="starfield" aria-hidden="true"></div><div class="ambient-orb one" aria-hidden="true"></div><div class="ambient-orb two" aria-hidden="true"></div>
+<div class="starfield" aria-hidden="true"></div>
 
 <header>
  <div class="container nav">
@@ -1467,6 +1480,32 @@ function openAdminDemo(){
   sky.appendChild(star);
  });
 })(); 
+</script>
+
+<script>
+/* Randomly scattered warm star glyphs with very gentle independent motion. */
+(() => {
+ const sky = document.querySelector('.starfield');
+ if (!sky || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+ let seed = 7319;
+ const random = () => { seed = (seed * 48271) % 2147483647; return seed / 2147483647; };
+ const count = window.innerWidth < 600 ? 42 : 76;
+ const glyphs = ['✦','✧','⋆','✶'];
+ for (let i = 0; i < count; i++) {
+   const star = document.createElement('span');
+   const size = random();
+   star.className = 'page-star ' + (size > .92 ? 'large' : size > .55 ? 'medium' : 'small');
+   star.textContent = glyphs[Math.floor(random() * glyphs.length)];
+   star.style.left = (random() * 98 + 1) + '%';
+   star.style.top = (random() * 98 + 1) + '%';
+   star.style.setProperty('--star-opacity', (.28 + random() * .42).toFixed(2));
+   star.style.setProperty('--star-duration', (7 + random() * 9).toFixed(1) + 's');
+   star.style.setProperty('--star-delay', (-random() * 12).toFixed(1) + 's');
+   star.style.setProperty('--star-x', (-7 + random() * 14).toFixed(1) + 'px');
+   star.style.setProperty('--star-y', (-9 + random() * 18).toFixed(1) + 'px');
+   sky.appendChild(star);
+ }
+})();
 </script>
 
 </body>
