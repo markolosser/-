@@ -1581,14 +1581,23 @@ function renderRoomBeds(h){
     const rows=roommateProfiles.filter(p=>(!q||[p.display_name,p.university,p.faculty,p.department,p.preferred_location,p.bio].join(" ").toLowerCase().includes(q))&&(!u||p.university===u)&&(!y||p.study_year===y)&&(!b||!p.budget_max||Number(p.budget_max)<=b)&&(!tag||(p.lifestyle||[]).includes(tag)));
     $("roommateList").innerHTML=rows.length?rows.map(p=>{
       const avatar=p.avatar_path?client.storage.from("roommate-avatars").getPublicUrl(p.avatar_path).data.publicUrl:"";
-      const phone=normalizePhone(p.contact_phone),msg=encodeURIComponent("مرحبًا "+p.display_name+"، شوفت ملفك على سَكَن وحابب نتكلم بخصوص شريك السكن.");
-      const link=p.contact_method==="phone"?"tel:+"+phone:"https://wa.me/"+phone+"?text="+msg;
       const budget=p.budget_min||p.budget_max?Number(p.budget_min||0).toLocaleString("ar-EG")+" - "+Number(p.budget_max||0).toLocaleString("ar-EG")+" جنيه":"غير محددة";
-      return '<article class="card roommate-profile-card"><div class="roommate-profile-top">'+(avatar?'<img class="roommate-photo" src="'+safe(avatar)+'">':'<div class="roommate-photo" style="display:grid;place-items:center;font-size:28px">🎓</div>')+'<div><h3>'+safe(p.display_name)+'</h3><span class="owner">'+safe(p.university)+'</span></div></div><p class="location">'+safe([p.faculty,p.department,p.study_year?"الفرقة "+p.study_year:""].filter(Boolean).join(" · "))+'</p><div class="roommate-meta"><span>📍 '+safe(p.preferred_location||"أي منطقة")+'</span><span>💰 '+budget+'</span>'+(p.housing_type?'<span>🏠 '+safe(p.housing_type)+'</span>':"")+'</div><p>'+safe(p.bio||"لم يضف نبذة.")+'</p><div class="roommate-meta">'+(p.lifestyle||[]).map(t=>'<span>'+safe(roommateTags[t]||t)+'</span>').join("")+'</div><a class="btn btn-small" style="display:inline-flex;margin-top:10px" href="'+safe(link)+'" '+(p.contact_method==="whatsapp"?'target="_blank" rel="noopener noreferrer"':"")+'>'+(p.contact_method==="phone"?"اتصل بالطالب":"واتساب · تواصل مع الطالب")+'</a></article>';
+      return '<article class="card roommate-profile-card"><div class="roommate-profile-top">'+(avatar?'<img class="roommate-photo" src="'+safe(avatar)+'">':'<div class="roommate-photo" style="display:grid;place-items:center;font-size:28px">🎓</div>')+'<div><h3>'+safe(p.display_name)+'</h3><span class="owner">'+safe(p.university)+'</span></div></div><p class="location">'+safe([p.faculty,p.department,p.study_year?"الفرقة "+p.study_year:""].filter(Boolean).join(" · "))+'</p><div class="roommate-meta"><span>📍 '+safe(p.preferred_location||"أي منطقة")+'</span><span>💰 '+budget+'</span>'+(p.housing_type?'<span>🏠 '+safe(p.housing_type)+'</span>':"")+'</div><p>'+safe(p.bio||"لم يضف نبذة.")+'</p><div class="roommate-meta">'+(p.lifestyle||[]).map(t=>'<span>'+safe(roommateTags[t]||t)+'</span>').join("")+'</div><button class="btn btn-small" style="display:inline-flex;margin-top:10px" type="button" data-roommate-request="'+safe(p.user_id)+'">إرسال طلب تواصل</button></article>';
     }).join(""):'<div class="empty">مفيش ملفات مطابقة حاليًا. غيّر التصنيفات أو أنشئ ملفك.</div>';
   }
+  $("roommateList").addEventListener("click",async e=>{
+    const btn=e.target.closest("[data-roommate-request]");if(!btn)return;
+    if(!currentUser){setAuthMode("login");window.openModal("authModal");setAuthMessage("سجّل الدخول لإرسال طلب تواصل.");return;}
+    const recipient=btn.dataset.roommateRequest;if(recipient===currentUser.id){alert("ده ملفك الشخصي.");return;}
+    const message=prompt("اكتب رسالة قصيرة لصاحب الملف (اختياري):","مرحبًا، شفت ملفك على سَكَن وحابب نتعرف ونتفق على السكن.");
+    if(message===null)return;
+    btn.disabled=true;btn.textContent="جارٍ الإرسال...";
+    const {error}=await client.from("roommate_requests").insert({requester_id:currentUser.id,recipient_id:recipient,message:message.trim()});
+    if(error){alert(error.code==="23505"?"سبق وأرسلت طلبًا لهذا الطالب.":"تعذر إرسال الطلب: "+error.message);btn.disabled=false;btn.textContent="إرسال طلب تواصل";return;}
+    btn.textContent="تم إرسال الطلب";
+  });
   async function loadRoommates(){
-    const {data,error}=await client.from("roommate_profiles").select("*").eq("is_active",true).order("updated_at",{ascending:false}).limit(100);
+    const {data,error}=await client.from("roommate_profiles_public").select("*").order("updated_at",{ascending:false}).limit(100);
     if(error){console.warn(error.message);$("roommateList").innerHTML='<div class="empty">تعذر تحميل ملفات الشركاء.</div>';return;}
     roommateProfiles=data||[];renderRoommates();
   }
