@@ -1479,7 +1479,6 @@ function renderRoomBeds(h){
         '<div class="details-specs">' +
           '<div class="details-spec"><strong>نوع السكن</strong><span>🏠 ' + safe(h.type) + '</span></div>' +
           '<div class="details-spec"><strong>الغرف</strong><span>🚪 ' + h.rooms + '</span></div>' +
-          '<div class="details-spec"><strong>التأثيث</strong><span>' + (h.furnished ? '🛋️ مفروش' : 'بدون فرش') + '</span></div>' +
           '<div class="details-spec"><strong>الدور</strong><span>🏢 ' + safe(h.floor || "غير محدد") + '</span></div>' +
           '<div class="details-spec"><strong>المرافق</strong><span>' + (h.utilities_included ? '⚡ ضمن السعر' : 'غير مشمولة') + '</span></div>' +
         '<div class="details-spec"><strong>حالة السكن</strong><span>' + safe(stateText) + '</span></div><div class="details-spec"><strong>التوفر</strong><span>' + safe(capacityText) + '</span></div>' +
