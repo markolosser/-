@@ -587,13 +587,14 @@ animation:moonSail 10s ease-in-out infinite alternate}
 .hero-star{color:#f2c85f!important;text-shadow:0 0 5px rgba(242,200,95,.3),0 0 13px rgba(242,200,95,.2)!important;opacity:.3;animation:hero-star-life 4.8s ease-in-out var(--delay,0s) infinite!important}
 .hero-star:nth-child(even){animation-delay:calc(var(--delay,0s) + 2.4s)!important}
 @keyframes hero-star-life{0%,100%{opacity:.24;transform:translate(-50%,-50%) translateY(2px) scale(.84);filter:brightness(.9)}42%,58%{opacity:1;transform:translate(-50%,-50%) translateY(-3px) scale(1.13);filter:brightness(1.18)}}
-.hero-crest{position:absolute;left:15%;top:13%;width:clamp(150px,18vw,218px);aspect-ratio:1;z-index:2;pointer-events:none;opacity:.82;filter:drop-shadow(0 0 18px rgba(232,196,119,.16));animation:crest-hover 11s ease-in-out infinite}
-.hero-crest svg{display:block;width:100%;height:100%;overflow:visible}
-.crest-orbit{transform-origin:110px 110px;animation:crest-turn 90s linear infinite}
-@keyframes crest-hover{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-@keyframes crest-turn{to{transform:rotate(360deg)}}
-@media(max-width:700px){.hero-crest{left:5%;top:5%;width:86px;opacity:.52}}
-@media(prefers-reduced-motion:reduce){.hero-star,.hero-crest,.crest-orbit{animation:none!important}.hero-star{opacity:.82}}
+.hero-city{position:absolute;z-index:1;left:1%;bottom:-2px;width:min(58vw,690px);height:94%;pointer-events:none;opacity:.94;filter:drop-shadow(0 22px 38px rgba(0,0,0,.24));transform-origin:bottom center;animation:city-rise 1.15s cubic-bezier(.2,.75,.25,1) both}
+.hero-city svg{display:block;width:100%;height:100%;overflow:visible}
+.hero-city rect[fill="url(#windowWarm)"]{animation:window-soft 7s ease-in-out infinite alternate}
+.hero-city rect:nth-of-type(3n){animation-delay:1.7s}
+@keyframes city-rise{from{opacity:0;transform:translateY(22px)}to{opacity:.94;transform:translateY(0)}}
+@keyframes window-soft{from{opacity:.62}to{opacity:.94}}
+@media(max-width:700px){.hero-city{width:100%;height:52%;left:0;bottom:0;opacity:.5}.hero-city svg{object-position:center bottom}}
+@media(prefers-reduced-motion:reduce){.hero-city,.hero-city rect{animation:none!important}}
 
 </style>
 </head>
@@ -638,23 +639,51 @@ animation:moonSail 10s ease-in-out infinite alternate}
 <section class="hero" id="home">
  <div class="hero-stars" aria-hidden="true"></div>
  <div class="hero-aurora" aria-hidden="true"></div>
- <div class="hero-crest" aria-hidden="true">
-  <svg viewBox="0 0 220 220" role="presentation" focusable="false">
+ <div class="hero-city" aria-hidden="true">
+  <svg viewBox="0 0 620 470" role="presentation" focusable="false">
    <defs>
-    <radialGradient id="crestGlow"><stop offset="0" stop-color="#f7d994" stop-opacity=".2"/><stop offset="1" stop-color="#f7d994" stop-opacity="0"/></radialGradient>
-    <linearGradient id="crestGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0c2"/><stop offset=".48" stop-color="#e8c477"/><stop offset="1" stop-color="#b8894f"/></linearGradient>
+    <linearGradient id="cityWall" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#345778"/><stop offset=".55" stop-color="#1b3857"/><stop offset="1" stop-color="#10243f"/></linearGradient>
+    <linearGradient id="citySide" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0b1d34"/><stop offset="1" stop-color="#203e5c"/></linearGradient>
+    <linearGradient id="windowWarm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe4a5"/><stop offset="1" stop-color="#d69b52"/></linearGradient>
+    <linearGradient id="cityGround" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#173552" stop-opacity="0"/><stop offset="1" stop-color="#07152b" stop-opacity=".95"/></linearGradient>
+    <filter id="windowGlow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="7"/></filter>
    </defs>
-   <circle cx="110" cy="110" r="92" fill="url(#crestGlow)"/>
-   <g class="crest-orbit">
-    <ellipse cx="110" cy="110" rx="78" ry="35" fill="none" stroke="#e8c477" stroke-opacity=".46" stroke-width="1.1" transform="rotate(-32 110 110)"/>
-    <ellipse cx="110" cy="110" rx="78" ry="35" fill="none" stroke="#e8c477" stroke-opacity=".28" stroke-width="1" transform="rotate(48 110 110)"/>
+   <ellipse cx="322" cy="390" rx="275" ry="48" fill="#d49d5c" opacity=".12" filter="url(#windowGlow)"/>
+   <path d="M0 365 L0 220 76 184 76 365Z" fill="#102b48" opacity=".85"/>
+   <path d="M42 365V147L158 105V365Z" fill="url(#cityWall)"/>
+   <path d="M158 105L193 125V365H158Z" fill="#102943"/>
+   <path d="M65 147L158 105" stroke="#91b8d3" stroke-opacity=".28" stroke-width="2"/>
+   <path d="M185 365V72L316 30V365Z" fill="url(#cityWall)"/>
+   <path d="M316 30L348 51V365H316Z" fill="url(#citySide)"/>
+   <path d="M185 72L316 30L348 51L217 94Z" fill="#456987"/>
+   <path d="M217 94V365" stroke="#9bb9ce" stroke-opacity=".13"/>
+   <path d="M365 365V133L473 94V365Z" fill="#1b3b5b"/>
+   <path d="M473 94L500 111V365H473Z" fill="#102943"/>
+   <path d="M365 133L473 94L500 111L392 151Z" fill="#456987"/>
+   <path d="M500 365V207L574 178V365Z" fill="#102b48" opacity=".92"/>
+   <g fill="url(#windowWarm)" opacity=".78">
+    <rect x="83" y="179" width="18" height="30" rx="2"/><rect x="119" y="165" width="18" height="30" rx="2"/>
+    <rect x="83" y="232" width="18" height="30" rx="2"/><rect x="119" y="218" width="18" height="30" rx="2"/>
+    <rect x="83" y="285" width="18" height="30" rx="2"/><rect x="119" y="271" width="18" height="30" rx="2"/>
+    <rect x="215" y="116" width="24" height="37" rx="2"/><rect x="265" y="101" width="24" height="37" rx="2"/>
+    <rect x="215" y="177" width="24" height="37" rx="2"/><rect x="265" y="162" width="24" height="37" rx="2"/>
+    <rect x="215" y="238" width="24" height="37" rx="2"/><rect x="265" y="223" width="24" height="37" rx="2"/>
+    <rect x="215" y="299" width="24" height="37" rx="2"/><rect x="265" y="284" width="24" height="37" rx="2"/>
+    <rect x="390" y="170" width="21" height="32" rx="2"/><rect x="432" y="155" width="21" height="32" rx="2"/>
+    <rect x="390" y="224" width="21" height="32" rx="2"/><rect x="432" y="209" width="21" height="32" rx="2"/>
+    <rect x="390" y="278" width="21" height="32" rx="2"/><rect x="432" y="263" width="21" height="32" rx="2"/>
+    <rect x="521" y="230" width="15" height="25" rx="2"/><rect x="550" y="219" width="15" height="25" rx="2"/>
+    <rect x="521" y="276" width="15" height="25" rx="2"/><rect x="550" y="265" width="15" height="25" rx="2"/>
    </g>
-   <circle cx="110" cy="110" r="55" fill="none" stroke="#f3d58b" stroke-opacity=".22" stroke-width="1" stroke-dasharray="1 7"/>
-   <path d="M110 59 L119 101 L161 110 L119 119 L110 161 L101 119 L59 110 L101 101Z" fill="url(#crestGold)" opacity=".92"/>
-   <path d="M110 83 L115 105 L137 110 L115 115 L110 137 L105 115 L83 110 L105 105Z" fill="#fff2cb" opacity=".82"/>
-   <circle cx="110" cy="110" r="4" fill="#fff7dc"/>
-   <circle cx="37" cy="76" r="2.2" fill="#f3d58b"/><circle cx="178" cy="145" r="2" fill="#f3d58b"/>
-   <path d="M110 20v13 M110 187v13 M20 110h13 M187 110h13" stroke="#e8c477" stroke-opacity=".48" stroke-width="1"/>
+   <g fill="#f6d99a" opacity=".2" filter="url(#windowGlow)">
+    <rect x="213" y="114" width="28" height="40"/><rect x="263" y="99" width="28" height="40"/>
+    <rect x="388" y="168" width="25" height="36"/><rect x="430" y="153" width="25" height="36"/>
+   </g>
+   <path d="M0 365H620V470H0Z" fill="url(#cityGround)"/>
+   <path d="M0 365H620" stroke="#d5b77b" stroke-opacity=".3"/>
+   <path d="M180 365V470 M348 365V470 M500 365V470" stroke="#8eb5d1" stroke-opacity=".08"/>
+   <path d="M34 365V330L55 318L76 330V365 M504 365V338L523 327L542 338V365" fill="#0c2038"/>
+   <path d="M42 365V343H68V365 M512 365V347H534V365" fill="#d8a75f" opacity=".55"/>
   </svg>
  </div>
  
