@@ -1424,11 +1424,11 @@ function openAdminDemo(){
 
 
 function renderRoomBeds(h){
- const rooms=Math.max(1,Math.min(20,Number(h.rooms)||1)),total=Math.max(0,Math.min(60,Number(h.spots_total)||0)),available=Math.max(0,Math.min(total,Number(h.spots_available)||0));
+ const rooms=Math.max(1,Math.min(20,Number(h.rooms)||1)),total=Math.max(0,Math.min(60,Number(h.spots_total)||0)),available=h.spots_available==null?total:Math.max(0,Math.min(total,Number(h.spots_available)||0));
  if(!total)return '<div class="details-section room-bed-section"><h3>الغرف والأماكن الشاغرة</h3><p class="notice">عدد الأسرة لم يتم تحديده لهذا السكن بعد.</p></div>';
  let occupiedLeft=total-available,groups="",base=Math.floor(total/rooms),extra=total%rooms;
  for(let r=0;r<rooms;r++){let n=base+(r<extra?1:0);if(!n)continue;let icons="";for(let b=0;b<n;b++){let busy=occupiedLeft>0;if(busy)occupiedLeft--;icons+='<span class="bed-place" title="'+(busy?'سرير مشغول':'سرير شاغر')+'"><span>🛏️</span><i class="'+(busy?'busy':'free')+'">'+(busy?'●':'✓')+'</i></span>'}groups+='<div class="room-bed-card"><strong>غرفة '+(r+1)+'</strong><div class="room-bed-list">'+icons+'</div></div>'}
- return '<div class="details-section room-bed-section"><h3>الغرف والأماكن الشاغرة</h3><div class="room-bed-legend"><span><i class="free">✓</i> شاغر ('+available+')</span><span><i class="busy">●</i> مشغول ('+(total-available)+')</span></div><div class="room-bed-grid">'+groups+'</div></div>'
+ return '<div class="details-section room-bed-section"><h3>الغرف والأماكن الشاغرة</h3><div class="room-bed-legend"><span><i class="free">✓</i> شاغر ('+available+')</span><span><i class="busy">●</i> مشغول ('+(total-available)+')</span></div><div class="room-bed-grid">'+groups+'</div><p class="notice">تقسيم الأسرة على الغرف توضيحي؛ الأعداد الفعلية موضحة في المؤشر.</p></div>'
 }
 
   window.sakanShowDetails = async (id) => {
