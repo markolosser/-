@@ -771,6 +771,21 @@ mask-image:linear-gradient(135deg,transparent 5%,#000 45%,#000 100%)}
 .bed-place i{position:absolute;right:-5px;top:-6px;border:2px solid #102442;width:17px;height:17px;font-size:9px}
 @media(max-width:580px){.room-bed-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
+
+/* Room and bed availability cards inspired by the supplied Sakan reference */
+.room-choice-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.room-choice-heading h3{margin:0 0 3px;font-size:20px;color:#f4f6fb}
+.room-choice-heading p{margin:0;color:var(--muted);font-size:13px}
+.room-choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.room-choice-card{min-height:150px;padding:18px 12px;border:2px solid #08785c;border-radius:24px;background:linear-gradient(145deg,#0c211e,#0d1b1a);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;text-align:center}
+.room-choice-icon{font-size:49px;line-height:1.2;color:#00d6a2}
+.room-choice-card strong{font-size:18px;color:#f4f6fb}
+.room-choice-status{font-size:16px;color:#d6e1e5}
+.room-choice-card.occupied{border-color:#9b514e;background:linear-gradient(145deg,#281a1d,#17191d)}
+.room-choice-card.occupied .room-choice-icon{filter:grayscale(.65);opacity:.75}
+.room-choice-card.occupied .room-choice-status{color:#e6a09a}
+@media(max-width:580px){.room-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.room-choice-card{min-height:128px;border-radius:19px;padding:13px 8px}.room-choice-icon{font-size:40px}}
+
 </style>
 </head>
 
@@ -1425,10 +1440,10 @@ function openAdminDemo(){
 
 function renderRoomBeds(h){
  const rooms=Math.max(1,Math.min(20,Number(h.rooms)||1)),total=Math.max(0,Math.min(60,Number(h.spots_total)||0)),available=h.spots_available==null?total:Math.max(0,Math.min(total,Number(h.spots_available)||0));
- if(!total)return '<div class="details-section room-bed-section"><h3>الغرف والأماكن الشاغرة</h3><p class="notice">عدد الأسرة لم يتم تحديده لهذا السكن بعد.</p></div>';
- let occupiedLeft=total-available,groups="",base=Math.floor(total/rooms),extra=total%rooms;
- for(let r=0;r<rooms;r++){let n=base+(r<extra?1:0);if(!n)continue;let icons="";for(let b=0;b<n;b++){let busy=occupiedLeft>0;if(busy)occupiedLeft--;icons+='<span class="bed-place" title="'+(busy?'سرير مشغول':'سرير شاغر')+'"><span>🛏️</span><i class="'+(busy?'busy':'free')+'">'+(busy?'●':'✓')+'</i></span>'}groups+='<div class="room-bed-card"><strong>غرفة '+(r+1)+'</strong><div class="room-bed-list">'+icons+'</div></div>'}
- return '<div class="details-section room-bed-section"><h3>الغرف والأماكن الشاغرة</h3><div class="room-bed-legend"><span><i class="free">✓</i> شاغر ('+available+')</span><span><i class="busy">●</i> مشغول ('+(total-available)+')</span></div><div class="room-bed-grid">'+groups+'</div><p class="notice">تقسيم الأسرة على الغرف توضيحي؛ الأعداد الفعلية موضحة في المؤشر.</p></div>'
+ if(!total)return '<div class="details-section room-bed-section"><h3>توزيع الغرف والأسرة</h3><p class="notice">عدد الأسرة لم يتم تحديده لهذا السكن بعد.</p></div>';
+ let occupiedLeft=total-available,cards="",base=Math.floor(total/rooms),extra=total%rooms;
+ for(let r=0;r<rooms;r++){let n=base+(r<extra?1:0);for(let b=0;b<n;b++){let busy=occupiedLeft>0;if(busy)occupiedLeft--;cards+='<article class="room-choice-card '+(busy?'occupied':'available')+'"><span class="room-choice-icon">🛏</span><strong>غرفة '+(r+1)+'</strong><span class="room-choice-status">'+(busy?'مشغول':'متاح')+'</span></article>'}}
+ return '<div class="details-section room-bed-section"><div class="room-choice-heading"><div><h3>توزيع الغرف والأسرة</h3><p>تعرّف على الأماكن المتاحة في كل غرفة</p></div></div><div class="room-bed-legend"><span><i class="free">✓</i> متاح ('+available+')</span><span><i class="busy">●</i> مشغول ('+(total-available)+')</span></div><div class="room-choice-grid">'+cards+'</div><p class="notice">توزيع الأسرة على الغرف توضيحي حسب الأعداد المسجلة للإعلان.</p></div>'
 }
 
   window.sakanShowDetails = async (id) => {
