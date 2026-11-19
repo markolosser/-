@@ -1040,7 +1040,7 @@ function handlePricePreset(){const select=document.getElementById("maxPrice"),cu
 function renderHouses(){
  const query=document.getElementById("search").value.trim().toLowerCase();
  const type=document.getElementById("type").value;
- const max=Number(document.getElementById("maxPrice").value);
+ const max=getSelectedMaxPrice();
  const filtered=houses.filter(h=>
   (h.title+" "+h.location).toLowerCase().includes(query) &&
   (!type || h.type===type) &&
@@ -1360,7 +1360,7 @@ function openAdminDemo(){
 
     const query = ($("search")?.value || "").trim().toLowerCase();
     const type = $("type")?.value || "";
-    const maxPrice = Number($("maxPrice")?.value || 0);
+    const maxPrice = getSelectedMaxPrice();
     const normalized = (data || []).map((row) => ({
       id: row.id,
       owner_id: row.owner_id,
