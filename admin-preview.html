@@ -17,7 +17,7 @@ button{border:0;border-radius:9px;padding:8px 13px;background:var(--gold);color:
 input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:9px;background:#091a32;color:white;font:14px Cairo}label{display:block;font-size:12px;color:var(--muted);margin:8px 0 5px}
 .actions{display:flex;gap:7px;flex-wrap:wrap}.pill{display:inline-block;padding:3px 9px;border-radius:30px;background:#55451d;color:#ffe6a5;font-size:11px}.pill.good{background:#1d513f;color:#b6ffdb}.pill.bad{background:#5e2930;color:#ffbdc4}
 .notice{background:#4a3918;border:1px solid #b38a36;border-radius:12px;padding:13px 16px;margin:12px 0;color:#ffe6a5}
-.hidden{display:none!important}.authbox{width:min(470px,100%);margin:35px auto}.authbox .panel{padding:25px}.field{margin-bottom:12px}.tabmessage{min-height:24px;color:var(--muted);font-size:13px}.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.hidden{display:none!important}.room-editor{margin-top:14px;padding:16px;border:1px solid #ffffff22;border-radius:13px;background:#0a1b32}.room-editor-toolbar{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}.room-editor-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0}.room-edit-card{padding:13px;border:1px solid #36b98288;border-radius:12px;background:#102b3e;min-width:0}.room-edit-head{display:flex;gap:8px;align-items:center}.room-edit-head input{flex:1;min-width:0}.bed-edit-list{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}.bed-edit{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:8px;font-size:12px;background:#164332;border:1px solid #3bc58b;color:#c6ffe4}.bed-edit.occupied{background:#482832;border-color:#d66b78;color:#ffd0d5}.room-editor-actions{display:flex;gap:7px;flex-wrap:wrap}.room-editor-message{min-height:22px;font-size:12px;color:var(--muted);margin-top:8px}@media(max-width:650px){.room-editor-list{grid-template-columns:1fr}}.authbox{width:min(470px,100%);margin:35px auto}.authbox .panel{padding:25px}.field{margin-bottom:12px}.tabmessage{min-height:24px;color:var(--muted);font-size:13px}.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 @media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}nav{position:static;display:grid;grid-template-columns:repeat(3,1fr)}}
 @media(max-width:550px){.grid{grid-template-columns:1fr 1fr}h1{font-size:23px}nav{grid-template-columns:repeat(2,1fr)}}
 </style>
@@ -73,7 +73,7 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
 <div class="actions" style="margin-top:12px"><button id="adminListingSubmit" type="submit">إضافة ونشر السكن</button></div>
 <p id="adminListingMessage" class="tabmessage" aria-live="polite"></p>
 </form></section>
-<section class="panel" id="listings"><div class="panelhead"><h2>مراجعة إعلانات السكن</h2><button class="secondary" id="refreshBtn">تحديث البيانات</button></div><div class="tablewrap"><table><thead><tr><th>العنوان</th><th>المنطقة</th><th>السعر</th><th>المالك</th><th>الحالة</th><th>الإجراءات</th></tr></thead><tbody id="listingRows"><tr><td colspan="6">جارٍ التحميل...</td></tr></tbody></table></div></section>
+<section class="panel" id="listings"><div class="panelhead"><h2>مراجعة إعلانات السكن</h2><button class="secondary" id="refreshBtn">تحديث البيانات</button></div><div class="tablewrap"><table><thead><tr><th>العنوان</th><th>المنطقة</th><th>السعر</th><th>المالك</th><th>الحالة</th><th>الإجراءات</th></tr></thead><tbody id="listingRows"><tr><td colspan="6">جارٍ التحميل...</td></tr></tbody></table></div><div id="roomEditor" class="room-editor hidden"><div class="room-editor-toolbar"><div><h2 id="roomEditorTitle">توزيع الغرف والأسرة</h2><p class="muted">التغييرات تظهر هنا فورًا، ولا تُحفظ إلا عند الضغط على حفظ.</p></div><div class="actions"><button type="button" class="secondary" id="addRoomBtn">+ إضافة غرفة</button><button type="button" id="saveRoomDistributionBtn">حفظ التوزيع</button><button type="button" class="secondary" id="closeRoomEditorBtn">إغلاق</button></div></div><div id="roomEditorList" class="room-editor-list"></div><p id="roomEditorMessage" class="room-editor-message" aria-live="polite"></p></div></section>
    <section class="panel" id="users"><h2>المستخدمون</h2><div class="tablewrap"><table><thead><tr><th>الاسم</th><th>النوع</th><th>رقم التواصل</th><th>معرّف الحساب</th></tr></thead><tbody id="userRows"></tbody></table></div></section>
    <section class="panel" id="contacts"><h2>طلبات التواصل</h2><div class="tablewrap"><table><thead><tr><th>الرسالة</th><th>صاحب السكن</th><th>مقدم الطلب</th><th>الحالة</th><th>الإجراء</th></tr></thead><tbody id="contactRows"></tbody></table></div></section>
    <section class="panel" id="admins">
@@ -98,7 +98,7 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
 (() => {
  const client=window.supabase.createClient(window.SAKAN_SUPABASE_URL,window.SAKAN_SUPABASE_PUBLISHABLE_KEY);
  const $=id=>document.getElementById(id);
- let activeUser=null,listingsCache=[];
+ let activeUser=null,listingsCache=[],editingDistribution=null;
  const esc=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
  const date=value=>value?new Date(value).toLocaleDateString("ar-EG"):"—";
  const statusLabel=s=>({pending:"قيد المراجعة",published:"منشور",rejected:"مرفوض",archived:"مؤرشف"}[s]||s);const availabilityLabel=s=>({available:"متاح",negotiating:"تم التفاوض",rented:"تم البيع / التأجير",full:"مكتمل العدد",paused:"موقوف مؤقتًا"}[s]||"متاح");
@@ -119,7 +119,7 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
  }
  async function loadDashboard(){
   const [listings,profiles,contacts,roles,settings,adminList]=await Promise.all([
-   client.from("listings").select("id,owner_id,title,location,monthly_price,status,availability_status,spots_total,spots_available,rejection_reason,created_at").order("created_at",{ascending:false}).limit(250),
+   client.from("listings").select("id,owner_id,title,location,monthly_price,status,availability_status,spots_total,spots_available,room_distribution,rejection_reason,created_at").order("created_at",{ascending:false}).limit(250),
    client.from("profiles").select("id,display_name,phone,user_type,created_at").order("created_at",{ascending:false}).limit(250),
    client.from("contact_requests").select("id,requester_id,owner_id,message,status,created_at").order("created_at",{ascending:false}).limit(250),
    client.from("user_roles").select("user_id,role,created_at").eq("role","admin").order("created_at",{ascending:true}),
@@ -131,7 +131,7 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
   const L=listings.data||[],P=profiles.data||[],C=contacts.data||[],R=roles.data||[],S=settings.data||[],A=adminList.data||[];listingsCache=L;
   $("metricListings").textContent=L.length;$("metricPending").textContent=L.filter(x=>x.status==="pending").length;$("metricProfiles").textContent=P.length;$("metricContacts").textContent=C.length;
   const profileById=new Map(P.map(p=>[p.id,p]));
-  $("listingRows").innerHTML=L.map(x=>'<tr><td>'+esc(x.title)+'</td><td>'+esc(x.location)+'</td><td>'+Number(x.monthly_price).toLocaleString("ar-EG")+' جنيه</td><td>'+esc(profileById.get(x.owner_id)?.display_name||x.owner_id.slice(0,8))+'</td><td>'+esc(statusLabel(x.status))+'<br><small>'+esc(availabilityLabel(x.availability_status))+' · '+(x.spots_available==null?"العدد غير محدد":x.spots_available+" متبقي")+'</small></td><td><div class="actions">'+(x.status!=="published"?'<button class="green" data-action="publish" data-id="'+x.id+'">موافقة ونشر</button>':"")+(x.status!=="rejected"?'<button class="danger" data-action="reject" data-id="'+x.id+'">رفض</button>':"")+'<button class="secondary" data-action="archive" data-id="'+x.id+'">أرشفة</button><select data-availability="'+x.id+'"><option value="available" '+(x.availability_status==="available"?"selected":"")+'>متاح</option><option value="negotiating" '+(x.availability_status==="negotiating"?"selected":"")+'>تم التفاوض</option><option value="rented" '+(x.availability_status==="rented"?"selected":"")+'>تم البيع / التأجير</option><option value="full" '+(x.availability_status==="full"?"selected":"")+'>مكتمل العدد</option><option value="paused" '+(x.availability_status==="paused"?"selected":"")+'>إيقاف مؤقت</option></select><input type="number" min="0" placeholder="المتبقي" data-spots="'+x.id+'" value="'+(x.spots_available??"")+'" style="width:75px"><button class="green" data-action="save-spots" data-id="'+x.id+'">حفظ العدد</button></div></td></tr>').join("")||'<tr><td colspan="6">لا توجد إعلانات حتى الآن.</td></tr>';
+  $("listingRows").innerHTML=L.map(x=>'<tr><td>'+esc(x.title)+'</td><td>'+esc(x.location)+'</td><td>'+Number(x.monthly_price).toLocaleString("ar-EG")+' جنيه</td><td>'+esc(profileById.get(x.owner_id)?.display_name||x.owner_id.slice(0,8))+'</td><td>'+esc(statusLabel(x.status))+'<br><small>'+esc(availabilityLabel(x.availability_status))+' · '+(x.spots_available==null?"العدد غير محدد":x.spots_available+" متبقي")+'</small></td><td><div class="actions">'+(x.status!=="published"?'<button class="green" data-action="publish" data-id="'+x.id+'">موافقة ونشر</button>':"")+(x.status!=="rejected"?'<button class="danger" data-action="reject" data-id="'+x.id+'">رفض</button>':"")+'<button class="secondary" data-action="archive" data-id="'+x.id+'">أرشفة</button><button class="green" data-action="rooms" data-id="'+x.id+'">توزيع الغرف والأسرة</button><select data-availability="'+x.id+'"><option value="available" '+(x.availability_status==="available"?"selected":"")+'>متاح</option><option value="negotiating" '+(x.availability_status==="negotiating"?"selected":"")+'>تم التفاوض</option><option value="rented" '+(x.availability_status==="rented"?"selected":"")+'>تم البيع / التأجير</option><option value="full" '+(x.availability_status==="full"?"selected":"")+'>مكتمل العدد</option><option value="paused" '+(x.availability_status==="paused"?"selected":"")+'>إيقاف مؤقت</option></select><input type="number" min="0" placeholder="المتبقي" data-spots="'+x.id+'" value="'+(x.spots_available??"")+'" style="width:75px"><button class="green" data-action="save-spots" data-id="'+x.id+'">حفظ العدد</button></div></td></tr>').join("")||'<tr><td colspan="6">لا توجد إعلانات حتى الآن.</td></tr>';
   $("userRows").innerHTML=P.map(p=>'<tr><td>'+esc(p.display_name||"—")+'</td><td>'+esc(p.user_type)+'</td><td>'+esc(p.phone||"—")+'</td><td><small>'+esc(p.id)+'</small></td></tr>').join("")||'<tr><td colspan="4">لا يوجد مستخدمون.</td></tr>';
   $("contactRows").innerHTML=C.map(c=>'<tr><td>'+esc(c.message)+'</td><td>'+esc(profileById.get(c.owner_id)?.display_name||c.owner_id.slice(0,8))+'</td><td>'+esc(profileById.get(c.requester_id)?.display_name||c.requester_id.slice(0,8))+'</td><td>'+esc(c.status)+'</td><td><select data-contact="'+c.id+'"><option value="new" '+(c.status==="new"?"selected":"")+'>جديد</option><option value="read" '+(c.status==="read"?"selected":"")+'>تمت المراجعة</option><option value="closed" '+(c.status==="closed"?"selected":"")+'>مغلق</option></select></td></tr>').join("")||'<tr><td colspan="5">لا توجد طلبات تواصل.</td></tr>';
   $("adminRows").innerHTML=A.map(r=>'<tr><td>'+esc(r.email||"بريد غير متاح")+'</td><td><small>'+esc(r.user_id)+'</small></td><td>'+date(r.created_at)+'</td><td>'+(r.user_id===activeUser.id?'<span class="pill good">حسابك الحالي</span>':'<button class="danger" data-remove-admin="'+esc(r.user_id)+'">إزالة الصلاحية</button>')+'</td></tr>').join("")||'<tr><td colspan="4">لم يتم تعيين مديرين بعد.</td></tr>';
@@ -164,6 +164,7 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
   if(action==="publish")update={status:"published",rejection_reason:null};
   if(action==="reject"){const reason=prompt("سبب الرفض (اختياري):")||"";update={status:"rejected",rejection_reason:reason};}
   if(action==="archive")update={status:"archived"};
+  if(action==="rooms"){openRoomEditor(id);return;}
   if(action==="save-spots"){const v=document.querySelector('[data-spots="'+id+'"]')?.value.trim(),total=Number(listingsCache.find(x=>x.id===id)?.spots_total);if(v!==""&&(!Number.isInteger(Number(v))||Number(v)<0||(total>0&&Number(v)>total))){alert("راجع عدد الأماكن المتبقية.");return;}update={spots_available:v===""?null:Number(v)};}
   b.disabled=true;const {error}=await client.from("listings").update(update).eq("id",id);
   if(error)alert("فشل تحديث الإعلان: "+error.message);else await loadDashboard();b.disabled=false;
@@ -221,6 +222,46 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
   }catch(error){msg.textContent="تعذر إضافة السكن: "+(error.message||"خطأ غير معروف");msg.style.color="#ff9b9b";}
   finally{button.disabled=false;}
  });
+
+ function newRoom(){return {id:crypto.randomUUID(),name:"غرفة جديدة",beds:[]};}
+ function newBed(){return {id:crypto.randomUUID(),status:"available"};}
+ function openRoomEditor(id){
+  const listing=listingsCache.find(x=>x.id===id);if(!listing)return;
+  const rooms=Array.isArray(listing.room_distribution)?JSON.parse(JSON.stringify(listing.room_distribution)):[];
+  editingDistribution={id,rooms};
+  $("roomEditorTitle").textContent="توزيع الغرف والأسرة · "+listing.title;
+  $("roomEditor").classList.remove("hidden");$("roomEditorMessage").textContent="";renderRoomEditor();
+  $("roomEditor").scrollIntoView({behavior:"smooth",block:"center"});
+ }
+ function renderRoomEditor(){
+  if(!editingDistribution)return;
+  const rooms=editingDistribution.rooms;
+  $("roomEditorList").innerHTML=rooms.map((room,ri)=>'<article class="room-edit-card"><div class="room-edit-head"><input type="text" maxlength="60" data-room-name="'+ri+'" value="'+esc(room.name||("غرفة "+(ri+1)))+'" aria-label="اسم الغرفة"><button type="button" class="danger" data-remove-room="'+ri+'">حذف الغرفة</button></div><div class="bed-edit-list">'+(room.beds||[]).map((bed,bi)=>'<button type="button" class="bed-edit '+(bed.status==="occupied"?"occupied":"")+'" data-toggle-bed="'+ri+':'+bi+'" title="اضغط لتغيير الحالة"><span>🛏️</span><span>سرير '+(bi+1)+'</span><strong>'+(bed.status==="occupied"?"مشغول":"متاح")+'</strong></button><button type="button" class="danger" data-remove-bed="'+ri+':'+bi+'" aria-label="حذف السرير">×</button>').join("")+'</div><div class="room-editor-actions"><button type="button" class="secondary" data-add-bed="'+ri+'">+ إضافة سرير</button><span class="muted">عدد الأسرة: '+(room.beds||[]).length+'</span></div></article>').join("")||'<p class="muted">لم تتم إضافة غرف بعد. اضغط «إضافة غرفة» للبدء.</p>';
+  const total=rooms.reduce((n,r)=>n+(r.beds||[]).length,0),free=rooms.reduce((n,r)=>n+(r.beds||[]).filter(b=>b.status==="available").length,0);
+  $("roomEditorMessage").textContent="معاينة غير محفوظة · "+rooms.length+" غرفة · "+total+" سرير · "+free+" متاح · "+(total-free)+" مشغول";
+ }
+ $("addRoomBtn").addEventListener("click",()=>{if(!editingDistribution)return;if(editingDistribution.rooms.length>=30){$("roomEditorMessage").textContent="الحد الأقصى 30 غرفة.";return;}editingDistribution.rooms.push(newRoom());renderRoomEditor();});
+ $("roomEditorList").addEventListener("input",e=>{const el=e.target.closest("[data-room-name]");if(!el||!editingDistribution)return;editingDistribution.rooms[Number(el.dataset.roomName)].name=el.value;});
+ $("roomEditorList").addEventListener("click",e=>{
+  if(!editingDistribution)return;
+  const t=e.target.closest("[data-toggle-bed]");if(t){const [r,b]=t.dataset.toggleBed.split(":").map(Number),bed=editingDistribution.rooms[r].beds[b];bed.status=bed.status==="available"?"occupied":"available";renderRoomEditor();return;}
+  const rb=e.target.closest("[data-remove-bed]");if(rb){const [r,b]=rb.dataset.removeBed.split(":").map(Number);editingDistribution.rooms[r].beds.splice(b,1);renderRoomEditor();return;}
+  const rr=e.target.closest("[data-remove-room]");if(rr){editingDistribution.rooms.splice(Number(rr.dataset.removeRoom),1);renderRoomEditor();return;}
+  const ab=e.target.closest("[data-add-bed]");if(ab){const beds=editingDistribution.rooms[Number(ab.dataset.addBed)].beds;if(beds.length>=60){$("roomEditorMessage").textContent="الحد الأقصى 60 سريرًا للإعلان.";return;}beds.push(newBed());renderRoomEditor();}
+ });
+ $("closeRoomEditorBtn").addEventListener("click",()=>{$("roomEditor").classList.add("hidden");editingDistribution=null;});
+ $("saveRoomDistributionBtn").addEventListener("click",async()=>{
+  if(!editingDistribution)return;
+  const button=$("saveRoomDistributionBtn"),rooms=editingDistribution.rooms.map((r,i)=>({id:r.id||crypto.randomUUID(),name:String(r.name||"").trim()||("غرفة "+(i+1)),beds:(r.beds||[]).map(b=>({id:b.id||crypto.randomUUID(),status:b.status==="occupied"?"occupied":"available"}))}));
+  const total=rooms.reduce((n,r)=>n+r.beds.length,0);
+  if(rooms.length>30||total>60){$("roomEditorMessage").textContent="الحد الأقصى 30 غرفة و60 سريرًا للإعلان.";return;}
+  button.disabled=true;$("roomEditorMessage").textContent="جارٍ حفظ التوزيع...";
+  const {error}=await client.from("listings").update({room_distribution:rooms}).eq("id",editingDistribution.id);
+  if(error){$("roomEditorMessage").textContent="تعذر حفظ التوزيع: "+error.message;button.disabled=false;return;}
+  const savedId=editingDistribution.id;editingDistribution={id:savedId,rooms};$("roomEditorMessage").textContent="تم حفظ توزيع الغرف والأسرة بنجاح.";button.disabled=false;await loadDashboard();
+  const latest=listingsCache.find(x=>x.id===savedId);if(latest){editingDistribution={id:savedId,rooms:latest.room_distribution||[]};renderRoomEditor();}
+ });
+
  $("refreshBtn").addEventListener("click",loadDashboard);
  client.auth.onAuthStateChange(()=>setTimeout(checkSession,0));
  checkSession();
