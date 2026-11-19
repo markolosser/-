@@ -1450,7 +1450,7 @@ function renderRoomBeds(h){
   }).join("");
   return '<article class="room-distribution-card"><h4>🚪 '+safe(room.name||('غرفة '+(index+1)))+'</h4>'+(beds.length?'<div class="room-beds">'+bedHtml+'</div>':'<p class="room-bed-empty">لا توجد أسرة مسجلة في هذه الغرفة.</p>')+'</article>';
  }).join("");
- return '<section class="details-section room-bed-section"><h3>توزيع الغرف والأسرة</h3><div class="room-bed-legend"><span><i class="free-dot"></i> أخضر: متاح للحجز</span><span><i class="busy-dot"></i> أحمر: محجوز</span></div><div class="room-bed-summary"><span>🛏️ إجمالي الأسرة: '+total+'</span><span style="color:#a9ffd7">✓ متاح: '+available+'</span><span style="color:#ffd0d5">● محجوز: '+occupied+'</span></div><div class="room-distribution-grid">'+cards+'</div></section>';
+ return '<section class="details-section room-bed-section"><h3>توزيع الغرف والأسرة</h3><div class="room-bed-legend"><span><i class="free-dot"></i> أخضر: متاح للحجز</span><span><i class="busy-dot"></i> أحمر: محجوز</span></div><div class="room-distribution-grid">'+cards+'</div></section>';
 }
 
   window.sakanShowDetails = async (id) => {
