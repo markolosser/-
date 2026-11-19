@@ -587,13 +587,13 @@ animation:moonSail 10s ease-in-out infinite alternate}
 .hero-star{color:#f2c85f!important;text-shadow:0 0 5px rgba(242,200,95,.3),0 0 13px rgba(242,200,95,.2)!important;opacity:.3;animation:hero-star-life 4.8s ease-in-out var(--delay,0s) infinite!important}
 .hero-star:nth-child(even){animation-delay:calc(var(--delay,0s) + 2.4s)!important}
 @keyframes hero-star-life{0%,100%{opacity:.24;transform:translate(-50%,-50%) translateY(2px) scale(.84);filter:brightness(.9)}42%,58%{opacity:1;transform:translate(-50%,-50%) translateY(-3px) scale(1.13);filter:brightness(1.18)}}
-.hero-city{position:absolute;z-index:1;left:1%;bottom:-2px;width:min(58vw,690px);height:94%;pointer-events:none;opacity:.94;filter:drop-shadow(0 22px 38px rgba(0,0,0,.24));transform-origin:bottom center;animation:city-rise 1.15s cubic-bezier(.2,.75,.25,1) both}
-.hero-city svg{display:block;width:100%;height:100%;overflow:visible}
-.hero-city rect[fill="url(#windowWarm)"]{animation:window-soft 7s ease-in-out infinite alternate}
+.hero-city{position:absolute;z-index:1;left:1%;bottom:0;width:min(56vw,660px);height:78%;pointer-events:none;opacity:.94;filter:drop-shadow(0 14px 22px rgba(0,0,0,.2));transform-origin:bottom center;animation:city-rise 1s ease-out both}
+.hero-city svg{display:block;width:100%;height:100%;overflow:hidden;preserveAspectRatio:xMidYMax meet}
+.hero-city rect[fill="url(#windowWarm)"]{animation:window-soft 8s ease-in-out infinite alternate}
 .hero-city rect:nth-of-type(3n){animation-delay:1.7s}
-@keyframes city-rise{from{opacity:0;transform:translateY(22px)}to{opacity:.94;transform:translateY(0)}}
-@keyframes window-soft{from{opacity:.62}to{opacity:.94}}
-@media(max-width:700px){.hero-city{width:100%;height:52%;left:0;bottom:0;opacity:.5}.hero-city svg{object-position:center bottom}}
+@keyframes city-rise{from{opacity:0;transform:translateY(14px)}to{opacity:.94;transform:translateY(0)}}
+@keyframes window-soft{from{opacity:.72}to{opacity:.92}}
+@media(max-width:700px){.hero-city{width:100%;height:43%;left:0;bottom:0;opacity:.48}.hero-city svg{height:100%;width:100%}}
 @media(prefers-reduced-motion:reduce){.hero-city,.hero-city rect{animation:none!important}}
 
 </style>
@@ -637,18 +637,13 @@ animation:moonSail 10s ease-in-out infinite alternate}
 <main id="mainSite">
 
 <section class="hero" id="home">
- <div class="hero-stars" aria-hidden="true"></div>
- <div class="hero-aurora" aria-hidden="true"></div>
  <div class="hero-city" aria-hidden="true">
-  <svg viewBox="0 0 620 470" role="presentation" focusable="false">
+  <svg viewBox="0 0 620 375" role="presentation" focusable="false">
    <defs>
     <linearGradient id="cityWall" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#345778"/><stop offset=".55" stop-color="#1b3857"/><stop offset="1" stop-color="#10243f"/></linearGradient>
     <linearGradient id="citySide" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0b1d34"/><stop offset="1" stop-color="#203e5c"/></linearGradient>
     <linearGradient id="windowWarm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe4a5"/><stop offset="1" stop-color="#d69b52"/></linearGradient>
-    <linearGradient id="cityGround" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#173552" stop-opacity="0"/><stop offset="1" stop-color="#07152b" stop-opacity=".95"/></linearGradient>
-    <filter id="windowGlow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="7"/></filter>
    </defs>
-   <ellipse cx="322" cy="390" rx="275" ry="48" fill="#d49d5c" opacity=".12" filter="url(#windowGlow)"/>
    <path d="M0 365 L0 220 76 184 76 365Z" fill="#102b48" opacity=".85"/>
    <path d="M42 365V147L158 105V365Z" fill="url(#cityWall)"/>
    <path d="M158 105L193 125V365H158Z" fill="#102943"/>
@@ -675,15 +670,6 @@ animation:moonSail 10s ease-in-out infinite alternate}
     <rect x="521" y="230" width="15" height="25" rx="2"/><rect x="550" y="219" width="15" height="25" rx="2"/>
     <rect x="521" y="276" width="15" height="25" rx="2"/><rect x="550" y="265" width="15" height="25" rx="2"/>
    </g>
-   <g fill="#f6d99a" opacity=".2" filter="url(#windowGlow)">
-    <rect x="213" y="114" width="28" height="40"/><rect x="263" y="99" width="28" height="40"/>
-    <rect x="388" y="168" width="25" height="36"/><rect x="430" y="153" width="25" height="36"/>
-   </g>
-   <path d="M0 365H620V470H0Z" fill="url(#cityGround)"/>
-   <path d="M0 365H620" stroke="#d5b77b" stroke-opacity=".3"/>
-   <path d="M180 365V470 M348 365V470 M500 365V470" stroke="#8eb5d1" stroke-opacity=".08"/>
-   <path d="M34 365V330L55 318L76 330V365 M504 365V338L523 327L542 338V365" fill="#0c2038"/>
-   <path d="M42 365V343H68V365 M512 365V347H534V365" fill="#d8a75f" opacity=".55"/>
   </svg>
  </div>
  
