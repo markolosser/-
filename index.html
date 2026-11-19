@@ -637,15 +637,36 @@ animation:moonSail 10s ease-in-out infinite alternate}
  <div class="hero-stars" aria-hidden="true"></div>
  <div class="hero-aurora" aria-hidden="true"></div>
  <div class="hero-moon" aria-hidden="true">
-  <svg viewBox="0 0 150 160" role="presentation" focusable="false">
+  <svg viewBox="0 0 160 170" role="presentation" focusable="false">
    <defs>
-    <linearGradient id="crescentGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff3c9"/><stop offset=".46" stop-color="#f4cf78"/><stop offset="1" stop-color="#c78b3e"/></linearGradient>
-    <linearGradient id="crescentEdge" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff6d7" stop-opacity=".9"/><stop offset="1" stop-color="#e7ad51" stop-opacity=".25"/></linearGradient>
+    <linearGradient id="crescentGold" x1="0" y1="0" x2="1" y2="1">
+     <stop offset="0" stop-color="#fff8dc"/>
+     <stop offset=".22" stop-color="#ffe9a8"/>
+     <stop offset=".52" stop-color="#f3c96e"/>
+     <stop offset=".78" stop-color="#dfa84f"/>
+     <stop offset="1" stop-color="#b97936"/>
+    </linearGradient>
+    <linearGradient id="crescentEdge" x1="0" y1="0" x2="1" y2="1">
+     <stop offset="0" stop-color="#fffbe8" stop-opacity=".95"/>
+     <stop offset=".55" stop-color="#f8d98e" stop-opacity=".72"/>
+     <stop offset="1" stop-color="#b87935" stop-opacity=".5"/>
+    </linearGradient>
+    <linearGradient id="crescentShine" x1="0" y1="0" x2="1" y2="0">
+     <stop offset="0" stop-color="#fff8d9" stop-opacity=".72"/>
+     <stop offset="1" stop-color="#fff0bd" stop-opacity="0"/>
+    </linearGradient>
    </defs>
-   <path d="M101 10 C56 16 24 49 24 88 C24 127 54 155 91 155 C111 155 130 146 144 130 C126 140 107 141 89 134 C57 122 42 93 48 63 C53 37 74 17 101 10Z" fill="url(#crescentGold)" stroke="url(#crescentEdge)" stroke-width="2" stroke-linejoin="round"/>
-   <path d="M96 20 C63 29 43 57 43 88 C43 113 57 133 78 144" fill="none" stroke="#fff0bd" stroke-opacity=".38" stroke-width="1.2" stroke-linecap="round"/>
-   <circle cx="35" cy="73" r="2.1" fill="#fff0bd" opacity=".9"/>
-   <circle cx="39" cy="60" r="1.2" fill="#fff0bd" opacity=".72"/>
+   <path d="M111 9 C64 11 27 47 27 89 C27 131 62 163 103 158 C78 146 59 120 57 91 C55 59 76 29 111 9Z"
+    fill="url(#crescentGold)" stroke="url(#crescentEdge)" stroke-width="2.2" stroke-linejoin="round"/>
+   <path d="M103 17 C67 31 43 58 43 91 C43 119 58 142 79 153"
+    fill="none" stroke="url(#crescentShine)" stroke-width="2" stroke-linecap="round"/>
+   <path d="M91 27 C65 42 51 65 51 91 C51 111 60 130 74 143"
+    fill="none" stroke="#fff5d1" stroke-opacity=".25" stroke-width="1" stroke-linecap="round"/>
+   <path d="M35 78 l2.2 4.4 4.4 2.2 -4.4 2.2 -2.2 4.4 -2.2 -4.4 -4.4 -2.2 4.4 -2.2Z"
+    fill="#fff5d2" opacity=".72"/>
+   <circle cx="47" cy="58" r="1.5" fill="#fff7dc" opacity=".8"/>
+   <circle cx="44" cy="104" r="1.3" fill="#fff0bd" opacity=".72"/>
+   <circle cx="60" cy="135" r="1" fill="#fff3ce" opacity=".62"/>
   </svg>
  </div>
  
