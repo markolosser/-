@@ -786,6 +786,47 @@ mask-image:linear-gradient(135deg,transparent 5%,#000 45%,#000 100%)}
 .room-choice-card.occupied .room-choice-status{color:#e6a09a}
 @media(max-width:580px){.room-choice-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.room-choice-card{min-height:128px;border-radius:19px;padding:13px 8px}.room-choice-icon{font-size:40px}}
 
+
+/* Premium lively mobile navigation refresh */
+.menu-backdrop{background:radial-gradient(ellipse at 80% 20%,#263e75a8,transparent 48%),#020515c9;backdrop-filter:blur(12px) saturate(135%);-webkit-backdrop-filter:blur(12px) saturate(135%)}
+.side-menu{width:min(430px,91vw);padding:22px 22px 28px;background:radial-gradient(ellipse at 92% 14%,#6851a54d 0%,transparent 38%),radial-gradient(ellipse at 8% 72%,#168ca52b 0%,transparent 36%),linear-gradient(155deg,#101c3b 0%,#091329 56%,#080f21 100%);border:1px solid #ffffff18;border-right:1px solid #8d80d455;border-radius:0 0 0 30px;box-shadow:-28px 0 90px #0009;overflow-y:auto;overscroll-behavior:contain}
+.side-menu:before{content:"";position:absolute;width:360px;height:360px;left:-210px;top:36%;border:1px solid #77bce51c;border-radius:50%;box-shadow:0 0 0 28px #77bce509,0 0 0 58px #77bce506;pointer-events:none}
+.side-menu:after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,transparent 0 62%,#a78bfa08 62% 63%,transparent 63%);pointer-events:none}
+.side-menu-head{gap:10px;min-height:48px}
+.menu-live{margin-right:auto;display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border:1px solid #ffffff18;border-radius:30px;background:#ffffff09;color:#b9c7e2;font-size:10px}
+.menu-live i{width:7px;height:7px;border-radius:50%;background:#65d9c1;box-shadow:0 0 12px #65d9c1}
+.menu-close{width:42px;height:42px;border-radius:14px;border:1px solid #ffffff20;background:linear-gradient(145deg,#ffffff18,#ffffff06);color:#f7f4ff;font-size:25px;transition:.25s}
+.menu-close:hover{transform:rotate(90deg);background:#a78bfa28}
+.menu-welcome{position:relative;z-index:1;overflow:hidden;margin:26px 0 19px;padding:23px 20px 22px;border:1px solid #ffffff1c;border-radius:25px;background:linear-gradient(115deg,#243b67dc,#30295bd9 62%,#183d58d9);box-shadow:inset 0 1px #ffffff18,0 16px 36px #0003}
+.menu-welcome:before{content:"";position:absolute;width:190px;height:190px;left:-76px;top:-112px;border-radius:50%;background:#8b5cf633;filter:blur(5px)}
+.menu-eyebrow{position:relative;color:#8fe1e2;font-size:11px;font-weight:800;letter-spacing:.6px}
+.menu-welcome h2{position:relative;margin:12px 0 7px;color:#f7f5ff;font-size:25px;line-height:1.55;font-weight:900}
+.menu-welcome h2 em{font-style:normal;background:linear-gradient(90deg,#8fe5e1,#b9a2ff,#ffd58a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.menu-welcome p{position:relative;margin:0;color:#b8c5dc;font-size:12px}
+.menu-orbit{position:absolute;left:20px;top:50%;width:72px;height:72px;transform:translateY(-50%);border:1px solid #a8a2ff55;border-radius:24px;display:grid;place-items:center;background:linear-gradient(145deg,#ffffff18,#ffffff04);box-shadow:0 0 32px #8b5cf626;rotate:-12deg}
+.menu-orbit span{font-size:39px;color:#a9e9e8;text-shadow:0 0 18px #5ddbd5}
+.menu-orbit i,.menu-orbit b{position:absolute;width:9px;height:9px;border-radius:50%;background:#ffd17b;box-shadow:0 0 14px #ffd17b}
+.menu-orbit i{top:7px;right:8px}.menu-orbit b{bottom:8px;left:8px;background:#b59bff;box-shadow:0 0 14px #b59bff}
+.side-menu-links{gap:9px}
+.side-menu-links a{position:relative;display:flex;align-items:center;gap:13px;min-height:68px;padding:10px 12px;border:1px solid #ffffff12;border-radius:17px;background:linear-gradient(110deg,#ffffff0d,#ffffff04);font-size:inherit;transition:transform .22s,border-color .22s,background .22s,box-shadow .22s}
+.side-menu-links a:active{transform:scale(.98)}
+.side-menu-links a:hover{padding-right:12px;color:#fff;border-color:#9d91ed70;background:linear-gradient(110deg,#7765bb35,#ffffff08);box-shadow:0 8px 24px #0002}
+.side-menu-links a .menu-link-icon{flex:0 0 43px;width:43px;height:43px;display:grid;place-items:center;border:1px solid #9d91ed45;border-radius:13px;background:linear-gradient(145deg,#8b78df30,#58c9cf18);color:#b8eff0;font-size:24px;letter-spacing:0}
+.side-menu-links a:nth-child(2) .menu-link-icon{color:#ffd58a;border-color:#ffd58a40;background:#ffd58a12}
+.side-menu-links a:nth-child(3) .menu-link-icon{color:#bca9ff}
+.side-menu-links a:nth-child(4) .menu-link-icon{color:#91d8c9}
+.side-menu-links .menu-link-copy{display:grid;gap:3px;min-width:0}
+.side-menu-links .menu-link-copy strong{font-size:15px;color:#f4f3ff;font-weight:850}
+.side-menu-links .menu-link-copy small{font-size:10px;color:#9eacc8;font-weight:500}
+.side-menu-links a b{margin-right:auto;opacity:1;transform:none;color:#9ba8c5;font-size:18px;transition:transform .2s,color .2s}
+.side-menu-links a:hover b{transform:translateX(-4px);color:#ffd58a}
+.side-menu-note{right:22px;bottom:22px;left:22px;display:flex;gap:12px;padding:14px 15px;border:1px solid #ffffff15;border-radius:17px;background:linear-gradient(100deg,#ffffff0d,#ffffff04);color:#dce5f8}
+.side-menu-note>span{display:grid;place-items:center;width:30px;height:30px;flex:0 0 30px;border-radius:10px;background:#ffd58a18;color:#ffd58a}
+.side-menu-note p{margin:0;color:#aebbd4;font-size:11px;line-height:1.9}
+.side-menu-note strong{color:#e8d7ff}
+@media(max-height:760px){.side-menu{padding-top:15px}.menu-welcome{margin:17px 0 13px;padding:17px 18px}.menu-welcome h2{font-size:21px;margin:7px 0 4px}.menu-orbit{width:58px;height:58px}.side-menu-links a{min-height:58px}.side-menu-note{position:relative;right:auto;bottom:auto;left:auto;margin-top:15px}}
+@media(prefers-reduced-motion:reduce){.side-menu,.menu-backdrop,.side-menu-links a,.menu-close{transition:none!important}}
+
 </style>
 </head>
 
@@ -813,15 +854,24 @@ mask-image:linear-gradient(135deg,transparent 5%,#000 45%,#000 100%)}
 
 <div class="menu-backdrop" id="menuBackdrop"></div>
 <aside class="side-menu" id="sideMenu" aria-hidden="true" dir="rtl">
- <div class="side-menu-head"><a href="#home" class="logo">سَكَن<span>.</span></a><button type="button" class="menu-close" id="menuClose" aria-label="إغلاق القائمة">×</button></div>
- <p class="side-menu-kicker">مساحتك الجامعية تبدأ من هنا</p>
+ <div class="side-menu-head">
+  <a href="#home" class="logo">سَكَن<span>.</span></a>
+  <span class="menu-live"><i></i> مساحتك الجامعية</span>
+  <button type="button" class="menu-close" id="menuClose" aria-label="إغلاق القائمة">×</button>
+ </div>
+ <div class="menu-welcome">
+  <span class="menu-eyebrow">اكتشف عالم سَكَن</span>
+  <h2>كل اللي بتدور عليه،<br><em>في مكان واحد.</em></h2>
+  <p>اختار وجهتك وابدأ رحلتك.</p>
+  <div class="menu-orbit" aria-hidden="true"><span>⌂</span><i></i><b></b></div>
+ </div>
  <nav class="side-menu-links" aria-label="القائمة الرئيسية">
-  <a href="#home"><span>01</span> الرئيسية <b>↗</b></a>
-  <a href="#houses"><span>02</span> اكتشف السكن <b>↗</b></a>
-  <a href="#students"><span>03</span> شركاء السكن <b>↗</b></a>
-  <a href="#about"><span>04</span> عن سَكَن <b>↗</b></a>
+  <a href="#home"><span class="menu-link-icon">⌂</span><span class="menu-link-copy"><strong>الرئيسية</strong><small>ارجع لبداية سَكَن</small></span><b>←</b></a>
+  <a href="#houses"><span class="menu-link-icon">⌕</span><span class="menu-link-copy"><strong>اكتشف السكن</strong><small>دور على مكانك المناسب</small></span><b>←</b></a>
+  <a href="#students"><span class="menu-link-icon">♧</span><span class="menu-link-copy"><strong>شركاء السكن</strong><small>قابل ناس شبهك</small></span><b>←</b></a>
+  <a href="#about"><span class="menu-link-icon">✳</span><span class="menu-link-copy"><strong>عن سَكَن</strong><small>اعرف حكايتنا</small></span><b>←</b></a>
  </nav>
- <div class="side-menu-note"><span>✦</span><p>مش مجرد مكان تقيم فيه…<br>دي بداية حكاية جديدة.</p></div>
+ <div class="side-menu-note"><span>✦</span><p>مش مجرد مكان تقيم فيه…<br><strong>دي بداية حكاية جديدة.</strong></p></div>
 </aside>
 
 <main id="mainSite">
