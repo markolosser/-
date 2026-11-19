@@ -574,27 +574,78 @@ animation:moonSail 10s ease-in-out infinite alternate}
 @media(max-width:700px){.hero-moon{left:7%;top:7%;width:82px;opacity:.94}}
 
 
-/* Calm celestial finish: a simple crescent and a sparse, gold-only constellation */
-.hero-stars{background-image:none!important;opacity:1}
-.hero-stars:before{background:
- radial-gradient(1.5px 1.5px at 12% 26%,#f5d47f 98%,transparent),
- radial-gradient(1.5px 1.5px at 34% 82%,#f5d47f 98%,transparent),
- radial-gradient(1.5px 1.5px at 58% 24%,#f5d47f 98%,transparent),
- radial-gradient(1.5px 1.5px at 82% 64%,#f5d47f 98%,transparent)!important;opacity:.55}
-.hero-stars:after{background:
- radial-gradient(4px 4px at 12% 26%,rgba(245,212,127,.2),transparent 75%),
- radial-gradient(4px 4px at 58% 24%,rgba(245,212,127,.18),transparent 75%)!important;opacity:.45}
-.hero-star{color:#f2c85f!important;text-shadow:0 0 5px rgba(242,200,95,.3),0 0 13px rgba(242,200,95,.2)!important;opacity:.3;animation:hero-star-life 4.8s ease-in-out var(--delay,0s) infinite!important}
-.hero-star:nth-child(even){animation-delay:calc(var(--delay,0s) + 2.4s)!important}
-@keyframes hero-star-life{0%,100%{opacity:.24;transform:translate(-50%,-50%) translateY(2px) scale(.84);filter:brightness(.9)}42%,58%{opacity:1;transform:translate(-50%,-50%) translateY(-3px) scale(1.13);filter:brightness(1.18)}}
-.hero-city{position:absolute;z-index:1;left:1%;bottom:0;width:min(56vw,660px);height:78%;pointer-events:none;opacity:.94;filter:drop-shadow(0 14px 22px rgba(0,0,0,.2));transform-origin:bottom center;animation:city-rise 1s ease-out both}
-.hero-city svg{display:block;width:100%;height:100%;overflow:hidden;preserveAspectRatio:xMidYMax meet}
-.hero-city rect[fill="url(#windowWarm)"]{animation:window-soft 8s ease-in-out infinite alternate}
-.hero-city rect:nth-of-type(3n){animation-delay:1.7s}
-@keyframes city-rise{from{opacity:0;transform:translateY(14px)}to{opacity:.94;transform:translateY(0)}}
-@keyframes window-soft{from{opacity:.72}to{opacity:.92}}
-@media(max-width:700px){.hero-city{width:100%;height:43%;left:0;bottom:0;opacity:.48}.hero-city svg{height:100%;width:100%}}
-@media(prefers-reduced-motion:reduce){.hero-city,.hero-city rect{animation:none!important}}
+
+/* Refined hero: warm blended night sky, restored stars, crisp skyline and focused word glow */
+.hero{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse at 18% 18%,rgba(57,116,166,.48) 0%,transparent 43%),
+    radial-gradient(ellipse at 78% 78%,rgba(100,76,132,.32) 0%,transparent 46%),
+    radial-gradient(ellipse at 52% 48%,rgba(35,77,116,.34) 0%,transparent 55%),
+    linear-gradient(125deg,#07152d 0%,#102b4b 38%,#1c3155 67%,#111d39 100%);
+}
+.hero:before{content:none!important}
+.hero:after{z-index:0;inset:0;border:0;border-radius:0;box-shadow:none;background:
+  linear-gradient(115deg,transparent 8%,rgba(138,190,224,.045) 48%,transparent 82%),
+  radial-gradient(ellipse at 50% 110%,rgba(12,24,48,.1),rgba(4,12,27,.22) 78%);
+}
+.hero-stars{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden;opacity:1}
+.hero-stars:before,.hero-stars:after{content:"";position:absolute;inset:0;pointer-events:none}
+.hero-stars:before{
+  background-image:
+   radial-gradient(1.5px 1.5px at 8% 17%,#ffe7ad 98%,transparent),
+   radial-gradient(1px 1px at 18% 66%,#fff 98%,transparent),
+   radial-gradient(2px 2px at 28% 28%,#f5d47f 98%,transparent),
+   radial-gradient(1px 1px at 42% 13%,#fff1cf 98%,transparent),
+   radial-gradient(1.5px 1.5px at 55% 72%,#ffe6a7 98%,transparent),
+   radial-gradient(1px 1px at 68% 36%,#fff 98%,transparent),
+   radial-gradient(2px 2px at 82% 19%,#f5d47f 98%,transparent),
+   radial-gradient(1.5px 1.5px at 93% 62%,#ffe7ad 98%,transparent),
+   radial-gradient(1px 1px at 74% 84%,#fff 98%,transparent),
+   radial-gradient(1px 1px at 35% 86%,#fff0c8 98%,transparent);
+  opacity:.72;
+}
+.hero-stars:after{
+  background-image:
+   radial-gradient(5px 5px at 28% 28%,rgba(255,222,153,.26),transparent 75%),
+   radial-gradient(5px 5px at 82% 19%,rgba(255,222,153,.22),transparent 75%),
+   radial-gradient(4px 4px at 55% 72%,rgba(255,222,153,.18),transparent 75%);
+  animation:hero-star-glow 4.8s ease-in-out infinite alternate;
+}
+.hero-star{
+  position:absolute;z-index:1;color:#f5d47f;font-size:12px;line-height:1;
+  text-shadow:0 0 7px rgba(255,224,158,.5),0 0 16px rgba(245,212,127,.24);
+  transform:translate(-50%,-50%);
+  animation:hero-star-twinkle var(--twinkle,3.6s) ease-in-out var(--delay,0s) infinite;
+}
+@keyframes hero-star-twinkle{0%,100%{opacity:.35;scale:.78}50%{opacity:1;scale:1.22}}
+@keyframes hero-star-glow{from{opacity:.35}to{opacity:.9}}
+.hero-city{
+  left:0;bottom:0;width:min(58vw,680px);height:82%;z-index:2;
+  opacity:.96;filter:drop-shadow(0 12px 20px rgba(0,0,0,.22));
+}
+.hero-city svg{display:block;width:100%;height:100%;overflow:hidden}
+.hero-city path{vector-effect:non-scaling-stroke}
+.hero-content{z-index:3}
+.hero h1{text-shadow:none}
+.hero h1 span{
+  display:inline-block;color:#f7d783;
+  text-shadow:0 5px 10px rgba(245,198,91,.2),0 12px 25px rgba(245,198,91,.24);
+  filter:drop-shadow(0 7px 9px rgba(244,197,94,.2));
+}
+.hero .tag{box-shadow:none}
+.search-section{margin-top:-58px;z-index:5}
+.search-box{position:relative}
+@media(max-width:700px){
+ .hero-city{width:100%;height:44%;left:0;bottom:0;opacity:.55}
+ .hero-stars:before{opacity:.55}
+ .search-section{margin-top:-34px}
+}
+@media(prefers-reduced-motion:reduce){
+ .hero-stars:after,.hero-star{animation:none!important}
+}
 
 </style>
 </head>
@@ -637,8 +688,9 @@ animation:moonSail 10s ease-in-out infinite alternate}
 <main id="mainSite">
 
 <section class="hero" id="home">
+ <div class="hero-stars" aria-hidden="true"></div>
  <div class="hero-city" aria-hidden="true">
-  <svg viewBox="0 0 620 375" role="presentation" focusable="false">
+  <svg viewBox="0 0 620 375" preserveAspectRatio="xMinYMax meet" role="presentation" focusable="false">
    <defs>
     <linearGradient id="cityWall" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#345778"/><stop offset=".55" stop-color="#1b3857"/><stop offset="1" stop-color="#10243f"/></linearGradient>
     <linearGradient id="citySide" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0b1d34"/><stop offset="1" stop-color="#203e5c"/></linearGradient>
