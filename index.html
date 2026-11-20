@@ -1399,6 +1399,7 @@ function openAdminDemo(){
   });
 
   async function loadHouses() {
+    if(currentUser) await client.rpc("expire_stale_bookings");
     const sequence = ++requestSequence;
     const list = $("houseList");
     if (!list) return;
