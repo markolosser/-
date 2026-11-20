@@ -1224,12 +1224,12 @@ function openAdminDemo(){
    <div class="form-group" id="authNameWrap" style="display:none"><label>الاسم</label><input name="display_name" autocomplete="name"></div>
    <div class="form-group"><label>البريد الإلكتروني</label><input name="email" type="email" autocomplete="email" required></div>
    <div class="form-group"><label>كلمة المرور</label><input name="password" type="password" minlength="8" autocomplete="current-password" required></div>
-   <div class="form-group" id="authTypeWrap" style="display:none"><label>نوع الحساب</label><select name="user_type"><option value="student">طالب / طالبة</option><option value="owner">مالك سكن / معلن</option></select></div>
+   <input type="hidden" name="user_type" value="student">
    <div id="studentSignupFields" style="display:none">
     <div class="form-group"><label>المحافظة</label><select name="governorate"><option value="">اختر المحافظة</option><option>القاهرة</option><option>الجيزة</option><option>الإسكندرية</option><option>الدقهلية</option><option>البحر الأحمر</option><option>البحيرة</option><option>الفيوم</option><option>الغربية</option><option>الإسماعيلية</option><option>المنوفية</option><option>المنيا</option><option>القليوبية</option><option>الوادي الجديد</option><option>السويس</option><option>أسوان</option><option>أسيوط</option><option>بني سويف</option><option>بورسعيد</option><option>دمياط</option><option>جنوب سيناء</option><option>كفر الشيخ</option><option>مطروح</option><option>الأقصر</option><option>قنا</option><option>شمال سيناء</option><option>سوهاج</option><option>الشرقية</option></select></div>
-    <div class="form-group"><label>الجامعة</label><select name="university"><option value="">اختر الجامعة</option><option>جامعة المنيا الأهلية</option><option>جامعة دراية</option><option>جامعة اللوتس</option></select></div>
+    <div class="form-group"><label>الجامعة</label><select name="university"><option value="">اختر الجامعة</option><option>جامعة المنيا الأهلية</option><option>جامعة دراية</option><option>جامعة اللوتس</option><option>جامعة الأزهر</option><option>جامعة مدينة السادات</option></select></div>
     <div class="form-group"><label>الفرقة الدراسية</label><select name="study_year"><option value="">اختر الفرقة</option><option>الأولى</option><option>الثانية</option><option>الثالثة</option><option>الرابعة</option><option>الخامسة</option><option>امتياز</option></select></div>
-    <div class="form-group"><label>الكلية</label><input name="faculty" maxlength="100" placeholder="مثال: الصيدلة"></div>
+    <div class="form-group"><label>الكلية</label><input name="faculty" maxlength="100" list="facultyOptions" placeholder="اكتب كليتك"><datalist id="facultyOptions"><option value="كلية الطب البيطري"></option><option value="كلية الصيدلة"></option><option value="كلية الطب"></option><option value="كلية طب الأسنان"></option><option value="كلية الهندسة"></option><option value="كلية العلوم"></option><option value="كلية التجارة"></option><option value="كلية التربية"></option><option value="كلية الزراعة"></option><option value="كلية الآداب"></option><option value="كلية الحقوق"></option><option value="كلية التمريض"></option><option value="كلية الحاسبات والمعلومات"></option></datalist></div>
     <div class="form-group"><label>النوع</label><select name="gender_type"><option value="">اختر</option><option value="male_students">طالب</option><option value="female_students">طالبة</option></select></div>
    </div>
    <button class="btn" type="submit" id="authSubmit" style="width:100%">دخول</button>
@@ -1279,16 +1279,14 @@ function openAdminDemo(){
     $("authSubmit").textContent = mode === "signup" ? "إنشاء الحساب" : "دخول";
     $("authToggle").textContent = mode === "signup" ? "لدي حساب بالفعل" : "إنشاء حساب جديد";
     $("authNameWrap").style.display = mode === "signup" ? "block" : "none";
-    $("authTypeWrap").style.display = mode === "signup" ? "block" : "none";
-    $("studentSignupFields").style.display = mode === "signup" && $("authForm").elements.user_type.value === "student" ? "block" : "none";
-    ["governorate","university","study_year","faculty","gender_type"].forEach(name=>{const field=$("authForm").elements[name];field.required=mode==="signup"&&$("authForm").elements.user_type.value==="student";});
+    $("studentSignupFields").style.display = mode === "signup" ? "block" : "none";
+    ["governorate","university","study_year","faculty","gender_type"].forEach(name=>{const field=$("authForm").elements[name];field.required=mode==="signup";});
     const pass = $("authForm").elements.password;
     pass.autocomplete = mode === "signup" ? "new-password" : "current-password";
     setAuthMessage("");
   }
 
   window.sakanToggleAuth = () => setAuthMode(authMode === "login" ? "signup" : "login");
-  $("authForm").elements.user_type.addEventListener("change",()=>setAuthMode(authMode));
   window.sakanAuthNav = async () => {
     if (currentUser) {
       const { error } = await client.auth.signOut();
@@ -1366,7 +1364,7 @@ function openAdminDemo(){
       if (authMode === "signup") {
         const displayName = form.elements.display_name.value.trim();
         if (displayName.length < 2) throw new Error("اكتب اسمًا صحيحًا.");
-        const userType = form.elements.user_type.value;
+        const userType = "student";
         const { data, error } = await client.auth.signUp({
           email, password,
           options: {
