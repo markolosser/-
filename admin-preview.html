@@ -351,7 +351,7 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
   const total=rooms.reduce((n,r)=>n+r.beds.length,0);
   if(rooms.length>30||total>60){$("roomEditorMessage").textContent="الحد الأقصى 30 غرفة و60 سريرًا للإعلان.";return;}
   button.disabled=true;$("roomEditorMessage").textContent="جارٍ حفظ التوزيع...";
-  const {error}=await client.from("listings").update({room_distribution:rooms}).eq("id",editingDistribution.id);
+  const {error}=await client.rpc("admin_save_listing_inventory",{p_listing_id:editingDistribution.id,p_rooms:rooms});
   if(error){$("roomEditorMessage").textContent="تعذر حفظ التوزيع: "+error.message;button.disabled=false;return;}
   const savedId=editingDistribution.id;editingDistribution={id:savedId,rooms};$("roomEditorMessage").textContent="تم حفظ توزيع الغرف والأسرة بنجاح.";button.disabled=false;await loadDashboard();
   const latest=listingsCache.find(x=>x.id===savedId);if(latest){editingDistribution={id:savedId,rooms:latest.room_distribution||[]};renderRoomEditor();}
