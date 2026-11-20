@@ -1494,6 +1494,9 @@ function openAdminDemo(){
 function renderRoomBeds(h){
  const rooms=Array.isArray(h.booking_rooms)?h.booking_rooms:[];
  if(!rooms.length)return '<section class="details-section room-bed-section"><h3>توزيع الغرف والأسرة</h3><p class="room-distribution-note">لا توجد أسرة مسجلة لهذا السكن.</p></section>';
+ const own=h.my_booking;
+ const ownLabel=own?.status==="pending"?"طلبك قيد مراجعة المدير، والسرير محجوز لك مؤقتًا حتى "+new Date(own.expires_at).toLocaleString("ar-EG"):own?.status==="confirmed"?"تم تأكيد حجزك لهذا السرير.": "";
+ const ownPanel=ownLabel?'<div class="room-bed-summary"><span>'+safe(ownLabel)+'</span></div>':"";
  const cards=rooms.map((room,index)=>{
   const beds=Array.isArray(room.listing_beds)?room.listing_beds:[];
   const bedHtml=beds.map((bed,bedIndex)=>{
@@ -1503,7 +1506,7 @@ function renderRoomBeds(h){
   }).join("");
   return '<article class="room-distribution-card"><h4>🚪 '+safe(room.name||('غرفة '+(index+1)))+'</h4>'+(beds.length?'<div class="room-beds">'+bedHtml+'</div>':'<p class="room-bed-empty">لا توجد أسرة مسجلة في هذه الغرفة.</p>')+'</article>';
  }).join("");
- return '<section class="details-section room-bed-section"><h3>اختار السرير المناسب</h3><p class="room-distribution-note">طلب الحجز مؤقت لمدة 24 ساعة لحين مراجعة المدير. لا يوجد دفع أو عربون.</p><div class="room-bed-legend"><span><i class="free-dot"></i> متاح</span><span><i class="busy-dot"></i> محجوز أو مشغول</span></div><div class="room-distribution-grid">'+cards+'</div></section>';
+ return '<section class="details-section room-bed-section"><h3>اختار السرير المناسب</h3><p class="room-distribution-note">طلب الحجز مؤقت لمدة 24 ساعة لحين مراجعة المدير. لا يوجد دفع أو عربون.</p>'+ownPanel+'<div class="room-bed-legend"><span><i class="free-dot"></i> متاح</span><span><i class="busy-dot"></i> محجوز أو مشغول</span></div><div class="room-distribution-grid">'+cards+'</div></section>';
 }
 
   window.sakanShowDetails = async (id) => {
@@ -1511,6 +1514,11 @@ function renderRoomBeds(h){
     if (!h) return;
     const {data:bookingRooms,error:roomsError}=await client.from("listing_rooms").select("id,name,sort_order,listing_beds(id,status,sort_order)").eq("listing_id",h.id).order("sort_order");
     h.booking_rooms=roomsError?[]:(bookingRooms||[]).map(room=>({...room,listing_beds:(room.listing_beds||[]).sort((x,y)=>x.sort_order-y.sort_order)}));
+    h.my_booking=null;
+    if(currentUser){
+      const {data:myBookings}=await client.from("bookings").select("id,status,expires_at").eq("listing_id",h.id).eq("requester_id",currentUser.id).in("status",["pending","confirmed"]).order("requested_at",{ascending:false}).limit(1);
+      h.my_booking=myBookings?.[0]||null;
+    }
     let gallery = "";
     for (const media of h.images) {
       const { data, error } = await client.storage.from("listing-photos").createSignedUrl(media.object_path, 3600);
