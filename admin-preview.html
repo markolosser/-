@@ -254,8 +254,6 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
   button.disabled=true;msg.textContent="جارٍ حفظ الإعلان...";
   try{
    if(!activeUser)throw new Error("سجّل الدخول بحساب الإدارة أولاً.");
-   const title=form.elements.title.value.trim();
-   if(title.length<5||title.length>120)throw new Error("اسم السكن لازم يكون من 5 إلى 120 حرفًا.");
    if(form.elements.location.value.trim().length<2||form.elements.location.value.trim().length>160)throw new Error("اكتب منطقة من حرفين إلى 160 حرفًا.");
    if(form.elements.description.value.trim().length>5000)throw new Error("وصف السكن يجب ألا يتجاوز 5000 حرف.");
    if(Number(form.elements.rooms.value)<1||Number(form.elements.rooms.value)>30)throw new Error("عدد الغرف لازم يكون من 1 إلى 30.");
