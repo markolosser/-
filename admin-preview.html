@@ -60,7 +60,7 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
   <div class="card"><div class="muted">طلبات التواصل</div><div class="metric" id="metricContacts">—</div></div>
  </div>
  <div class="layout">
-  <nav><a href="#add-listing">إضافة سكن</a><a class="active" href="#listings">الإعلانات</a><a href="#users">المستخدمون</a><a href="#contacts">طلبات التواصل</a><a href="#admins">المديرون</a><a href="#settings">إعدادات الموقع</a><a href="#smart-charge">Smart Charge ⚡</a></nav>
+  <nav><a href="#add-listing">إضافة سكن</a><a class="active" href="#listings">الإعلانات</a><a href="#users">المستخدمون</a><a href="#contacts">طلبات التواصل</a><a href="#bookings">طلبات الحجز</a><a href="#admins">المديرون</a><a href="#settings">إعدادات الموقع</a><a href="#smart-charge">Smart Charge ⚡</a></nav>
   <div>
    <section class="panel" id="add-listing"><div class="panelhead"><h2>إضافة سكن جديد بواسطة الإدارة</h2></div>
 <p class="muted">الإعلان يُضاف مباشرة باسم حساب الإدارة ويظهر بعد الحفظ. المستخدمون العاديون لا يملكون صلاحية إنشاء إعلانات.</p>
@@ -88,6 +88,7 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
 <section class="panel" id="listings"><div class="panelhead"><h2>مراجعة إعلانات السكن</h2><button class="secondary" id="refreshBtn">تحديث البيانات</button></div><div class="tablewrap"><table><thead><tr><th>نوع السكن</th><th>المنطقة</th><th>السعر</th><th>المالك</th><th>الحالة</th><th>الإجراءات</th></tr></thead><tbody id="listingRows"><tr><td colspan="6">جارٍ التحميل...</td></tr></tbody></table></div><div id="roomEditor" class="room-editor hidden"><div class="room-editor-toolbar"><div><h2 id="roomEditorTitle">توزيع الغرف والأسرة</h2><p class="muted">التغييرات تظهر هنا فورًا، ولا تُحفظ إلا عند الضغط على حفظ.</p></div><div class="actions"><button type="button" class="secondary" id="addRoomBtn">+ إضافة غرفة</button><button type="button" id="saveRoomDistributionBtn">حفظ التوزيع</button><button type="button" class="secondary" id="closeRoomEditorBtn">إغلاق</button></div></div><div id="roomEditorList" class="room-editor-list"></div><p id="roomEditorMessage" class="room-editor-message" aria-live="polite"></p></div></section>
    <section class="panel" id="users"><h2>المستخدمون المسجلون</h2><p class="muted">بيانات الحسابات والجامعة والكلية والفرقة والمحافظة والنوع، حسب البيانات التي أدخلها الطالب عند التسجيل.</p><div class="tablewrap"><table><thead><tr><th>الاسم</th><th>النوع</th><th>رقم التواصل</th><th>الجامعة</th><th>الكلية</th><th>الفرقة</th><th>المحافظة</th><th>معرّف الحساب</th></tr></thead><tbody id="userRows"></tbody></table></div></section>
    <section class="panel" id="contacts"><h2>طلبات التواصل</h2><div class="tablewrap"><table><thead><tr><th>الرسالة</th><th>صاحب السكن</th><th>مقدم الطلب</th><th>الحالة</th><th>الإجراء</th></tr></thead><tbody id="contactRows"></tbody></table></div></section>
+   <section class="panel" id="bookings"><div class="panelhead"><div><h2>طلبات حجز الأسرة</h2><p class="muted">الموافقة للمدير فقط · الحجز المؤقت 24 ساعة · بدون عربون</p></div><button class="secondary" id="refreshBookingsBtn" type="button">تحديث الحجوزات</button></div><div class="tablewrap"><table><thead><tr><th>الطالب</th><th>السكن</th><th>الغرفة / السرير</th><th>وقت الطلب</th><th>انتهاء المهلة</th><th>الحالة</th><th>قرار المدير</th></tr></thead><tbody id="bookingRows"><tr><td colspan="7">جارٍ تحميل الحجوزات...</td></tr></tbody></table></div><p class="muted">الطلبات المنتهية تُحرر الأسرة تلقائيًا عند تحديث الحجوزات أو عند محاولة حجز السرير مرة أخرى.</p></section>
    <section class="panel" id="admins">
 <h2>إدارة المديرين</h2>
 <p class="muted">أضف حسابًا مسجلًا بالفعل في سَكَن باستخدام بريده الإلكتروني، أو أزل صلاحية الإدارة. لن يتم حذف حساب المستخدم نفسه.</p>
@@ -146,24 +147,34 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
   show("dashboardSection");await loadDashboard();
  }
  async function loadDashboard(){
-  const [listings,profiles,contacts,roles,settings,adminList,roommates]=await Promise.all([
+  await client.rpc("admin_expire_stale_bookings");
+  const [listings,profiles,contacts,roles,settings,adminList,roommates,bookings]=await Promise.all([
    client.from("listings").select("id,owner_id,title,location,address_details,monthly_price,listing_type,rooms,bathrooms,floor,gender_type,utilities_included,available_from,amenities,description,status,availability_status,spots_total,spots_available,room_distribution,rejection_reason,created_at").order("created_at",{ascending:false}).limit(250),
    client.from("profiles").select("id,display_name,phone,user_type,created_at").order("created_at",{ascending:false}).limit(250),
    client.from("contact_requests").select("id,requester_id,owner_id,message,status,created_at").order("created_at",{ascending:false}).limit(250),
    client.from("user_roles").select("user_id,role,created_at").eq("role","admin").order("created_at",{ascending:true}),
    client.from("site_settings").select("key,value,updated_at").order("key"),
    client.rpc("list_sakan_admins"),
-   client.from("roommate_profiles").select("user_id,university,faculty,study_year,governorate,gender_type,is_active,is_paused,created_at").limit(250)
+   client.from("roommate_profiles").select("user_id,university,faculty,study_year,governorate,gender_type,is_active,is_paused,created_at").limit(250),
+   client.from("bookings").select("id,listing_id,room_id,bed_id,requester_id,status,requested_at,expires_at,decided_at,decision_note").order("requested_at",{ascending:false}).limit(500)
   ]);
-  const failed=[listings,profiles,contacts,roles,settings,adminList,roommates].find(x=>x.error);
+  const failed=[listings,profiles,contacts,roles,settings,adminList,roommates,bookings].find(x=>x.error);
   if(failed){alert("تعذر تحميل لوحة الإدارة: "+failed.error.message);return}
-  const L=listings.data||[],P=profiles.data||[],C=contacts.data||[],R=roles.data||[],S=settings.data||[],A=adminList.data||[],M=roommates.data||[];listingsCache=L;
+  const L=listings.data||[],P=profiles.data||[],C=contacts.data||[],R=roles.data||[],S=settings.data||[],A=adminList.data||[],M=roommates.data||[],B=bookings.data||[];listingsCache=L;
   $("metricListings").textContent=L.length;$("metricPending").textContent=L.filter(x=>x.status==="pending").length;$("metricProfiles").textContent=P.length;$("metricContacts").textContent=C.length;
   const profileById=new Map(P.map(p=>[p.id,p]));
   $("listingRows").innerHTML=L.map(x=>'<tr><td>'+esc(({apartment:"شقة",room:"غرفة",bed:"سرير"})[x.listing_type]||x.listing_type)+'</td><td>'+esc(x.location)+'</td><td>'+Number(x.monthly_price).toLocaleString("ar-EG")+' جنيه</td><td>'+esc(profileById.get(x.owner_id)?.display_name||x.owner_id.slice(0,8))+'</td><td>'+esc(statusLabel(x.status))+'<br><small>'+esc(availabilityLabel(x.availability_status))+' · '+(x.spots_available==null?"العدد غير محدد":x.spots_available+" متبقي")+'</small></td><td><div class="actions">'+(x.status!=="published"?'<button class="green" data-action="publish" data-id="'+x.id+'">موافقة ونشر</button>':"")+'<button class="secondary" data-action="edit" data-id="'+x.id+'">تعديل كل التفاصيل</button>'+(x.status!=="rejected"?'<button class="danger" data-action="reject" data-id="'+x.id+'">رفض</button>':"")+'<button class="secondary" data-action="archive" data-id="'+x.id+'">أرشفة</button><button class="danger" data-action="delete" data-id="'+x.id+'">حذف نهائي</button><button class="green" data-action="rooms" data-id="'+x.id+'">توزيع الغرف والأسرة</button><select data-availability="'+x.id+'"><option value="available" '+(x.availability_status==="available"?"selected":"")+'>متاح</option><option value="negotiating" '+(x.availability_status==="negotiating"?"selected":"")+'>تم التفاوض</option><option value="rented" '+(x.availability_status==="rented"?"selected":"")+'>تم البيع / التأجير</option><option value="full" '+(x.availability_status==="full"?"selected":"")+'>مكتمل العدد</option><option value="paused" '+(x.availability_status==="paused"?"selected":"")+'>إيقاف مؤقت</option></select><input type="number" min="0" placeholder="المتبقي" data-spots="'+x.id+'" value="'+(x.spots_available??"")+'" style="width:75px"><button class="green" data-action="save-spots" data-id="'+x.id+'">حفظ العدد</button></div></td></tr>').join("")||'<tr><td colspan="6">لا توجد إعلانات حتى الآن.</td></tr>';
   const studentById=new Map(M.map(m=>[m.user_id,m]));
   $("userRows").innerHTML=P.map(p=>{const m=studentById.get(p.id)||{};return '<tr><td>'+esc(p.display_name||"—")+'</td><td>'+esc(p.user_type)+'</td><td>'+esc(p.phone||"—")+'</td><td>'+esc(m.university||"—")+'</td><td>'+esc(m.faculty||"—")+'</td><td>'+esc(m.study_year||"—")+'</td><td>'+esc(m.governorate||"—")+'</td><td><small>'+esc(p.id)+'</small></td></tr>';}).join("")||'<tr><td colspan="8">لا يوجد مستخدمون.</td></tr>';
   $("contactRows").innerHTML=C.map(c=>'<tr><td>'+esc(c.message)+'</td><td>'+esc(profileById.get(c.owner_id)?.display_name||c.owner_id.slice(0,8))+'</td><td>'+esc(profileById.get(c.requester_id)?.display_name||c.requester_id.slice(0,8))+'</td><td>'+esc(c.status)+'</td><td><select data-contact="'+c.id+'"><option value="new" '+(c.status==="new"?"selected":"")+'>جديد</option><option value="read" '+(c.status==="read"?"selected":"")+'>تمت المراجعة</option><option value="closed" '+(c.status==="closed"?"selected":"")+'>مغلق</option></select></td></tr>').join("")||'<tr><td colspan="5">لا توجد طلبات تواصل.</td></tr>';
+  const bookingStatus={pending:"بانتظار موافقة المدير",confirmed:"مؤكد",rejected:"مرفوض",expired:"انتهت المهلة",cancelled:"ملغي"};
+  const listingById=new Map(L.map(x=>[x.id,x]));
+  $("bookingRows").innerHTML=B.map(b=>{
+    const listing=listingById.get(b.listing_id)||{};
+    const student=profileById.get(b.requester_id)||{};
+    const active=b.status==="pending";
+    return '<tr><td>'+esc(student.display_name||b.requester_id.slice(0,8))+'<br><small>'+esc(student.phone||"")+'</small></td><td>'+esc(listing.location||"سكن غير متاح")+'<br><small>'+esc(listing.listing_type||"")+'</small></td><td><small>'+esc(b.room_id.slice(0,8))+' / '+esc(b.bed_id.slice(0,8))+'</small></td><td>'+date(b.requested_at)+'</td><td>'+date(b.expires_at)+'</td><td>'+esc(bookingStatus[b.status]||b.status)+'</td><td>'+(active?'<div class="actions"><button class="green" data-booking-decision="approve" data-booking-id="'+b.id+'">موافقة وتأكيد</button><button class="danger" data-booking-decision="reject" data-booking-id="'+b.id+'">رفض وتحرير السرير</button></div>':esc(b.decision_note||"—"))+'</td></tr>';
+  }).join("")||'<tr><td colspan="7">لا توجد طلبات حجز حتى الآن.</td></tr>';
   $("adminRows").innerHTML=A.map(r=>'<tr><td>'+esc(r.email||"بريد غير متاح")+'</td><td><small>'+esc(r.user_id)+'</small></td><td>'+date(r.created_at)+'</td><td>'+(r.user_id===activeUser.id?'<span class="pill good">حسابك الحالي</span>':'<button class="danger" data-remove-admin="'+esc(r.user_id)+'">إزالة الصلاحية</button>')+'</td></tr>').join("")||'<tr><td colspan="4">لم يتم تعيين مديرين بعد.</td></tr>';
   $("settingsList").innerHTML=S.map(s=>'<div style="border-bottom:1px solid var(--line);padding:8px 0"><strong>'+esc(s.key)+'</strong><pre style="white-space:pre-wrap;color:var(--muted)">'+esc(JSON.stringify(s.value))+'</pre></div>').join("")||"لا توجد إعدادات محفوظة حتى الآن.";
   renderSmart(L,P,C,M);
@@ -226,6 +237,18 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
   if(error)alert("فشل تحديث الإعلان: "+error.message);else await loadDashboard();b.disabled=false;
  });
  $("listingRows").addEventListener("change",async e=>{const el=e.target.closest("[data-availability]");if(!el)return;const {error}=await client.from("listings").update({availability_status:el.value}).eq("id",el.dataset.availability);if(error)alert("فشل تحديث حالة السكن: "+error.message);await loadDashboard();});
+ $("refreshBookingsBtn").addEventListener("click",loadDashboard);
+ $("bookingRows").addEventListener("click",async e=>{
+  const btn=e.target.closest("[data-booking-decision]");if(!btn)return;
+  const decision=btn.dataset.bookingDecision;
+  const promptText=decision==="reject"?"سبب الرفض (اختياري):":"ملاحظة للطلب (اختياري):";
+  const note=window.prompt(promptText)||null;
+  btn.disabled=true;
+  const {data,error}=await client.rpc("admin_decide_booking",{p_booking_id:btn.dataset.bookingId,p_decision:decision,p_note:note});
+  if(error){alert(error.message||"تعذر تحديث الحجز.");btn.disabled=false;return;}
+  if(data?.status==="expired")alert("انتهت مهلة الحجز قبل اتخاذ القرار، وتم تحرير السرير.");
+  await loadDashboard();
+ });
  $("contactRows").addEventListener("change",async e=>{
   const el=e.target.closest("select[data-contact]");if(!el)return;
   const {error}=await client.from("contact_requests").update({status:el.value}).eq("id",el.dataset.contact);
