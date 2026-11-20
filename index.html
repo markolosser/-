@@ -1491,23 +1491,25 @@ function openAdminDemo(){
 
 
 function renderRoomBeds(h){
- const rooms=Array.isArray(h.room_distribution)?h.room_distribution:[];
- if(!rooms.length)return '<section class="details-section room-bed-section"><h3>توزيع الغرف والأسرة</h3><p class="room-distribution-note">توزيع الأسرة غير مُضاف لهذا السكن حتى الآن. سيتم عرض حالة كل سرير هنا بمجرد تحديث بيانات السكن.</p></section>';
- let total=0,available=0,occupied=0;
+ const rooms=Array.isArray(h.booking_rooms)?h.booking_rooms:[];
+ if(!rooms.length)return '<section class="details-section room-bed-section"><h3>توزيع الغرف والأسرة</h3><p class="room-distribution-note">لا توجد أسرة مسجلة لهذا السكن.</p></section>';
  const cards=rooms.map((room,index)=>{
-  const beds=Array.isArray(room.beds)?room.beds:[];
+  const beds=Array.isArray(room.listing_beds)?room.listing_beds:[];
   const bedHtml=beds.map((bed,bedIndex)=>{
-   const free=bed.status==="available";total++;if(free)available++;else occupied++;
-   return '<div class="room-bed '+(free?'available':'occupied')+'"><span class="bed-icon" aria-hidden="true">🛏️</span><strong>سرير '+(bedIndex+1)+'</strong><span>'+(free?'متاح للحجز':'غير متاح للحجز')+'</span></div>';
+   const free=bed.status==="available";
+   const action=free?'<button type="button" class="btn btn-small" data-book-bed="'+safe(bed.id)+'">اطلب حجز السرير</button>':'<span>'+(bed.status==="reserved"?'محجوز مؤقتًا':'غير متاح للحجز')+'</span>';
+   return '<div class="room-bed '+(free?'available':'occupied')+'"><span class="bed-icon" aria-hidden="true">🛏️</span><strong>سرير '+(bedIndex+1)+'</strong>'+action+'</div>';
   }).join("");
   return '<article class="room-distribution-card"><h4>🚪 '+safe(room.name||('غرفة '+(index+1)))+'</h4>'+(beds.length?'<div class="room-beds">'+bedHtml+'</div>':'<p class="room-bed-empty">لا توجد أسرة مسجلة في هذه الغرفة.</p>')+'</article>';
  }).join("");
- return '<section class="details-section room-bed-section"><h3>توزيع الغرف والأسرة</h3><div class="room-bed-legend"><span><i class="free-dot"></i> أخضر: متاح للحجز</span><span><i class="busy-dot"></i> أحمر: غير متاح للحجز</span></div><div class="room-distribution-grid">'+cards+'</div></section>';
+ return '<section class="details-section room-bed-section"><h3>اختار السرير المناسب</h3><p class="room-distribution-note">طلب الحجز مؤقت لمدة 24 ساعة لحين مراجعة المدير. لا يوجد دفع أو عربون.</p><div class="room-bed-legend"><span><i class="free-dot"></i> متاح</span><span><i class="busy-dot"></i> محجوز أو مشغول</span></div><div class="room-distribution-grid">'+cards+'</div></section>';
 }
 
   window.sakanShowDetails = async (id) => {
     const h = loadedHouses.find(item => item.id === id);
     if (!h) return;
+    const {data:bookingRooms,error:roomsError}=await client.from("listing_rooms").select("id,name,sort_order,listing_beds(id,status,sort_order)").eq("listing_id",h.id).order("sort_order");
+    h.booking_rooms=roomsError?[]:(bookingRooms||[]).map(room=>({...room,listing_beds:(room.listing_beds||[]).sort((x,y)=>x.sort_order-y.sort_order)}));
     let gallery = "";
     for (const media of h.images) {
       const { data, error } = await client.storage.from("listing-photos").createSignedUrl(media.object_path, 3600);
@@ -1542,6 +1544,16 @@ function renderRoomBeds(h){
         '<div class="details-section"><h3>وصف السكن</h3><p>' + safe(h.description || "لا يوجد وصف إضافي.") + '</p></div>' +
         '<div class="contact-panel">' + (isClosed?'<strong>هذا السكن غير متاح حاليًا. يمكنك استعراض الإعلانات الأخرى.</strong>':'<strong>عجبك السكن؟ خلّينا نساعدك تتواصل وتعرف التفاصيل.</strong><div class="contact-actions"><a class="btn call-action" href="tel:+201203029724">☎ اتصال مباشر</a><a class="btn whatsapp-action" href="' + whatsappUrl + '" target="_blank" rel="noopener noreferrer">واتساب · تفاوض الآن</a></div><p class="notice">للتواصل: ' + SAKAN_CONTACT_DISPLAY + '</p>') + '</div>' +
       '</div>';
+    $("detailsContent").querySelectorAll("[data-book-bed]").forEach(button=>{
+      button.addEventListener("click",async()=>{
+        if(!currentUser){setAuthMessage("سجّل الدخول بحساب الطالب أولًا لطلب الحجز.");window.openModal("authModal");return;}
+        button.disabled=true;button.textContent="جارٍ إرسال الطلب...";
+        const {data,error}=await client.rpc("request_bed_booking",{p_bed_id:button.dataset.bookBed});
+        if(error){alert(error.message||"تعذر إرسال طلب الحجز.");button.disabled=false;button.textContent="اطلب حجز السرير";return;}
+        alert("تم إرسال طلب الحجز بنجاح. السرير محجوز مؤقتًا لمدة 24 ساعة لحين موافقة المدير.");
+        await loadHouses();await window.sakanShowDetails(h.id);
+      });
+    });
     window.openModal("detailsModal");
   };
 
