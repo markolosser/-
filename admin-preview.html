@@ -10,7 +10,7 @@
 header{border-bottom:1px solid var(--line);background:#08152cf2;padding:14px 0;position:sticky;top:0;z-index:4}.top{display:flex;align-items:center;justify-content:space-between;gap:12px}.logo{font-size:25px;font-weight:900;color:var(--gold)}
 main{padding:25px 0 60px}h1{font-size:29px;margin:0}h2{font-size:19px;margin:0 0 13px}.muted{color:var(--muted);font-size:13px}
 .card,.panel{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:18px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0}.metric{font-size:28px;color:var(--gold);font-weight:900}
-.layout{display:grid;grid-template-columns:200px 1fr;gap:16px}nav{display:flex;flex-direction:column;gap:7px;position:sticky;top:90px;height:max-content}nav a{padding:9px 12px;border-radius:9px;color:var(--muted)}nav a:hover,nav a.active{background:var(--panel2);color:var(--gold)}
+.layout{display:block}.layout>.admin-tabs{display:flex;align-items:center;gap:8px;flex-wrap:wrap;position:sticky;top:76px;z-index:5;padding:10px;margin:0 0 16px;background:#08152cf5;border:1px solid var(--line);border-radius:14px}.admin-tab-group{display:flex;gap:5px;padding:4px;border:1px solid #f3c96955;border-radius:12px;background:#f3c9690c}.layout>.admin-tabs a{display:inline-flex;align-items:center;justify-content:center;padding:9px 13px;border-radius:9px;color:var(--muted);font-size:13px;white-space:nowrap}.layout>.admin-tabs a:hover,.layout>.admin-tabs a.active{background:var(--panel2);color:var(--gold)}.layout>div>section.panel{display:none}.layout>div>section.panel.is-active{display:block}.layout>div{min-width:0}
 .panel{margin-bottom:15px}.panelhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
 table{width:100%;border-collapse:collapse;min-width:650px}th,td{text-align:right;padding:11px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:top}.tablewrap{overflow:auto}
 button{border:0;border-radius:9px;padding:8px 13px;background:var(--gold);color:#17223a;font:700 13px Cairo;cursor:pointer}button:disabled{opacity:.55;cursor:wait}.secondary{background:transparent;color:var(--gold);border:1px solid var(--gold)}.danger{background:#8e3542;color:#fff}.green{background:#28674f;color:#fff}
@@ -60,7 +60,10 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
   <div class="card"><div class="muted">طلبات التواصل</div><div class="metric" id="metricContacts">—</div></div>
  </div>
  <div class="layout">
-  <nav><a href="#add-listing">إضافة سكن</a><a class="active" href="#listings">الإعلانات</a><a href="#users">المستخدمون</a><a href="#contacts">طلبات التواصل</a><a href="#bookings">طلبات الحجز</a><a href="#admins">المديرون</a><a href="#settings">إعدادات الموقع</a><a href="#smart-charge">Smart Charge ⚡</a></nav>
+  <nav class="admin-tabs" aria-label="أقسام لوحة الإدارة">
+   <div class="admin-tab-group"><a href="#add-listing">+ إضافة سكن</a><a class="active" href="#listings">الإعلانات</a></div>
+   <a href="#users">المستخدمون</a><a href="#contacts">طلبات التواصل</a><a href="#bookings">طلبات الحجز</a><a href="#admins">المديرون</a><a href="#settings">إعدادات الموقع</a><a href="#smart-charge">Smart Charge ⚡</a>
+  </nav>
   <div>
    <section class="panel" id="add-listing"><div class="panelhead"><h2>إضافة سكن جديد بواسطة الإدارة</h2></div>
 <p class="muted">الإعلان يُضاف مباشرة باسم حساب الإدارة ويظهر بعد الحفظ. المستخدمون العاديون لا يملكون صلاحية إنشاء إعلانات.</p>
@@ -130,7 +133,25 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
 <script>
 (() => {
  const client=window.supabase.createClient(window.SAKAN_SUPABASE_URL,window.SAKAN_SUPABASE_PUBLISHABLE_KEY);
- const $=id=>document.getElementById(id);
+ const $=id=>document.getElementById(id); const adminTabs=document.querySelector(".admin-tabs");
+ if(adminTabs){
+  const panels=[...document.querySelectorAll("#dashboardSection .layout>div>section.panel")];
+  const activateAdminTab=(hash,scroll=true)=>{
+   const target=panels.find(panel=>"#"+panel.id===hash);
+   if(!target)return;
+   panels.forEach(panel=>panel.classList.toggle("is-active",panel===target));
+   adminTabs.querySelectorAll("a").forEach(link=>link.classList.toggle("active",link.getAttribute("href")===hash));
+   if(scroll)document.getElementById("dashboardSection").scrollIntoView({behavior:"smooth",block:"start"});
+  };
+  adminTabs.addEventListener("click",event=>{
+   const link=event.target.closest("a[href^='#']");
+   if(!link)return;
+   event.preventDefault();
+   activateAdminTab(link.getAttribute("href"));
+  });
+  activateAdminTab("#listings",false);
+ }
+
  let activeUser=null,listingsCache=[],editingDistribution=null,editingListingId=null;
  let draftRooms=[];
  const esc=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
