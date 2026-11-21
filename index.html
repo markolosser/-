@@ -48,7 +48,8 @@ header{
   justify-content:space-between;gap:20px;
 }
 
-.logo{font-size:27px;font-weight:900;color:var(--gold)}
+.logo{display:flex;align-items:center;gap:9px;font-size:27px;font-weight:900;color:var(--gold);white-space:nowrap}
+.logo img{width:42px;height:42px;object-fit:contain;border-radius:50%;flex:none}
 .logo span{color:white}
 
 .links{display:flex;gap:25px;align-items:center}
@@ -595,12 +596,6 @@ animation:moonSail 10s ease-in-out infinite alternate}
   opacity:.94;pointer-events:none;
   transform-origin:bottom center;
 }
-.hero-brand-mark{
-  position:absolute;z-index:2;left:18%;top:-2%;
-  width:clamp(190px,23vw,290px);
-  aspect-ratio:1;opacity:.98;pointer-events:none;
-}
-.hero-brand-mark img{display:block;width:100%;height:100%;object-fit:contain}
 .hero-city svg{display:block;width:100%;height:100%;overflow:hidden}
 .hero h1,.hero p,.hero .tag,.hero-actions{position:relative;z-index:3}
 .hero h1{text-align:right;text-shadow:none}
@@ -1010,7 +1005,7 @@ mask-image:linear-gradient(135deg,transparent 5%,#000 45%,#000 100%)}
 
 <header>
  <div class="container nav">
-  <a href="#" class="logo">سَكَن<span>.</span></a>
+  <a href="#" class="logo"><img src="assets/sakan-logo.jpg" alt="" aria-hidden="true">سَكَن<span>.</span></a>
   <nav class="links desktop-links">
    <a href="#home">الرئيسية</a>
    <a href="#houses">اكتشف السكن</a>
@@ -1056,9 +1051,7 @@ mask-image:linear-gradient(135deg,transparent 5%,#000 45%,#000 100%)}
 
 <section class="hero" id="home">
  <div class="hero-stars" aria-hidden="true"></div>
- <div class="hero-brand-mark" aria-label="SAKAN">
-  <img src="assets/sakan-logo.jpg" alt="SAKAN logo" loading="eager">
- </div> <div class="hero-city" aria-hidden="true">
+ <div class="hero-city" aria-hidden="true">
   <svg viewBox="0 0 620 375" preserveAspectRatio="xMinYMax meet" role="presentation" focusable="false">
    <defs>
     <linearGradient id="cityWall" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#345778"/><stop offset=".55" stop-color="#1b3857"/><stop offset="1" stop-color="#10243f"/></linearGradient>
