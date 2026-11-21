@@ -832,6 +832,58 @@ mask-image:linear-gradient(135deg,transparent 5%,#000 45%,#000 100%)}
 @media(prefers-reduced-motion:reduce){.side-menu,.menu-backdrop,.side-menu-links a,.menu-close{transition:none!important}}
 
 
+
+/* Stronger student navigation contrast and discoverability */
+.desktop-links a{
+ color:#f1f4fb!important;
+ font-weight:800;
+ font-size:14px;
+ padding:10px 13px;
+ border:1px solid #ffffff20;
+ border-radius:12px;
+ background:linear-gradient(135deg,#ffffff12,#ffffff05);
+ transition:background .2s,border-color .2s,color .2s,transform .2s;
+}
+.desktop-links a:hover,
+.desktop-links a[aria-current="page"]{
+ color:#ffe1a0!important;
+ border-color:#f5d47f99;
+ background:#f5d47f18;
+}
+.side-menu-links>a,
+.side-menu-links .menu-tab-group a{
+ color:#fff!important;
+ background:linear-gradient(125deg,#24395c,#172746)!important;
+ border:1px solid #8297c455!important;
+ box-shadow:0 5px 16px #0003;
+}
+.side-menu-links>a strong,
+.side-menu-links .menu-tab-group a strong{color:#fff!important;font-size:14px!important;font-weight:900!important}
+.side-menu-links>a .menu-link-icon,
+.side-menu-links .menu-tab-group a .menu-link-icon{color:#ffe09a!important;background:#f5d47f20!important;border-color:#f5d47f70!important}
+.side-menu-links>a[aria-current="page"],
+.side-menu-links .menu-tab-group a[aria-current="page"]{
+ background:linear-gradient(135deg,#725b2b,#263c5b)!important;
+ border-color:#ffe09a!important;
+ box-shadow:0 0 0 2px #f5d47f25,0 8px 22px #0004!important;
+}
+.roommate-bridge{
+ display:flex;align-items:center;justify-content:space-between;gap:20px;
+ margin:34px 0 12px;padding:23px 25px;border:1px solid #f5d47f55;
+ border-radius:22px;background:radial-gradient(circle at 8% 50%,#8b78df25,transparent 38%),linear-gradient(110deg,#1d3558,#172744);
+ box-shadow:0 15px 35px #0003;
+}
+.roommate-bridge-copy{display:grid;gap:5px}
+.roommate-bridge-copy strong{font-size:18px;color:#fff}
+.roommate-bridge-copy span{font-size:13px;color:#c4d1e5;line-height:1.7}
+.roommate-bridge .btn{white-space:nowrap;display:inline-flex;align-items:center;gap:9px}
+@media(max-width:580px){
+ .desktop-links a{font-size:13px}
+ .roommate-bridge{align-items:stretch;flex-direction:column;padding:19px;gap:14px}
+ .roommate-bridge-copy strong{font-size:16px}
+ .roommate-bridge .btn{justify-content:center;width:100%}
+}
+
 /* Student navigation: render one destination at a time. */
 .student-page-hidden{display:none!important}
 .side-menu-links a[aria-current="page"],.menu-tab-group a[aria-current="page"]{background:linear-gradient(135deg,#f5d47f25,#83b8e818);border-color:#f5d47f!important;color:#f5d47f!important;box-shadow:0 5px 18px #f5d47f12}
@@ -1097,6 +1149,13 @@ mask-image:linear-gradient(135deg,transparent 5%,#000 45%,#000 100%)}
    </div>
   </div>
   <div class="cards" id="houseList"></div>
+  <div class="roommate-bridge">
+   <div class="roommate-bridge-copy">
+    <strong>لسه بتدور على شريك سكن؟ 👥</strong>
+    <span>قابل زملاء من نفس جامعتك وكليتك، واختار شريك يناسبك.</span>
+   </div>
+   <a href="#students" class="btn">اكتشف شركاء السكن <span aria-hidden="true">←</span></a>
+  </div>
  </div>
 </section>
 
