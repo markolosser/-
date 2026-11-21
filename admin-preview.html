@@ -33,7 +33,7 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
 .smart-insights{margin-top:14px;padding:16px;border:1px solid #f3c96955;border-radius:12px;background:#f3c96909}.smart-insights h3{margin:0 0 10px}
 #smartInsights{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.smart-tip{padding:12px;border-radius:10px;background:#ffffff09;font-size:13px}.smart-tip b{display:block;color:var(--gold);margin-bottom:4px}
 @media(max-width:700px){.smart-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.smart-grid,#smartInsights{grid-template-columns:1fr}.smart-bar{grid-template-columns:85px 1fr 30px}}
-</style>
+.draft-room-card{padding:13px;margin:10px 0;border:1px solid #83b8e844;border-radius:14px;background:#0d2039}.draft-room-head{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}.draft-room-head input{flex:1;min-width:150px}.draft-bed-list{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.draft-bed{display:flex;align-items:center;gap:7px;padding:8px 10px;border-radius:10px;background:#123d32;border:1px solid #39c98a;color:#b6ffdb}.draft-bed.occupied{background:#482832;border-color:#e45d6b;color:#ffd0d5}.draft-bed button{border:0;background:transparent;color:inherit;padding:0 3px;font-size:16px}.draft-room-actions{display:flex;gap:8px;flex-wrap:wrap}.draft-room-actions button{padding:7px 11px;font-size:12px}@media(max-width:600px){.draft-room-head{align-items:stretch}.draft-room-head input{width:100%}}</style>
 </head>
 <body>
 <header><div class="wrap top"><a class="logo" href="./">سَكَن.</a><div class="toolbar"><span class="muted" id="adminIdentity"></span><a href="./">العودة للموقع</a><button id="logoutBtn" class="secondary hidden">تسجيل الخروج</button></div></div></header>
@@ -78,6 +78,11 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
 </div>
 <label>مميزات السكن (افصل بينها بفاصلة)</label><input name="amenities" maxlength="500" placeholder="واي فاي، تكييف، غسالة، مطبخ">
 <label>وصف السكن</label><textarea name="description" rows="4" maxlength="3000" placeholder="اكتب تفاصيل الغرف، الأثاث، المواصلات، شروط السكن..."></textarea>
+<section class="panel" style="margin:14px 0;padding:14px;border:1px solid #39c98a55;background:#0b2030">
+ <div class="panelhead"><div><h3 style="margin:0">توزيع الغرف والأسرة</h3><p class="muted">أضف الغرف والأسرة هنا مباشرة. الطالب سيشاهد نفس التوزيع ويطلب السرير المتاح.</p></div><button type="button" class="secondary" id="draftAddRoom">+ إضافة غرفة</button></div>
+ <div id="draftRoomSummary" class="room-editor-summary"></div>
+ <div id="draftRoomList" class="room-editor-list"><p class="muted">لم تتم إضافة غرف بعد. اضغط «إضافة غرفة» للبدء.</p></div>
+</section>
 <label>صور وفيديوهات السكن (يمكن اختيار عدة ملفات)</label><input name="media" type="file" accept="image/jpeg,image/png,image/webp,image/avif,video/mp4,video/webm,video/quicktime" multiple>
 <p class="muted">الصور حتى 5 ميجابايت للفرد، والفيديو حتى 50 ميجابايت للفيديو. الصيغ: JPG, PNG, WEBP, AVIF, MP4, WEBM, MOV.</p>
 <div id="mediaPreview" class="actions" style="margin-top:10px"></div>
@@ -127,6 +132,7 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
  const client=window.supabase.createClient(window.SAKAN_SUPABASE_URL,window.SAKAN_SUPABASE_PUBLISHABLE_KEY);
  const $=id=>document.getElementById(id);
  let activeUser=null,listingsCache=[],editingDistribution=null,editingListingId=null;
+ let draftRooms=[];
  const esc=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
  const date=value=>value?new Date(value).toLocaleDateString("ar-EG"):"—";
  const statusLabel=s=>({pending:"قيد المراجعة",published:"منشور",rejected:"مرفوض",archived:"مؤرشف"}[s]||s);const availabilityLabel=s=>({available:"متاح",negotiating:"تم التفاوض",rented:"تم البيع / التأجير",full:"مكتمل العدد",paused:"موقوف مؤقتًا"}[s]||"متاح");
@@ -202,7 +208,7 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
  });
  $("listingRows").addEventListener("click",async e=>{
   const b=e.target.closest("button[data-action]");if(!b)return;const id=b.dataset.id,action=b.dataset.action;let update={};
-  if(action==="edit"){startListingEdit(id);return;}
+  if(action==="edit"){await startListingEdit(id);return;}
   if(action==="publish")update={status:"published",rejection_reason:null};
   if(action==="reject"){const reason=prompt("سبب الرفض (اختياري):")||"";update={status:"rejected",rejection_reason:reason};}
   if(action==="archive")update={status:"archived"};
@@ -256,9 +262,10 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
  $("adminListingForm").elements.media.addEventListener("change",e=>{
   const files=Array.from(e.target.files||[]);$("mediaPreview").innerHTML=files.map(f=>'<span class="pill good">'+esc(f.name)+' · '+(f.type.startsWith("video/")?"فيديو":"صورة")+'</span>').join("");
  });
- function startListingEdit(id){
+ async function startListingEdit(id){
   const x=listingsCache.find(item=>item.id===id);if(!x)return;
   const f=$("adminListingForm");editingListingId=id;
+  try{draftRooms=await loadListingInventory(id);}catch(error){alert("تعذر تحميل غرف السكن: "+error.message);draftRooms=[];}renderDraftRooms();
   f.elements.location.value=x.location||"";f.elements.address_details.value=x.address_details||"";
   f.elements.price.value=x.monthly_price??"";f.elements.type.value=x.listing_type||"apartment";f.elements.rooms.value=x.rooms??1;
   f.elements.spots_total.value=x.spots_total??"";f.elements.spots_available.value=x.spots_available??"";
@@ -269,7 +276,7 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
   $("adminListingMessage").style.color="var(--muted)";$("adminListingMessage").textContent="تعديل بيانات السكن في "+(x.location||"");
   $("add-listing").scrollIntoView({behavior:"smooth",block:"start"});
  }
- function cancelListingEdit(){editingListingId=null;$("adminListingForm").reset();$("mediaPreview").innerHTML="";$("adminListingSubmit").textContent="إضافة ونشر السكن";$("adminListingCancel").style.display="none";$("adminListingMessage").textContent="";}
+ function cancelListingEdit(){editingListingId=null;draftRooms=[];renderDraftRooms();$("adminListingForm").reset();$("mediaPreview").innerHTML="";$("adminListingSubmit").textContent="إضافة ونشر السكن";$("adminListingCancel").style.display="none";$("adminListingMessage").textContent="";}
  $("adminListingCancel").addEventListener("click",cancelListingEdit);
  $("adminListingForm").addEventListener("submit",async e=>{
   e.preventDefault();const form=e.currentTarget,button=$("adminListingSubmit"),msg=$("adminListingMessage");
@@ -295,6 +302,7 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
    let listingId=editingListingId;
    if(existing){const {error:updateError}=await client.from("listings").update(row).eq("id",listingId);if(updateError)throw updateError;}
    else{const {data:created,error}=await client.from("listings").insert(row).select("id").single();if(error)throw error;listingId=created.id;}
+   await saveDraftInventory(listingId);
    const uploadedPaths=[];
    try{
     for(let i=0;i<files.length;i++){
@@ -312,11 +320,33 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
     if(!existing)await client.from("listings").delete().eq("id",listingId);
     throw mediaError;
    }
-   const wasEditing=!!existing;cancelListingEdit();msg.style.color="var(--muted)";msg.textContent=wasEditing?"تم حفظ تعديلات الإعلان بنجاح.":"تم نشر السكن وإضافة "+files.length+" ملف وسائط بنجاح.";await loadDashboard();
+   const wasEditing=!!existing;cancelListingEdit();msg.style.color="var(--muted)";msg.textContent=wasEditing?"تم حفظ تعديلات الإعلان والغرف والأسرة بنجاح.":"تم نشر السكن وحفظ الغرف والأسرة وإضافة "+files.length+" ملف وسائط بنجاح.";await loadDashboard();
   }catch(error){msg.textContent="تعذر إضافة السكن: "+(error.message||"خطأ غير معروف");msg.style.color="#ff9b9b";}
   finally{button.disabled=false;}
  });
 
+ function newDraftRoom(){return {id:crypto.randomUUID(),name:"غرفة "+(draftRooms.length+1),beds:[]};}
+ function renderDraftRooms(){
+  const total=draftRooms.reduce((n,r)=>n+r.beds.length,0),free=draftRooms.reduce((n,r)=>n+r.beds.filter(b=>b.status==="available").length,0);
+  $("draftRoomSummary").innerHTML='<span>🚪 '+draftRooms.length+' غرفة</span><span>🛏️ '+total+' سرير</span><span class="free">متاح: '+free+'</span><span class="busy">مشغول: '+(total-free)+'</span>';
+  $("draftRoomList").innerHTML=draftRooms.map((room,ri)=>'<article class="draft-room-card"><div class="draft-room-head"><input maxlength="60" data-draft-room-name="'+ri+'" value="'+esc(room.name)+'" aria-label="اسم الغرفة"><button type="button" class="danger" data-draft-remove-room="'+ri+'">حذف الغرفة</button></div><div class="draft-bed-list">'+room.beds.map((bed,bi)=>'<span class="draft-bed '+(bed.status==="available"?'':'occupied')+'">🛏️ سرير '+(bi+1)+' · '+(bed.status==="available"?'متاح':'مشغول')+' <button type="button" data-draft-toggle-bed="'+ri+':'+bi+'" title="تغيير الحالة">↻</button><button type="button" data-draft-remove-bed="'+ri+':'+bi+'" title="حذف السرير">×</button></span>').join('')+'</div><div class="draft-room-actions"><button type="button" class="secondary" data-draft-add-bed="'+ri+'">+ إضافة سرير</button></div></article>').join('')||'<p class="muted">لم تتم إضافة غرف بعد. اضغط «إضافة غرفة» للبدء.</p>';
+ }
+ $("draftAddRoom").addEventListener("click",()=>{if(draftRooms.length>=30)return alert("الحد الأقصى 30 غرفة.");draftRooms.push(newDraftRoom());renderDraftRooms();});
+ $("draftRoomList").addEventListener("click",e=>{
+  const add=e.target.closest("[data-draft-add-bed]");if(add){const r=draftRooms[Number(add.dataset.draftAddBed)];if(r.beds.length>=60)return alert("الحد الأقصى 60 سريرًا للغرفة.");r.beds.push({id:crypto.randomUUID(),status:"available"});renderDraftRooms();return;}
+  const toggle=e.target.closest("[data-draft-toggle-bed]");if(toggle){const [r,b]=toggle.dataset.draftToggleBed.split(":").map(Number);draftRooms[r].beds[b].status=draftRooms[r].beds[b].status==="available"?"occupied":"available";renderDraftRooms();return;}
+  const removeBed=e.target.closest("[data-draft-remove-bed]");if(removeBed){const [r,b]=removeBed.dataset.draftRemoveBed.split(":").map(Number);draftRooms[r].beds.splice(b,1);renderDraftRooms();return;}
+  const removeRoom=e.target.closest("[data-draft-remove-room]");if(removeRoom){draftRooms.splice(Number(removeRoom.dataset.draftRemoveRoom),1);renderDraftRooms();}
+ });
+ $("draftRoomList").addEventListener("input",e=>{const el=e.target.closest("[data-draft-room-name]");if(el)draftRooms[Number(el.dataset.draftRoomName)].name=el.value;});
+ async function saveDraftInventory(listingId){
+  if(!draftRooms.length)return;
+  const rooms=draftRooms.map((r,i)=>({id:r.id,name:String(r.name||"").trim()||("غرفة "+(i+1)),beds:r.beds.map(b=>({id:b.id,status:b.status}))}));
+  const total=rooms.reduce((n,r)=>n+r.beds.length,0);
+  if(rooms.length>30||total>60)throw new Error("الحد الأقصى 30 غرفة و60 سريرًا للإعلان.");
+  const {error}=await client.rpc("admin_save_listing_inventory",{p_listing_id:listingId,p_rooms:rooms});
+  if(error)throw error;
+ }
  function newRoom(){return {id:crypto.randomUUID(),name:"غرفة جديدة",beds:[]};}
  function newBed(){return {id:crypto.randomUUID(),status:"available"};}
  async function loadListingInventory(id){
