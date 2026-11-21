@@ -395,12 +395,15 @@ body.menu-open .side-menu{transform:translateX(0);visibility:visible}
 .side-menu-head{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}
 .menu-close{width:40px;height:40px;border-radius:50%;border:1px solid #ffffff30;background:#ffffff0b;color:white;font-size:27px;cursor:pointer}
 .side-menu-kicker{position:relative;z-index:1;margin:55px 0 20px;color:#e9c978;font-size:12px;letter-spacing:1px}
-.side-menu-links{position:relative;z-index:1;display:grid}
-.side-menu-links a{display:flex;align-items:center;gap:14px;padding:17px 0;border-bottom:1px solid #ffffff1a;font-size:19px;font-weight:800;transition:padding .25s,color .25s}
-.side-menu-links a span{font:11px Arial;color:#8fbfe5;letter-spacing:1px}
-.side-menu-links a b{margin-right:auto;color:#e9c978;font-size:17px;opacity:0;transform:translateX(8px);transition:.25s}
-.side-menu-links a:hover{color:#f5d47f;padding-right:8px}
-.side-menu-links a:hover b{opacity:1;transform:translateX(0)}
+.side-menu-links{position:relative;z-index:1;display:flex;align-items:stretch;gap:8px;flex-wrap:wrap}
+.side-menu-links>a,.menu-tab-group a{display:flex;align-items:center;justify-content:center;gap:7px;padding:11px 13px;border:1px solid #ffffff24;border-radius:13px;background:#ffffff09;color:#dce8f3;font-size:13px;font-weight:800;white-space:nowrap;transition:.22s}
+.menu-tab-group{display:flex;gap:6px;padding:5px;border:1px solid #f3c96955;border-radius:16px;background:#f3c9690c}
+.menu-tab-group a{border:0;background:#f3c96912}
+.side-menu-links a .menu-link-icon,.menu-tab-group .menu-link-icon{font-size:17px;color:#e9c978}
+.side-menu-links a:hover,.menu-tab-group a:hover{color:#f5d47f;border-color:#f3c96999;background:#f3c96918;transform:translateY(-2px)}
+.side-menu-links>a{flex:1 1 auto}
+.menu-tab-group{flex:1 1 100%}
+.menu-tab-group a{flex:1}
 .side-menu-note{position:absolute;z-index:1;right:25px;bottom:38px;display:flex;align-items:center;gap:12px;color:#c7d8e8}
 .side-menu-note span{font-size:27px;color:#f5d47f}
 .side-menu-note p{font-size:13px;line-height:1.9}
@@ -866,12 +869,14 @@ mask-image:linear-gradient(135deg,transparent 5%,#000 45%,#000 100%)}
   <p>اختار وجهتك وابدأ رحلتك.</p>
   <div class="menu-orbit" aria-hidden="true"><span>⌂</span><i></i><b></b></div>
  </div>
- <nav class="side-menu-links" aria-label="القائمة الرئيسية">
-  <a href="#home"><span class="menu-link-icon">⌂</span><span class="menu-link-copy"><strong>الرئيسية</strong><small>ارجع لبداية سَكَن</small></span><b>←</b></a>
-  <a href="#houses"><span class="menu-link-icon">⌕</span><span class="menu-link-copy"><strong>اكتشف السكن</strong><small>دور على مكانك المناسب</small></span><b>←</b></a>
-  <a href="#students"><span class="menu-link-icon">♧</span><span class="menu-link-copy"><strong>شركاء السكن</strong><small>قابل ناس شبهك</small></span><b>←</b></a>
-  <a href="#myBookings"><span class="menu-link-icon">▣</span><span class="menu-link-copy"><strong>حجوزاتي</strong><small>تابع حالة أسرّتك وطلباتك</small></span><b>←</b></a>
-  <a href="#about"><span class="menu-link-icon">✳</span><span class="menu-link-copy"><strong>عن سَكَن</strong><small>اعرف حكايتنا</small></span><b>←</b></a>
+ <nav class="side-menu-links" aria-label="التنقل بين صفحات سَكَن">
+  <div class="menu-tab-group" aria-label="الرئيسية والسكن">
+   <a href="#home"><span class="menu-link-icon">⌂</span><strong>الرئيسية</strong></a>
+   <a href="#houses"><span class="menu-link-icon">⌕</span><strong>اكتشف السكن</strong></a>
+  </div>
+  <a href="#myBookings"><span class="menu-link-icon">▣</span><strong>حجوزاتي</strong></a>
+  <a href="#students"><span class="menu-link-icon">♧</span><strong>شركاء السكن</strong></a>
+  <a href="#about"><span class="menu-link-icon">✳</span><strong>عن سَكَن</strong></a>
  </nav>
  <div class="side-menu-note"><span>✦</span><p>مش مجرد مكان تقيم فيه…<br><strong>دي بداية حكاية جديدة.</strong></p></div>
 </aside>
