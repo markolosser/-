@@ -600,7 +600,7 @@ animation:moonSail 10s ease-in-out infinite alternate}
   width:clamp(190px,23vw,290px);
   aspect-ratio:1;opacity:.98;pointer-events:none;
 }
-.hero-brand-mark svg{display:block;width:100%;height:100%;overflow:visible}
+.hero-brand-mark img{display:block;width:100%;height:100%;object-fit:contain}
 .hero-city svg{display:block;width:100%;height:100%;overflow:hidden}
 .hero h1,.hero p,.hero .tag,.hero-actions{position:relative;z-index:3}
 .hero h1{text-align:right;text-shadow:none}
@@ -1057,25 +1057,8 @@ mask-image:linear-gradient(135deg,transparent 5%,#000 45%,#000 100%)}
 <section class="hero" id="home">
  <div class="hero-stars" aria-hidden="true"></div>
  <div class="hero-brand-mark" aria-label="SAKAN">
-  <svg viewBox="0 0 560 560" role="img" aria-label="SAKAN logo">
-   <defs>
-    <linearGradient id="sakanBlue" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1769a8"/><stop offset=".55" stop-color="#07528c"/><stop offset="1" stop-color="#0a315d"/></linearGradient>
-    <linearGradient id="sakanGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6c75b"/><stop offset=".55" stop-color="#d99a26"/><stop offset="1" stop-color="#a96b12"/></linearGradient>
-   </defs>
-   <path d="M72 226C91 158 170 103 254 56C282 40 302 44 328 67L438 166" fill="none" stroke="url(#sakanBlue)" stroke-width="42" stroke-linecap="round" stroke-linejoin="round"/>
-   <path d="M72 226C91 158 170 103 254 56C282 40 302 44 328 67L438 166" fill="none" stroke="#2784c2" stroke-width="2" opacity=".45"/>
-   <path d="M72 226C56 253 62 281 91 302L128 329" fill="none" stroke="url(#sakanGold)" stroke-width="30" stroke-linecap="round"/>
-   <path d="M438 166L446 330C448 373 421 397 380 401L170 401C133 401 109 418 91 449" fill="none" stroke="url(#sakanGold)" stroke-width="38" stroke-linecap="round" stroke-linejoin="round"/>
-   <path d="M355 98V63Q355 48 370 48H409Q424 48 424 63V152" fill="none" stroke="url(#sakanBlue)" stroke-width="27" stroke-linecap="round" stroke-linejoin="round"/>
-   <g fill="url(#sakanGold)">
-    <rect x="215" y="175" width="43" height="43" rx="9"/><rect x="270" y="175" width="43" height="43" rx="9"/>
-    <rect x="215" y="230" width="43" height="43" rx="9"/><rect x="270" y="230" width="43" height="43" rx="9"/>
-   </g>
-   <text x="280" y="350" text-anchor="middle" fill="#80c9ed" font-family="Arial,sans-serif" font-size="63" font-weight="700" letter-spacing="5">SAKAN</text>
-   <path d="M202 372Q280 345 358 372" fill="none" stroke="url(#sakanGold)" stroke-width="5" stroke-linecap="round"/>
-  </svg>
- </div>
- <div class="hero-city" aria-hidden="true">
+  <img src="assets/sakan-logo.jpg" alt="SAKAN logo" loading="eager">
+ </div> <div class="hero-city" aria-hidden="true">
   <svg viewBox="0 0 620 375" preserveAspectRatio="xMinYMax meet" role="presentation" focusable="false">
    <defs>
     <linearGradient id="cityWall" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#345778"/><stop offset=".55" stop-color="#1b3857"/><stop offset="1" stop-color="#10243f"/></linearGradient>
