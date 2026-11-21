@@ -319,13 +319,31 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
 
  function newRoom(){return {id:crypto.randomUUID(),name:"غرفة جديدة",beds:[]};}
  function newBed(){return {id:crypto.randomUUID(),status:"available"};}
- function openRoomEditor(id){
+ async function loadListingInventory(id){
+  const {data:roomRows,error:roomError}=await client.from("listing_rooms").select("id,name,sort_order").eq("listing_id",id).order("sort_order");
+  if(roomError)throw roomError;
+  const ids=(roomRows||[]).map(r=>r.id);
+  const {data:bedRows,error:bedError}=ids.length?await client.from("listing_beds").select("id,room_id,status,sort_order").in("room_id",ids).order("sort_order"):{data:[],error:null};
+  if(bedError)throw bedError;
+  const byRoom=new Map();
+  (bedRows||[]).forEach(b=>{if(!byRoom.has(b.room_id))byRoom.set(b.room_id,[]);byRoom.get(b.room_id).push({id:b.id,status:b.status==="available"?"available":"occupied"});});
+  return (roomRows||[]).map(r=>({id:r.id,name:r.name,beds:byRoom.get(r.id)||[]}));
+ }
+ async function openRoomEditor(id){
   const listing=listingsCache.find(x=>x.id===id);if(!listing)return;
-  const rooms=Array.isArray(listing.room_distribution)?JSON.parse(JSON.stringify(listing.room_distribution)):[];
-  editingDistribution={id,rooms};
   $("roomEditorTitle").textContent="توزيع الغرف والأسرة · "+listing.title;
-  $("roomEditor").classList.remove("hidden");$("roomEditorMessage").textContent="";renderRoomEditor();
+  $("roomEditor").classList.remove("hidden");$("roomEditorMessage").textContent="جارٍ تحميل الغرف والأسرة من قاعدة البيانات...";
+  $("roomEditorList").innerHTML="";
   $("roomEditor").scrollIntoView({behavior:"smooth",block:"center"});
+  try{
+   const rooms=await loadListingInventory(id);
+   editingDistribution={id,rooms};
+   $("roomEditorMessage").textContent=rooms.length?"تم تحميل التوزيع المحفوظ.":"لا توجد غرف لهذا الإعلان بعد. اضغط «إضافة غرفة» لإنشائها.";
+   renderRoomEditor();
+  }catch(error){
+   editingDistribution=null;
+   $("roomEditorMessage").textContent="تعذر تحميل الغرف والأسرة: "+(error.message||"خطأ غير معروف");
+  }
  }
  function renderRoomEditor(){
   if(!editingDistribution)return;
@@ -358,8 +376,9 @@ input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);borde
   button.disabled=true;$("roomEditorMessage").textContent="جارٍ حفظ التوزيع...";
   const {error}=await client.rpc("admin_save_listing_inventory",{p_listing_id:editingDistribution.id,p_rooms:rooms});
   if(error){$("roomEditorMessage").textContent="تعذر حفظ التوزيع: "+error.message;button.disabled=false;return;}
-  const savedId=editingDistribution.id;editingDistribution={id:savedId,rooms};$("roomEditorMessage").textContent="تم حفظ توزيع الغرف والأسرة بنجاح.";button.disabled=false;await loadDashboard();
-  const latest=listingsCache.find(x=>x.id===savedId);if(latest){editingDistribution={id:savedId,rooms:latest.room_distribution||[]};renderRoomEditor();}
+  const savedId=editingDistribution.id;button.disabled=false;await loadDashboard();
+  try{editingDistribution={id:savedId,rooms:await loadListingInventory(savedId)};$("roomEditorMessage").textContent="تم حفظ التوزيع وإعادة تحميله من قاعدة البيانات بنجاح.";renderRoomEditor();}
+  catch(refreshError){$("roomEditorMessage").textContent="تم الحفظ، لكن تعذر إعادة تحميل التوزيع: "+(refreshError.message||"خطأ غير معروف");}
  });
 
 
