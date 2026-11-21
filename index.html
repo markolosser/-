@@ -595,6 +595,19 @@ animation:moonSail 10s ease-in-out infinite alternate}
   opacity:.94;pointer-events:none;
   transform-origin:bottom center;
 }
+.hero-orbit-home{
+  position:absolute;z-index:2;left:19%;top:3%;
+  width:clamp(132px,16vw,194px);
+  aspect-ratio:240/190;
+  opacity:.9;pointer-events:none;
+  filter:drop-shadow(0 8px 18px rgba(0,0,0,.2));
+  animation:orbit-home-float 8s ease-in-out infinite alternate;
+}
+.hero-orbit-home svg{display:block;width:100%;height:100%;overflow:visible}
+@keyframes orbit-home-float{
+  from{transform:translate3d(0,0,0) rotate(-2deg)}
+  to{transform:translate3d(0,-8px,0) rotate(2deg)}
+}
 .hero-city svg{display:block;width:100%;height:100%;overflow:hidden}
 .hero h1,.hero p,.hero .tag,.hero-actions{position:relative;z-index:3}
 .hero h1{text-align:right;text-shadow:none}
@@ -608,6 +621,7 @@ animation:moonSail 10s ease-in-out infinite alternate}
  .hero{min-height:590px}
  .hero-content{width:100%;padding:52px 12px 190px;text-align:right}
  .hero-city{width:100%;height:43%;left:0;right:auto;bottom:0;opacity:.5}
+ .hero-orbit-home{left:8%;top:43%;width:112px;opacity:.62}
  .search-section{margin-top:-35px}
 }
 
@@ -1049,6 +1063,20 @@ mask-image:linear-gradient(135deg,transparent 5%,#000 45%,#000 100%)}
 
 <section class="hero" id="home">
  <div class="hero-stars" aria-hidden="true"></div>
+ <div class="hero-orbit-home" aria-hidden="true">
+  <svg viewBox="0 0 240 190" role="presentation" focusable="false">
+   <path d="M20 112C27 53 163 18 207 72C248 122 143 170 49 145C28 139 18 126 20 112Z" fill="none" stroke="#f3c969" stroke-width="7" stroke-linecap="round"/>
+   <path d="M65 100L120 53L175 100" fill="none" stroke="#dcecff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+   <path d="M79 91V148H161V91" fill="none" stroke="#dcecff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+   <path d="M145 78V60H161V91" fill="none" stroke="#dcecff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+   <g fill="#f3c969">
+    <rect x="99" y="105" width="15" height="15" rx="3"/>
+    <rect x="121" y="105" width="15" height="15" rx="3"/>
+    <rect x="99" y="127" width="15" height="15" rx="3"/>
+    <rect x="121" y="127" width="15" height="15" rx="3"/>
+   </g>
+  </svg>
+ </div>
  <div class="hero-city" aria-hidden="true">
   <svg viewBox="0 0 620 375" preserveAspectRatio="xMinYMax meet" role="presentation" focusable="false">
    <defs>
