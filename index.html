@@ -831,6 +831,11 @@ mask-image:linear-gradient(135deg,transparent 5%,#000 45%,#000 100%)}
 @media(max-height:760px){.side-menu{padding-top:15px}.menu-welcome{margin:17px 0 13px;padding:17px 18px}.menu-welcome h2{font-size:21px;margin:7px 0 4px}.menu-orbit{width:58px;height:58px}.side-menu-links a{min-height:58px}.side-menu-note{position:relative;right:auto;bottom:auto;left:auto;margin-top:15px}}
 @media(prefers-reduced-motion:reduce){.side-menu,.menu-backdrop,.side-menu-links a,.menu-close{transition:none!important}}
 
+
+/* Student navigation: render one destination at a time. */
+.student-page-hidden{display:none!important}
+.side-menu-links a[aria-current="page"],.menu-tab-group a[aria-current="page"]{background:linear-gradient(135deg,#f5d47f25,#83b8e818);border-color:#f5d47f!important;color:#f5d47f!important;box-shadow:0 5px 18px #f5d47f12}
+
 </style>
 </head>
 
@@ -1814,6 +1819,58 @@ function renderRoomBeds(h){
    star.style.setProperty('--star-y', (-9 + random() * 18).toFixed(1) + 'px');
    sky.appendChild(star);
  }
+})();
+</script>
+
+
+<script>
+/* Student area navigation: Home + Housing are one page; other destinations are separate pages. */
+(() => {
+  const pages = {
+    home: [document.getElementById("home"), document.querySelector(".search-section"), document.getElementById("houses")],
+    roommates: [document.getElementById("students")],
+    bookings: [document.getElementById("myBookings")],
+    about: [document.getElementById("about")]
+  };
+  const links = [...document.querySelectorAll('#sideMenu a[href^="#"], .desktop-links a[href^="#"]')];
+  const routeByHash = {
+    "#home":"home", "#houses":"home",
+    "#students":"roommates", "#myBookings":"bookings", "#about":"about"
+  };
+  function showPage(page, updateUrl = true) {
+    if (!pages[page]) page = "home";
+    Object.entries(pages).forEach(([name, elements]) => {
+      elements.forEach(el => {
+        if (el) el.classList.toggle("student-page-hidden", name !== page);
+      });
+    });
+    const activeHash = page === "home" ? "#home" : page === "roommates" ? "#students" : page === "bookings" ? "#myBookings" : "#about";
+    links.forEach(link => {
+      const hash = link.getAttribute("href");
+      const active = page === "home" ? (hash === "#home" || hash === "#houses") : hash === activeHash;
+      if (active) link.setAttribute("aria-current","page");
+      else link.removeAttribute("aria-current");
+    });
+    if (updateUrl && location.hash !== activeHash) history.pushState({sakanPage:page},"",activeHash);
+    window.scrollTo({top:0,behavior:"smooth"});
+    document.body.classList.remove("menu-open");
+    const toggle=document.getElementById("menuToggle");
+    const panel=document.getElementById("sideMenu");
+    if(toggle) toggle.setAttribute("aria-expanded","false");
+    if(panel) panel.setAttribute("aria-hidden","true");
+  }
+  document.addEventListener("click", event => {
+    const link = event.target.closest('a[href^="#"]');
+    if (!link) return;
+    const hash = link.getAttribute("href");
+    const page = routeByHash[hash];
+    if (!page) return;
+    event.preventDefault();
+    showPage(page);
+  });
+  window.addEventListener("popstate", () => showPage(routeByHash[location.hash] || "home", false));
+  window.addEventListener("hashchange", () => showPage(routeByHash[location.hash] || "home", false));
+  showPage(routeByHash[location.hash] || "home", false);
 })();
 </script>
 
