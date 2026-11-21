@@ -1512,8 +1512,14 @@ function renderRoomBeds(h){
   window.sakanShowDetails = async (id) => {
     const h = loadedHouses.find(item => item.id === id);
     if (!h) return;
-    const {data:bookingRooms,error:roomsError}=await client.from("listing_rooms").select("id,name,sort_order,listing_beds(id,status,sort_order)").eq("listing_id",h.id).order("sort_order");
-    h.booking_rooms=roomsError?[]:(bookingRooms||[]).map(room=>({...room,listing_beds:(room.listing_beds||[]).sort((x,y)=>x.sort_order-y.sort_order)}));
+    const {data:bookingRooms,error:roomsError}=await client.from("listing_rooms").select("id,name,sort_order").eq("listing_id",h.id).order("sort_order");
+    if(roomsError){console.error("Room inventory load failed:",roomsError);h.booking_rooms_error=roomsError.message;h.booking_rooms=[];}
+    else {
+      const roomIds=(bookingRooms||[]).map(room=>room.id);
+      const {data:bookingBeds,error:bedsError}=roomIds.length?await client.from("listing_beds").select("id,room_id,status,sort_order").in("room_id",roomIds).order("sort_order"):{data:[],error:null};
+      if(bedsError){console.error("Bed inventory load failed:",bedsError);h.booking_rooms_error=bedsError.message;h.booking_rooms=[];}
+      else {const bedsByRoom=new Map();(bookingBeds||[]).forEach(bed=>{if(!bedsByRoom.has(bed.room_id))bedsByRoom.set(bed.room_id,[]);bedsByRoom.get(bed.room_id).push(bed);});h.booking_rooms_error=null;h.booking_rooms=(bookingRooms||[]).map(room=>({...room,listing_beds:bedsByRoom.get(room.id)||[]}));}
+    }
     h.my_booking=null;
     if(currentUser){
       const {data:myBookings}=await client.from("bookings").select("id,status,expires_at").eq("listing_id",h.id).eq("requester_id",currentUser.id).in("status",["pending","confirmed"]).order("requested_at",{ascending:false}).limit(1);
